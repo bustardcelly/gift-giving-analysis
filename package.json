@@ -12,7 +12,7 @@
   "scripts": {
     "build-client": "./node_modules/.bin/gulp",
     "server": "node app/index.js --port=8001 -socketport=8002 --dbhost=54.86.176.185",
-    "push-design": "node db/design_gifts.js --dbhost=54.86.176.185",
+    "push-design": "node db/design_exchange.js --dbhost=54.86.176.185",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {

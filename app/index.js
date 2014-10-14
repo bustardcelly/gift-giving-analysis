@@ -23,13 +23,20 @@ server.use(restify.acceptParser(server.acceptable));
 server.use(restify.queryParser());
 server.use(restify.bodyParser());
 
-// server.get('/exchange', exchangeRouteController.getExchanges);
+// GET Exchange (all|id)
+server.get('/exchange', exchangeRouteController.getAllExchanges);
+server.get('/exchange/:id', exchangeRouteController.getExchangeById);
+// POST Exchange new
 server.post('/exchange', exchangeRouteController.postExchange);
-// server.get('/exchange/:id', exchangeRouteController.getExchangeById);
 
-// server.get('/gift', giftRouteController.getGifts);
-// server.post('/gift', giftRouteController.postGift);
-// server.get('/gift/:id', giftRouteController.getGiftById);
+// GET Exchange (all|id)
+server.get('/gift', giftRouteController.getAllGifts);
+server.get('/gift/:id', giftRouteController.getGiftById);
+// GET Gifts by Exchange
+server.get('/gift/exchange/:id', giftRouteController.getGiftExchangesById);
+// POST Gift new (exchangeid)
+// server.post('/gift/exchange/:id', giftRouteController.postGift);
+
 
 // Initialize DB
 require('./db').init(dbhost, dbport);
