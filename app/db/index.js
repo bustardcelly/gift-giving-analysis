@@ -111,6 +111,20 @@ var facade = {
       }
     });
     return dfd.promise;
+  },
+  newGift: function(gift) {
+    var dfd = defer();
+    var db = connection.database(DB_GIFT);
+    db.save(gift, function(err, data) {
+      if(err) {
+        dfd.reject(err);
+      }
+      else {
+        glom(gift, data);
+        dfd.resolve(data);
+      }
+    });
+    return dfd.promise;
   }
 };
 

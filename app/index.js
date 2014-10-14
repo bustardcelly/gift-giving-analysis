@@ -35,7 +35,7 @@ server.get('/gift/:id', giftRouteController.getGiftById);
 // GET Gifts by Exchange
 server.get('/gift/exchange/:id', giftRouteController.getGiftExchangesById);
 // POST Gift new (exchangeid)
-// server.post('/gift/exchange/:id', giftRouteController.postGift);
+server.post('/gift/exchange/:id', giftRouteController.postGift);
 
 
 // Initialize DB
