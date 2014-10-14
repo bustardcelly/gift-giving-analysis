@@ -11,7 +11,15 @@
     <link rel="stylesheet" href="css/bootstrap-responsive.min.css">
   </head>
   <body>
-    hello, world.
+    <div id="exchange-form-container"></div>
+    <script>
+      (function(window) {
+        window.serviceHost = '@serviceHost';
+        window.servicePort = @servicePort;
+        window.socketHost = '@socketHost';
+        window.socketPort = @socketPort;
+      }(this));
+    </script>
     <script src="lib/jquery-1.11.1.min.js"></script>
     <script src="lib/socket.io-1.1.0.min.js"></script>
     <script src="lib/bootstrap.min.js"></script>

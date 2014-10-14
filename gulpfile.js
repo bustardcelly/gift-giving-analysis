@@ -1,8 +1,13 @@
 var gulp = require('gulp');
-var gutil = require('gulp-util');
-var source = require('vinyl-source-stream');
 var gulpify = require('gulp-browserify');
+var replace = require('gulp-replace');
 var del = require('del');
+
+var isProduction = process.env.NODE_ENV === 'production';
+var serviceHost = isProduction ? '54.86.176.185' : 'localhost';
+var servicePort = isProduction ? 8001 : 8001;
+var socketHost = isProduction ? '54.86.176.185' : 'localhost';
+var socketPort = isProduction ? 8002 : 8002;
 
 gulp.task('browserify', ['clean'], function() {
   gulp.src('client/script/main.js', {read:false})
@@ -34,6 +39,10 @@ gulp.task('copy', ['clean'], function() {
       .pipe(gulp.dest('./static/css'));
 
   gulp.src('client/index.html')
+      .pipe(replace(/@serviceHost/, serviceHost))
+      .pipe(replace(/@servicePort/, servicePort))
+      .pipe(replace(/@socketHost/, socketHost))
+      .pipe(replace(/@socketPort/, socketPort))
       .pipe(gulp.dest('./static'));
 });
 
