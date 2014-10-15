@@ -1,0 +1,7 @@
+.form-group {
+  margin: 1em 0;
+}
+
+#exchange-description-input {
+  min-height: 200px;
+}
