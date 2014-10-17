@@ -2,6 +2,21 @@
   margin: 1em 0;
 }
 
-#exchange-description-input {
+.exhange-form-label {
+  width: 80px;
+  text-align: right;
+  margin-right: 1em;
+}
+
+.exchange-description-input {
   min-height: 200px;
+}
+
+/*.exchange-form-buttonbar {
+  width: 280px;
+  text-align: right;
+}*/
+
+.exchange-form-buttonbar .btn {
+  margin-left: 1em;
 }

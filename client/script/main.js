@@ -1,7 +1,14 @@
 /*global window*/
 'use strict';
+var exchangeList = require('./view/exchange-list');
 
-var exchangeForm = require('./view/exchange-form');
-exchangeForm.init(window.document.getElementById('exchange-form-container'));
+var exchangeService = require('./service/exchange');
+
+exchangeService
+  .init(window.serviceHost, window.servicePort)
+  .all()
+  .then(function(list) {
+    exchangeList.render(window.document.getElementById('exchange-form-container'), list);
+  });
 
 module.exports = {};

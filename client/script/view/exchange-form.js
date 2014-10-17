@@ -1,14 +1,37 @@
-
+/*global $*/
 'use strict';
 var React = require('react');
 
-var Form = React.createClass({displayName: 'ExchangeForm', 
+var EditableForm = React.createClass({displayName: 'ExchangeForm',
+  getInitialState: function() {
+    return {
+      editable: true
+    };
+  },
   handleSubmit: function(event) {
     event.preventDefault();
-    console.log('submit new exchange.');
+    var $dom = this.getDOMNode();
+    var $title = $('input.exchange-title-input', $dom);
+    var $source = $('input.exchange-source-input', $dom);
+    var $description = $('exchange-description-input', $dom);
+    if(this.props.onSubmit) {
+      this.props.onSubmit({
+        title: $title.val(),
+        source: $source.val(),
+        description: $description.val()
+      });
+    }
+    return false;
+  },
+  handleCancel: function(event) {
+    event.preventDefault();
+    if(this.props.onCancel) {
+      this.props.onCancel();
+    }
     return false;
   },
   render: function() {
+    var type = this.props.isNew ? 'Create' : 'Edit';
     return (
       React.DOM.div({
         id: 'exchange-form',
@@ -16,43 +39,62 @@ var Form = React.createClass({displayName: 'ExchangeForm',
         role: 'form',
         action: '#'
       },
+        React.DOM.h3(null, [type, 'Exchange'].join(' ')),
         React.DOM.div({
           className: 'form-group'
         },
-          React.DOM.h3(null, 'New Exchange'),
+          React.DOM.label({
+            htmlFor: 'exchange-title-input',
+            className: 'control-label exhange-form-label'
+          }, 'Title:'),
           React.DOM.input({
-            id: "exchange-title-input",
-            className: 'form-control input-md',
+            name: 'exchange-title-input',
+            className: 'form-control input-md exchange-title-input',
             placeholder: 'Title',
-            type: 'text'
+            type: 'text',
+            defaultValue: this.props.data.title ? this.props.data.title : undefined
           })
         ),
         React.DOM.div({
           className: 'form-group'
         },
+          React.DOM.label({
+            htmlFor: 'exchange-source-input',
+            className: 'control-label exhange-form-label'
+          }, 'Source:'),
           React.DOM.input({
-            id: "exchange-source-input",
-            className: 'form-control input-md',
+            className: 'form-control input-md exchange-source-input',
             placeholder: 'Source',
-            type: 'text'
+            type: 'text',
+            defaultValue: this.props.data.source ? this.props.data.source : undefined
           })
         ),
         React.DOM.div({
           className: 'form-group'
         },
+          React.DOM.label({
+            htmlFor: 'exchange-description-input',
+            className: 'control-label exhange-form-label'
+          }, 'Description:'),
           React.DOM.textarea({
-            id: "exchange-description-input",
-            className: 'form-control input-md',
-            placeholder: 'Description'
+            className: 'form-control input-md exchange-description-input',
+            placeholder: 'Description',
+            defaultValue: this.props.data.description ? this.props.data.description : undefined
           })
         ),
         React.DOM.div({
-          className: 'form-group'
+          className: 'form-group exchange-form-buttonbar'
         },
           React.DOM.button({
             id: 'exchange-submit-button',
             type: 'submit',
-            className: 'btn btn-success btn-md',
+            className: 'btn btn-danger btn-md',
+            onClick: this.handleCancel
+          }, 'cancel'),
+          React.DOM.button({
+            id: 'exchange-submit-button',
+            type: 'submit',
+            className: 'btn btn-info btn-md',
             onClick: this.handleSubmit
           }, 'submit')
         )
@@ -62,12 +104,14 @@ var Form = React.createClass({displayName: 'ExchangeForm',
 });
 
 module.exports = {
-  element: undefined,
-  init: function(element) {
-    this.element = element;
+  EditableForm: EditableForm,
+  render: function(element, exchangeData) {
     React.renderComponent(
-      Form(),
-      this.element
+      EditableForm({
+        isNew: typeof exchangeData === 'undefined',
+        data: exchangeData
+      }),
+      element
     );
   }
 };
