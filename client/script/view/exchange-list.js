@@ -27,6 +27,13 @@ var ExchangeListItem = React.createClass({displayName: 'ExchangeListItem',
     });
     return false;
   },
+  componentDidMount: function() {
+    this._boundForceUpdate = this.forceUpdate.bind(this, null);
+    this.props.gifts.on("change", this._boundForceUpdate, this);
+  },
+  componentWillUnmount: function() {
+    this.props.gifts.off("change", this._boundForceUpdate);
+  },
   render: function() {
     return (
       React.DOM.li(null,
@@ -34,7 +41,7 @@ var ExchangeListItem = React.createClass({displayName: 'ExchangeListItem',
           React.DOM.a({
             href: '#',
             onClick: this.handleSelect
-          }, this.props.title)
+          }, this.props.title + ' (' + (this.props.gifts.get().length) + ' gifts)')
         ),
         React.DOM.div({
             className: this.state.editing ? '' : 'hidden',
@@ -51,7 +58,7 @@ var ExchangeListItem = React.createClass({displayName: 'ExchangeListItem',
 });
 
 var ExchangeList = React.createClass({displayName: 'ExchangeList',
-  render: function() {
+    render: function() {
     var rows = [];
     _.forEach(this.props.list, function(item) {
       rows.push(
