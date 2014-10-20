@@ -1,6 +1,42 @@
 /*global $*/
 'use strict';
+var _ = require('lodash');
 var React = require('react');
+var giftDialog = require('./gift-dialog');
+
+var GiftListItem = React.createClass({displayName: 'GiftListItem',
+  render: function() {
+    return (
+      React.DOM.li(null, '(' + this.props.amount + ') ' + this.props.kind + ' : ' + this.props.description)
+    );
+  }
+});
+
+var GiftList = React.createClass({displayName: 'GiftList',
+  handleAddGift: function(event) {
+    event.preventDefault();
+    giftDialog.render(this.props.data);
+    return false;
+  },
+  render: function() {
+    var rows = [];
+    _.forEach(this.props.data.gifts.get(), function(item) {
+      rows.push(
+        GiftListItem(item)
+      );
+    });
+    return (
+      React.DOM.div(null,
+        React.DOM.h3(null, 'Gifts'),
+        React.DOM.button({
+          className: 'btn btn-md',
+          onClick: this.handleAddGift
+        }, 'Add'),
+        React.DOM.ul(null, rows)
+      )
+    );
+  }
+});
 
 var EditableForm = React.createClass({displayName: 'ExchangeForm',
   getInitialState: function() {
@@ -99,6 +135,9 @@ var EditableForm = React.createClass({displayName: 'ExchangeForm',
             defaultValue: this.props.data.description ? this.props.data.description : undefined
           })
         ),
+        GiftList({
+          data: this.props.data
+        }),
         React.DOM.div({
           className: 'form-group exchange-form-buttonbar'
         },

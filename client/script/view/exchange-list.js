@@ -35,13 +35,16 @@ var ExchangeListItem = React.createClass({displayName: 'ExchangeListItem',
     this.props.gifts.off("change", this._boundForceUpdate);
   },
   render: function() {
+    var total = this.props.gifts.get().reduce(function(prev, curr, index, array) {
+      return prev + curr.amount;
+    }, 0);
     return (
       React.DOM.li(null,
         React.DOM.p(null,
           React.DOM.a({
             href: '#',
             onClick: this.handleSelect
-          }, this.props.title + ' (' + (this.props.gifts.get().length) + ' gifts)')
+          }, this.props.title + ' (' + total + ' gifts)')
         ),
         React.DOM.div({
             className: this.state.editing ? '' : 'hidden',

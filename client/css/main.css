@@ -9,7 +9,11 @@
 }
 
 .exchange-description-input {
-  min-height: 200px;
+  min-height: 10em;
+}
+
+.gift-description-input {
+  min-height: 7em;
 }
 
 /*.exchange-form-buttonbar {
@@ -19,4 +23,12 @@
 
 .exchange-form-buttonbar .btn {
   margin-left: 1em;
+}
+
+@media screen and (max-width: 400px) {
+  .exchange-form-label {
+    width: 100%;
+    text-align: left;
+    margin-right: 0;
+  }
 }
