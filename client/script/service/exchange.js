@@ -24,5 +24,21 @@ module.exports = {
       dfd.reject(error);
     });
     return dfd;
+  },
+  getGiftsForExchangeId: function(exchangeId) {
+    var dfd = $.Deferred();
+    var theUrl = 'http://' + this.host + ':' + this.port + '/gift/exchange/' + exchangeId;
+    $.ajax({
+      type: 'GET',
+      url: theUrl,
+      contentType: 'json'
+    })
+    .done(function(data) {
+      dfd.resolve(data);
+    })
+    .fail(function(error) {
+      dfd.reject(error);
+    });
+    return dfd;
   }
 };

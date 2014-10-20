@@ -13,12 +13,14 @@ var EditableForm = React.createClass({displayName: 'ExchangeForm',
     var $dom = this.getDOMNode();
     var $title = $('input.exchange-title-input', $dom);
     var $source = $('input.exchange-source-input', $dom);
-    var $description = $('exchange-description-input', $dom);
+    var $location = $('input.exchange-location-str-input', $dom);
+    var $description = $('textarea.exchange-description-input', $dom);
     if(this.props.onSubmit) {
       this.props.onSubmit({
         title: $title.val(),
         source: $source.val(),
-        description: $description.val()
+        description: $description.val(),
+        location_str: $location.val()
       });
     }
     return false;
@@ -45,7 +47,7 @@ var EditableForm = React.createClass({displayName: 'ExchangeForm',
         },
           React.DOM.label({
             htmlFor: 'exchange-title-input',
-            className: 'control-label exhange-form-label'
+            className: 'control-label exchange-form-label'
           }, 'Title:'),
           React.DOM.input({
             name: 'exchange-title-input',
@@ -59,8 +61,23 @@ var EditableForm = React.createClass({displayName: 'ExchangeForm',
           className: 'form-group'
         },
           React.DOM.label({
+            htmlFor: 'exchange-location-str-input',
+            className: 'control-label exchange-form-label'
+          }, 'Location:'),
+          React.DOM.input({
+            name: 'exchange-location-str-input',
+            className: 'form-control input-md exchange-location-str-input',
+            placeholder: 'Location',
+            type: 'text',
+            defaultValue: this.props.data.location_str ? this.props.data.location_str : undefined
+          })
+        ),
+        React.DOM.div({
+          className: 'form-group'
+        },
+          React.DOM.label({
             htmlFor: 'exchange-source-input',
-            className: 'control-label exhange-form-label'
+            className: 'control-label exchange-form-label'
           }, 'Source:'),
           React.DOM.input({
             className: 'form-control input-md exchange-source-input',
@@ -74,7 +91,7 @@ var EditableForm = React.createClass({displayName: 'ExchangeForm',
         },
           React.DOM.label({
             htmlFor: 'exchange-description-input',
-            className: 'control-label exhange-form-label'
+            className: 'control-label exchange-form-label'
           }, 'Description:'),
           React.DOM.textarea({
             className: 'form-control input-md exchange-description-input',
