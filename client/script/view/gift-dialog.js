@@ -37,7 +37,7 @@ var HostBody = React.createClass({
             name: 'gift-actual-input',
             className: 'form-control input-md gift-actual-input',
             type: 'checkbox',
-            defaultValue: this.props.data.actual ? this.props.data.actual : false
+            defaultChecked: this.props.data.actual
           })
         ),
         React.DOM.div({
@@ -96,7 +96,7 @@ var HostBody = React.createClass({
             name: 'gift-accepted-input',
             className: 'form-control input-md gift-accepted-input',
             type: 'checkbox',
-            defaultValue: this.props.data.accepted ? this.props.data.accepted : false
+            defaultChecked: this.props.data.accepted
           })
         ),
         React.DOM.div({
@@ -208,12 +208,12 @@ var Dialog = React.createClass({
                 type:'button', 
                 className:'btn btn-default',
                 onClick: closeDelegate
-              }, 'Cancel'),
+              }, 'cancel'),
               React.DOM.button({
                 type: 'button',
                 className: 'btn btn-info',
                 onClick: saveDelegate
-              }, 'Save')
+              }, 'save')
             )
           )
         )
@@ -223,9 +223,9 @@ var Dialog = React.createClass({
 });
 
 module.exports = {
-  render: function(exchangeData) {
+  render: function(title, exchangeData) {
     var dialog = Dialog({
-      title:'Add Gift to ' + exchangeData.title,
+      title: title,
       data: exchangeData
     });
     React.renderComponent(

@@ -1,19 +1,23 @@
+body {
+  font-size: 16px;
+}
+
 .form-group {
-  margin: 1em 0;
+  margin: 1rem 0;
 }
 
 .exchange-form-label {
   width: 80px;
   text-align: right;
-  margin-right: 1em;
+  margin-right: 1rem;
 }
 
 .exchange-description-input {
-  min-height: 10em;
+  min-height: 10rem;
 }
 
 .gift-description-input {
-  min-height: 7em;
+  min-height: 7rem;
 }
 
 /*.exchange-form-buttonbar {
@@ -22,7 +26,20 @@
 }*/
 
 .exchange-form-buttonbar .btn {
-  margin-left: 1em;
+  margin-left: 1rem;
+}
+
+.add-gift-title {
+  display: inline-block;
+  margin-right: 0.5rem;
+}
+
+.add-gift-button {
+  margin-top: -0.5rem;
+}
+
+.svg-icon-btn {
+  cursor: pointer
 }
 
 @media screen and (max-width: 400px) {

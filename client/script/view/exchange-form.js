@@ -5,9 +5,29 @@ var React = require('react');
 var giftDialog = require('./gift-dialog');
 
 var GiftListItem = React.createClass({displayName: 'GiftListItem',
+  handleEdit: function(event) {
+    event.preventDefault();
+    var title = 'Edit Gift \'' + '(' + this.props.amount + ') ' + this.props.kind + ' : ' + this.props.description + '\'';
+    giftDialog.render(title, this.props);
+    return false;
+  },
   render: function() {
     return (
-      React.DOM.li(null, '(' + this.props.amount + ') ' + this.props.kind + ' : ' + this.props.description)
+      React.DOM.li(null,
+        React.DOM.a({
+          href: '#',
+          onClick: this.handleEdit
+        },
+          React.DOM.img({
+            className: 'svg-icon-btn',
+            type: 'image/svg+xml',
+            width: 24,
+            height: 24,
+            src: 'img/edit.svg'
+          }),
+          React.DOM.span(null, '(' + this.props.amount + ') ' + this.props.kind + ' : ' + this.props.description)
+        )
+      )
     );
   }
 });
@@ -15,7 +35,8 @@ var GiftListItem = React.createClass({displayName: 'GiftListItem',
 var GiftList = React.createClass({displayName: 'GiftList',
   handleAddGift: function(event) {
     event.preventDefault();
-    giftDialog.render(this.props.data);
+    var title = 'Add Gift to \'' + this.props.data.title + '\'';
+    giftDialog.render(title, this.props.data);
     return false;
   },
   render: function() {
@@ -27,11 +48,17 @@ var GiftList = React.createClass({displayName: 'GiftList',
     });
     return (
       React.DOM.div(null,
-        React.DOM.h3(null, 'Gifts'),
-        React.DOM.button({
-          className: 'btn btn-md',
+        React.DOM.h3({
+          className: 'add-gift-title'
+        }, 'Gifts'),
+        React.DOM.img({
+          className: 'svg-icon-btn add-gift-button',
+          type: 'image/svg+xml',
+          width: '24',
+          height: '24',
+          src: 'img/add-plus.svg',
           onClick: this.handleAddGift
-        }, 'Add'),
+        }),
         React.DOM.ul(null, rows)
       )
     );
@@ -135,9 +162,6 @@ var EditableForm = React.createClass({displayName: 'ExchangeForm',
             defaultValue: this.props.data.description ? this.props.data.description : undefined
           })
         ),
-        GiftList({
-          data: this.props.data
-        }),
         React.DOM.div({
           className: 'form-group exchange-form-buttonbar'
         },
@@ -152,8 +176,11 @@ var EditableForm = React.createClass({displayName: 'ExchangeForm',
             type: 'submit',
             className: 'btn btn-info btn-md',
             onClick: this.handleSubmit
-          }, 'submit')
-        )
+          }, 'save')
+        ),
+        GiftList({
+          data: this.props.data
+        })
       )
     );
   }
