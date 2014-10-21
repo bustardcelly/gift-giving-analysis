@@ -10,22 +10,31 @@ body {
   margin-left: 1rem;
 }
 
-.exchange-list {
+.exchange-list, .gifts-list {
   list-style: none;
-  margin: 0 1em;
+  margin: 0 1rem;
 }
 
-.exchange-list-item {
+.gifts-list {
+  margin-bottom: 1rem;
+}
+
+.exchange-list-item, .gifts-list-item {
   border-bottom: 1px solid #ccc;
   padding: 1rem 0;
 }
 
-.exchange-list-item > p {
+.exchange-list-item > p, .gifts-list-item > p  {
   margin: 10px 0;
 }
 
 .exchange-list-item a, .exchange-list-item img {
   vertical-align: middle;
+}
+
+.exchange-form {
+  padding: 0 2rem;
+  border: 1px solid #ddd;
 }
 
 .exchange-form-label {
@@ -81,5 +90,15 @@ footer {
     width: 100%;
     text-align: left;
     margin-right: 0;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .form-control.input-md {
+    width: 100%;
+  }
+
+  .modal-body .form-control.input-md {
+    width: 90%;
   }
 }

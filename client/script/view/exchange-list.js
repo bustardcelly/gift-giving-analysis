@@ -56,7 +56,7 @@ var ExchangeListItem = React.createClass({displayName: 'ExchangeListItem',
           }, this.props.title + ' (' + total + ' gifts)')
         ),
         React.DOM.div({
-            className: this.state.editing ? '' : 'hidden',
+            className: 'exchange-form ' + (this.state.editing ? '' : 'hidden'),
           },
           EditableForm({
             data: this.props,

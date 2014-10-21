@@ -13,7 +13,9 @@ var GiftListItem = React.createClass({displayName: 'GiftListItem',
   },
   render: function() {
     return (
-      React.DOM.li(null,
+      React.DOM.li({
+        className: 'gifts-list-item'
+      },
         React.DOM.a({
           href: '#',
           onClick: this.handleEdit
@@ -36,7 +38,11 @@ var GiftList = React.createClass({displayName: 'GiftList',
   handleAddGift: function(event) {
     event.preventDefault();
     var title = 'Add Gift to \'' + this.props.data.title + '\'';
-    giftDialog.render(title, this.props.data);
+    giftDialog.render(title, {
+      data: {
+        exchangeId: this.props.data._id
+      }
+    });
     return false;
   },
   render: function() {
@@ -59,7 +65,9 @@ var GiftList = React.createClass({displayName: 'GiftList',
           src: 'img/add-plus.svg',
           onClick: this.handleAddGift
         }),
-        React.DOM.ul(null, rows)
+        React.DOM.ul({
+          className: 'gifts-list'
+        }, rows)
       )
     );
   }
@@ -99,7 +107,6 @@ var EditableForm = React.createClass({displayName: 'ExchangeForm',
     var type = this.props.isNew ? 'Create' : 'Edit';
     return (
       React.DOM.div({
-        id: 'exchange-form',
         className: 'form-inline',
         role: 'form',
         action: '#'
