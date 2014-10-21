@@ -6,7 +6,6 @@ var EditableForm = require('./exchange-form').EditableForm;
 
 var ExchangeListItem = React.createClass({displayName: 'ExchangeListItem',
   onCancel: function() {
-    console.log('cancelled.');
     this.setState({
       editing: false
     });
@@ -39,8 +38,18 @@ var ExchangeListItem = React.createClass({displayName: 'ExchangeListItem',
       return prev + curr.amount;
     }, 0);
     return (
-      React.DOM.li(null,
+      React.DOM.li({
+        className: 'exchange-list-item'
+      },
         React.DOM.p(null,
+          React.DOM.img({
+            className: 'svg-icon-btn svg-icon-left',
+            type: 'image/svg+xml',
+            width: 24,
+            height: 24,
+            src: this.state.editing ? 'img/close.svg' : 'img/open.svg',
+            onClick: this.handleSelect
+          }),
           React.DOM.a({
             href: '#',
             onClick: this.handleSelect
@@ -67,9 +76,19 @@ var ExchangeList = React.createClass({displayName: 'ExchangeList',
       rows.push(
         ExchangeListItem(item)
       );
+      rows.push(
+        ExchangeListItem(item)
+      );
     });
     return (
-      React.DOM.ul(null, rows)
+      React.DOM.div(null,
+        React.DOM.h2({
+          id: 'exchanges-title'
+        }, 'Exchanges'),
+        React.DOM.ul({
+          className: 'exchange-list'
+        }, rows)
+      )
     );
   }
 });

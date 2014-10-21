@@ -29,7 +29,9 @@ gulp.task('copy', ['clean'], function() {
       'client/img/glyphicons-halflings-white.png',
       'client/img/glyphicons-halflings.png',
       'client/img/add-plus.svg',
-      'client/img/edit.svg'
+      'client/img/edit.svg',
+      'client/img/open.svg',
+      'client/img/close.svg'
       ])
       .pipe(gulp.dest('./static/img'));
 

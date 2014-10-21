@@ -19,7 +19,7 @@ var GiftListItem = React.createClass({displayName: 'GiftListItem',
           onClick: this.handleEdit
         },
           React.DOM.img({
-            className: 'svg-icon-btn',
+            className: 'svg-icon-btn svg-icon-left',
             type: 'image/svg+xml',
             width: 24,
             height: 24,
@@ -52,7 +52,7 @@ var GiftList = React.createClass({displayName: 'GiftList',
           className: 'add-gift-title'
         }, 'Gifts'),
         React.DOM.img({
-          className: 'svg-icon-btn add-gift-button',
+          className: 'svg-icon-btn add-gift-button svg-icon-right',
           type: 'image/svg+xml',
           width: '24',
           height: '24',

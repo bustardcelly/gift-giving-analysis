@@ -6,6 +6,28 @@ body {
   margin: 1rem 0;
 }
 
+#exchanges-title {
+  margin-left: 1rem;
+}
+
+.exchange-list {
+  list-style: none;
+  margin: 0 1em;
+}
+
+.exchange-list-item {
+  border-bottom: 1px solid #ccc;
+  padding: 1rem 0;
+}
+
+.exchange-list-item > p {
+  margin: 10px 0;
+}
+
+.exchange-list-item a, .exchange-list-item img {
+  vertical-align: middle;
+}
+
 .exchange-form-label {
   width: 80px;
   text-align: right;
@@ -31,7 +53,6 @@ body {
 
 .add-gift-title {
   display: inline-block;
-  margin-right: 0.5rem;
 }
 
 .add-gift-button {
@@ -40,6 +61,19 @@ body {
 
 .svg-icon-btn {
   cursor: pointer
+}
+
+.svg-icon-left {
+  margin-right: 0.5rem;
+}
+
+.svg-icon-right {
+  margin-left: 0.5rem;
+}
+
+footer {
+  margin: 1rem 0 0 1rem;
+  font-size: 0.8rem;
 }
 
 @media screen and (max-width: 400px) {
