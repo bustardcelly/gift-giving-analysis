@@ -67,6 +67,19 @@ var facade = {
     });
     return dfd.promise;
   },
+  updateExchange: function(exchangeId, revision, data) {
+    var dfd = defer();
+    var db = connection.database(DB_EXCHANGE);
+    db.save(exchangeId, revision, data, function(err, data) {
+      if(err) {
+        dfd.reject(err);
+      }
+      else {
+        dfd.resolve(data);
+      }
+    });
+    return dfd.promise;
+  },
   deleteExchange: function(exchangeId, revision) {
     var dfd = defer();
     var db = connection.database(DB_EXCHANGE);

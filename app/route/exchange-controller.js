@@ -50,7 +50,14 @@ module.exports = {
     res.setHeader('Access-Control-Allow-Origin', '*');
     var params = req.params;
     var exchangeId = params.id;
-    // TODO: update in DB
+    db.updateExchange(exchangeId, params._rev, params)
+      .then(function(item) {
+        res.send(200, item);
+      }, function(err) {
+        res.send(200, {
+          error: 'Could not update exchange ' + exchangeId + ': ' + err
+        });
+      });
     return next();
   },
   deleteExchange: function(req, res, next) {

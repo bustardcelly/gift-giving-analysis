@@ -18,7 +18,12 @@ module.exports = {
       contentType: 'json'
     })
     .done(function(data) {
-      dfd.resolve(data);
+      if(data.hasOwnProperty('error')) {
+        dfd.reject(data.error);
+      }
+      else {
+        dfd.resolve(data);
+      }
     })
     .fail(function(error) {
       dfd.reject(error);
@@ -34,7 +39,61 @@ module.exports = {
       contentType: 'json'
     })
     .done(function(data) {
-      dfd.resolve(data);
+      if(data.hasOwnProperty('error')) {
+        dfd.reject(data.error);
+      }
+      else {
+        dfd.resolve(data);
+      }
+    })
+    .fail(function(error) {
+      dfd.reject(error);
+    });
+    return dfd;
+  },
+  updateExchange: function(exchange) {
+    var dfd = $.Deferred();
+    var theUrl = 'http://' + this.host + ':' + this.port + '/exchange/' + exchange._id;
+    $.ajax({
+      type: 'PUT',
+      url: theUrl,
+      contentType: 'json',
+      data: exchange
+    })
+    .done(function(data) {
+      if(data.hasOwnProperty('ok') && data.ok) {
+        exchange._id = data.id;
+        exchange._rev = data.rev;
+        dfd.resolve(data);
+      }
+      else if(data.hasOwnProperty('error')) {
+        dfd.reject(data.error);
+      }
+      else {
+        dfd.reject(JSON.stringify(data, null, 2));
+      }
+    })
+    .fail(function(error) {
+      dfd.reject(error);
+    });
+    return dfd;
+  },
+  deleteExchange: function(exchange) {
+    var dfd = $.Deferred();
+    var theUrl = 'http://' + this.host + ':' + this.port + '/exchange/' + exchange._id;
+    $.ajax({
+      type: 'DELETE',
+      url: theUrl,
+      contentType: 'json',
+      data: exchange
+    })
+    .done(function() {
+      if(data.hasOwnProperty('error')) {
+        dfd.reject(data.error);
+      }
+      else {
+        dfd.resolve();
+      }
     })
     .fail(function(error) {
       dfd.reject(error);
