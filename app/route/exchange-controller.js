@@ -57,7 +57,14 @@ module.exports = {
     res.setHeader('Access-Control-Allow-Origin', '*');
     var params = req.params;
     var exchangeId = params.id;
-    // TODO: delete in DB
+    db.deleteExchange(exchangeId, params._rev)
+      .then(function() {
+        res.send(200, true);
+      }, function(err) {
+        res.send(200, {
+          error: 'Could not delete exchange ' + exchangeId + ': ' + err
+        });
+      });
     return next();
   }
 };

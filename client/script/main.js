@@ -14,7 +14,6 @@ exchangeService
       }
       exchangeService.getGiftsForExchangeId(item._id)
         .then(function(gifts) {
-          console.log('Add ' + gifts.length + ' gifts to ' + item._id);
           Array.prototype.forEach.call(gifts, function(gift) {
             item.gifts.add(gift);
           });
