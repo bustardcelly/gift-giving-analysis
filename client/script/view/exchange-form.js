@@ -1,6 +1,5 @@
 /*global $*/
 'use strict';
-var _ = require('lodash');
 var React = require('react');
 var giftDialog = require('./gift-dialog');
 
@@ -44,7 +43,7 @@ var GiftList = React.createClass({displayName: 'GiftList',
   },
   render: function() {
     var rows = [];
-    _.forEach(this.props.data.gifts.get(), function(item) {
+    Array.prototype.forEach.call(this.props.data.gifts.get(), function(item) {
       rows.push(
         GiftListItem(item)
       );

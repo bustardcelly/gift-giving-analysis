@@ -27,16 +27,23 @@ server.use(restify.bodyParser());
 server.get('/exchange', exchangeRouteController.getAllExchanges);
 server.get('/exchange/:id', exchangeRouteController.getExchangeById);
 // POST Exchange new
-server.post('/exchange', exchangeRouteController.postExchange);
+server.post('/exchange', exchangeRouteController.addExchange);
+// PUT Exchange update
+server.put('/exchange/:id', exchangeRouteController.updateExchange);
+// DELETE: Exchange previous
+server.del('/exchange/:id', exchangeRouteController.deleteExchange);
 
-// GET Exchange (all|id)
+// GET Gift (all|id)
 server.get('/gift', giftRouteController.getAllGifts);
 server.get('/gift/:id', giftRouteController.getGiftById);
 // GET Gifts by Exchange
 server.get('/gift/exchange/:id', giftRouteController.getGiftExchangesById);
 // POST Gift new (exchangeid)
-server.post('/gift/exchange/:id', giftRouteController.postGift);
-
+server.post('/gift/exchange/:id', giftRouteController.addGift);
+// PUT Gift update (exchangeid)
+server.put('/gift/exchange/:id', giftRouteController.updateGift);
+// DELETE Gift update (exchangeid)
+server.del('/gift/exchange/:id', giftRouteController.deleteGift);
 
 // Initialize DB
 require('./db').init(dbhost, dbport);

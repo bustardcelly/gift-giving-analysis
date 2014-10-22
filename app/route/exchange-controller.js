@@ -29,11 +29,12 @@ module.exports = {
       });
     return next();
   },
-  postExchange: function(req, res, next) {
+  addExchange: function(req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     var params = req.params;
     console.log('Data: ' + JSON.stringify(params, null, 2));
-    var exchange = exchangeFactory.create(params.title, params.description, params.source, 
+    var exchange = exchangeFactory.create(params.title, params.description,
+                      params.source, params.location,
                       params.year, params.month, params.day);
     db.newExchange(exchange)
       .then(function(item) {
@@ -43,6 +44,20 @@ module.exports = {
           error: 'Could not save new exchange: ' + err
         });
       });
+    return next();
+  },
+  updateExchange: function(req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    var params = req.params;
+    var exchangeId = params.id;
+    // TODO: update in DB
+    return next();
+  },
+  deleteExchange: function(req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    var params = req.params;
+    var exchangeId = params.id;
+    // TODO: delete in DB
     return next();
   }
 };

@@ -1,5 +1,4 @@
 'use strict';
-var _ = require('lodash');
 var React = require('react');
 
 var EditableForm = require('./exchange-form').EditableForm;
@@ -72,7 +71,7 @@ var ExchangeListItem = React.createClass({displayName: 'ExchangeListItem',
 var ExchangeList = React.createClass({displayName: 'ExchangeList',
     render: function() {
     var rows = [];
-    _.forEach(this.props.list, function(item) {
+    Array.prototype.forEach.call(this.props.list, function(item) {
       rows.push(
         ExchangeListItem(item)
       );

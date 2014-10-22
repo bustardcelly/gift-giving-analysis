@@ -45,13 +45,13 @@ module.exports = {
 
     return next();
   },
-  postGift: function(req, res, next) {
+  addGift: function(req, res, next) {
     var gift;
     var exchangeId;
     var params = req.params;
     res.setHeader('Access-Control-Allow-Origin','*');
 
-    exchangeId = req.params.id;
+    exchangeId = params.id;
     gift = giftFactory.inflate(exchangeId, params);
     db.newGift(gift)
       .then(function(doc) {
@@ -61,6 +61,26 @@ module.exports = {
           error: err
         });
       });
+    return next();
+  },
+  updateGift: function(req, res, next) {
+    var gift;
+    var exchangeId;
+    var params = req.params;
+    res.setHeader('Access-Control-Allow-Origin','*');
+
+    exchangeId = req.params.id;
+    // TODO: update in DB
+    return next();
+  },
+  deleteGift: function(req, res, next) {
+    var gift;
+    var exchangeId;
+    var params = req.params;
+    res.setHeader('Access-Control-Allow-Origin','*');
+
+    exchangeId = req.params.id;
+    // TODO: delete in DB
     return next();
   }
 };
