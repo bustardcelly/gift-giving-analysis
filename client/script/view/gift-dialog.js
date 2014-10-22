@@ -23,7 +23,7 @@ var HostBody = React.createClass({
             className: 'form-control input-md gift-kind-input',
             placeholder: 'Kind',
             type: 'text',
-            defaultValue: this.props.data.kind ? this.props.data.kind : undefined
+            defaultValue: this.props.isNew ? undefined : this.props.data.kind
           })
         ),
         React.DOM.div({
@@ -37,7 +37,7 @@ var HostBody = React.createClass({
             name: 'gift-actual-input',
             className: 'form-control input-md gift-actual-input',
             type: 'checkbox',
-            defaultChecked: this.props.data.actual
+            defaultChecked: this.props.isNew ? false : this.props.data.actual
           })
         ),
         React.DOM.div({
@@ -52,7 +52,7 @@ var HostBody = React.createClass({
             className: 'form-control input-md gift-amount-input',
             type: 'number',
             min: 1,
-            defaultValue: this.props.data.amount ? this.props.data.amount : 0
+            defaultValue:this.props.isNew ? 0 : this.props.data.amount
           })
         ),
         React.DOM.div({
@@ -67,7 +67,7 @@ var HostBody = React.createClass({
             className: 'form-control input-md gift-giver-input',
             placeholder: 'Giver',
             type: 'text',
-            defaultValue: this.props.data.giver ? this.props.data.giver : undefined
+            defaultValue: this.props.isNew ? undefined : this.props.data.giver
           })
         ),
         React.DOM.div({
@@ -82,7 +82,7 @@ var HostBody = React.createClass({
             className: 'form-control input-md gift-recipient-input',
             placeholder: 'Recipient',
             type: 'text',
-            defaultValue: this.props.data.recipient ? this.props.data.recipient : undefined
+            defaultValue: this.props.isNew ? undefined : this.props.data.recipient
           })
         ),
         React.DOM.div({
@@ -96,7 +96,7 @@ var HostBody = React.createClass({
             name: 'gift-accepted-input',
             className: 'form-control input-md gift-accepted-input',
             type: 'checkbox',
-            defaultChecked: this.props.data.accepted
+            defaultChecked: this.props.isNew? false : this.props.data.accepted
           })
         ),
         React.DOM.div({
@@ -111,7 +111,7 @@ var HostBody = React.createClass({
             className: 'form-control input-md gift-description-input',
             placeholder: 'Description...',
             type: 'text',
-            defaultValue: this.props.data.description ? this.props.data.description : undefined
+            defaultValue: this.props.isNew ? undefined : this.props.data.description
           })
         ),
         React.DOM.div({
@@ -124,7 +124,7 @@ var HostBody = React.createClass({
           React.DOM.select({
             name: 'gift-type-input',
             className: 'form-control input-md gift-type-input',
-            defaultValue: this.props.data.type ? this.props.data.type : 'Official'
+            defaultValue: this.props.isNew ? 'Official' : this.props.data.type
           }, 
             React.DOM.option(null, 'Official'),
             React.DOM.option(null, 'Personal')
@@ -177,12 +177,19 @@ var Dialog = React.createClass({
     console.log('Save.');
     this.hide();
   },
+  delete: function(e) {
+     if(e) {
+      e.stopPropagation();
+    }
+    console.log('Delete?');
+  },
   handleHostEditComplete: function() {
     this.hide();
   },
   render: function() {
     var closeDelegate = this.hide;
     var saveDelegate = this.save;
+    var deleteDelegate = this.delete;
     return (
       React.DOM.div({className: this.state.className},
         React.DOM.div({className: 'modal-dialog'},
@@ -200,6 +207,7 @@ var Dialog = React.createClass({
             React.DOM.div({className: 'modal-body'},
               HostBody({
                 data: this.props.data,
+                isNew: this.props.isNew,
                 onComplete: this.handleHostEditComplete
               })
             ),
@@ -213,7 +221,12 @@ var Dialog = React.createClass({
                 type: 'button',
                 className: 'btn btn-info',
                 onClick: saveDelegate
-              }, 'save')
+              }, 'save'),
+              React.DOM.button({
+                type: 'button',
+                className: 'btn btn-danger ' + (this.props.isNew ? 'hidden' : ''),
+                onClick: deleteDelegate
+              }, 'delete')
             )
           )
         )
@@ -223,10 +236,12 @@ var Dialog = React.createClass({
 });
 
 module.exports = {
-  render: function(title, exchangeData) {
+  render: function(giftData, isNew) {
+    var title = isNew ? 'Add Gift to ' + giftData.exchange_title : 'Edit Gift \'' + '(' + giftData.amount + ') ' + giftData.kind + ' : ' + giftData.description + '\'';
     var dialog = Dialog({
       title: title,
-      data: exchangeData
+      data: giftData,
+      isNew: isNew
     });
     React.renderComponent(
       dialog,

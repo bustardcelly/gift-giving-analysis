@@ -7,8 +7,7 @@ var giftDialog = require('./gift-dialog');
 var GiftListItem = React.createClass({displayName: 'GiftListItem',
   handleEdit: function(event) {
     event.preventDefault();
-    var title = 'Edit Gift \'' + '(' + this.props.amount + ') ' + this.props.kind + ' : ' + this.props.description + '\'';
-    giftDialog.render(title, this.props);
+    giftDialog.render(this.props, false);
     return false;
   },
   render: function() {
@@ -37,12 +36,10 @@ var GiftListItem = React.createClass({displayName: 'GiftListItem',
 var GiftList = React.createClass({displayName: 'GiftList',
   handleAddGift: function(event) {
     event.preventDefault();
-    var title = 'Add Gift to \'' + this.props.data.title + '\'';
-    giftDialog.render(title, {
-      data: {
-        exchangeId: this.props.data._id
-      }
-    });
+    giftDialog.render({
+      exchange_id: this.props.data._id,
+      exchange_title: this.props.data.title
+    }, true);
     return false;
   },
   render: function() {
@@ -101,6 +98,11 @@ var EditableForm = React.createClass({displayName: 'ExchangeForm',
     if(this.props.onCancel) {
       this.props.onCancel();
     }
+    return false;
+  },
+  handleDelete: function(event) {
+    event.preventDefault();
+    console.log('Delete?');
     return false;
   },
   render: function() {
@@ -175,7 +177,7 @@ var EditableForm = React.createClass({displayName: 'ExchangeForm',
           React.DOM.button({
             id: 'exchange-submit-button',
             type: 'submit',
-            className: 'btn btn-danger btn-md',
+            className: 'btn btn-md',
             onClick: this.handleCancel
           }, 'cancel'),
           React.DOM.button({
@@ -183,7 +185,13 @@ var EditableForm = React.createClass({displayName: 'ExchangeForm',
             type: 'submit',
             className: 'btn btn-info btn-md',
             onClick: this.handleSubmit
-          }, 'save')
+          }, 'save'),
+          React.DOM.button({
+            id: 'exchange-submit-button',
+            type: 'submit',
+            className: 'btn btn-danger btn-md',
+            onClick: this.handleDelete
+          }, 'delete')
         ),
         GiftList({
           data: this.props.data

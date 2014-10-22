@@ -76,9 +76,6 @@ var ExchangeList = React.createClass({displayName: 'ExchangeList',
       rows.push(
         ExchangeListItem(item)
       );
-      rows.push(
-        ExchangeListItem(item)
-      );
     });
     return (
       React.DOM.div(null,

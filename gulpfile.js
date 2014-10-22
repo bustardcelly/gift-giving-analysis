@@ -1,6 +1,8 @@
 var gulp = require('gulp');
 var gulpify = require('gulp-browserify');
 var replace = require('gulp-replace');
+var uglify = require('gulp-uglify');
+var minifycss = require('gulp-minify-css');
 var del = require('del');
 
 var isProduction = process.env.NODE_ENV === 'production';
@@ -14,7 +16,14 @@ gulp.task('browserify', ['clean'], function() {
       .pipe(gulpify({
         transform: ['reactify']
       }))
+      .pipe(uglify())
       .pipe(gulp.dest('./static/script'));
+});
+  
+gulp.task('minify', ['browserify'], function() {
+  gulp.src('static/script/main.js')
+      .pipe(uglify())
+      .pipe(gulp.dest('./static/script/main.js'));
 });
 
 gulp.task('copy', ['clean'], function() {
@@ -31,15 +40,19 @@ gulp.task('copy', ['clean'], function() {
       'client/img/add-plus.svg',
       'client/img/edit.svg',
       'client/img/open.svg',
-      'client/img/close.svg'
+      'client/img/close.svg',
+      'client/img/delete.svg'
       ])
       .pipe(gulp.dest('./static/img'));
 
   gulp.src([
-      'client/css/main.css',
       'client/css/bootstrap-responsive.min.css',
       'client/css/bootstrap.min.css'
       ])
+      .pipe(gulp.dest('./static/css'));
+
+  gulp.src('client/css/main.css')
+      .pipe(minifycss())
       .pipe(gulp.dest('./static/css'));
 
   gulp.src('client/index.html')

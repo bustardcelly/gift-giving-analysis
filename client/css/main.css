@@ -51,10 +51,11 @@ body {
   min-height: 7rem;
 }
 
-/*.exchange-form-buttonbar {
-  width: 280px;
+.exchange-form-buttonbar {
+  width: 100%;
+  max-width: 308px;
   text-align: right;
-}*/
+}
 
 .exchange-form-buttonbar .btn {
   margin-left: 1rem;
@@ -91,14 +92,16 @@ footer {
     text-align: left;
     margin-right: 0;
   }
-}
 
-@media screen and (max-width: 400px) {
   .form-control.input-md {
     width: 100%;
   }
 
   .modal-body .form-control.input-md {
     width: 90%;
+  }
+
+  .exchange-form-buttonbar {
+    text-align: left;
   }
 }
