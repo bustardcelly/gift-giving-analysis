@@ -64,23 +64,31 @@ module.exports = {
     return next();
   },
   updateGift: function(req, res, next) {
-    var gift;
-    var exchangeId;
+    var giftId = req.params.id;
     var params = req.params;
     res.setHeader('Access-Control-Allow-Origin','*');
-
-    exchangeId = req.params.id;
-    // TODO: update in DB
+    db.updateGift(giftId, params._rev, params)
+      .then(function(doc) {
+        res.send(200, doc);
+      }, function(err) {
+        res.send(200, {
+          error: err
+        });
+      });
     return next();
   },
   deleteGift: function(req, res, next) {
-    var gift;
-    var exchangeId;
+    var giftId = req.params.id;
     var params = req.params;
     res.setHeader('Access-Control-Allow-Origin','*');
-
-    exchangeId = req.params.id;
-    // TODO: delete in DB
+    db.deleteGift(giftId, params._rev)
+      .then(function() {
+        res.send(200, true);
+      }, function(err) {
+        res.send(200, {
+          error: err
+        });
+      });
     return next();
   }
 };

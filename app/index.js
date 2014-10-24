@@ -36,14 +36,18 @@ server.del('/exchange/:id', exchangeRouteController.deleteExchange);
 // GET Gift (all|id)
 server.get('/gift', giftRouteController.getAllGifts);
 server.get('/gift/:id', giftRouteController.getGiftById);
+
 // GET Gifts by Exchange
 server.get('/gift/exchange/:id', giftRouteController.getGiftExchangesById);
 // POST Gift new (exchangeid)
 server.post('/gift/exchange/:id', giftRouteController.addGift);
-// PUT Gift update (exchangeid)
-server.put('/gift/exchange/:id', giftRouteController.updateGift);
-// DELETE Gift update (exchangeid)
-server.del('/gift/exchange/:id', giftRouteController.deleteGift);
+
+// PUT Gift update
+server.put('/gift/:id', giftRouteController.updateGift);
+// DELETE Gift previous
+server.del('/gift/:id', giftRouteController.deleteGift);
+
+
 
 // Initialize DB
 require('./db').init(dbhost, dbport);

@@ -30,7 +30,7 @@ var facade = {
     var db = connection.database(DB_EXCHANGE);
     db.view('exchange/all', function(err, docs) {
       if(err) {
-        dfd.reject(err);
+        dfd.reject(err.reason);
       }
       else {
         dfd.resolve(docs.map(function(item) {
@@ -45,7 +45,7 @@ var facade = {
     var db = connection.database(DB_EXCHANGE);
     db.get(exchangeId, function(err, doc) {
       if(err) {
-        dfd.reject(err);
+        dfd.reject(err.reason);
       }
       else {
         dfd.resolve(doc);
@@ -58,7 +58,7 @@ var facade = {
     var db = connection.database(DB_EXCHANGE);
     db.save(exchange, function(err, data) {
       if(err) {
-        dfd.reject(err);
+        dfd.reject(err.reason);
       }
       else {
         glom(exchange, data);
@@ -72,7 +72,7 @@ var facade = {
     var db = connection.database(DB_EXCHANGE);
     db.save(exchangeId, revision, data, function(err, data) {
       if(err) {
-        dfd.reject(err);
+        dfd.reject(err.reason);
       }
       else {
         dfd.resolve(data);
@@ -85,7 +85,7 @@ var facade = {
     var db = connection.database(DB_EXCHANGE);
     db.remove(exchangeId, revision, function(err) {
       if(err) {
-        dfd.reject(err);
+        dfd.reject(err.reason);
       }
       else {
         dfd.resolve(true);
@@ -98,7 +98,7 @@ var facade = {
     var db = connection.database(DB_GIFT);
     db.view('gift/all', function(err, docs) {
       if(err) {
-        dfd.reject(err);
+        dfd.reject(err.reason);
       }
       else {
         dfd.resolve(docs.map(function(item) {
@@ -113,7 +113,7 @@ var facade = {
     var db = connection.database(DB_GIFT);
     db.get(giftId, function(err, doc) {
       if(err) {
-        dfd.reject(err);
+        dfd.reject(err.reason);
       }
       else {
         dfd.resolve(doc);
@@ -128,7 +128,7 @@ var facade = {
       key: exchangeId
     }, function(err, docs) {
       if(err) {
-        dfd.reject(err);
+        dfd.reject(err.reason);
       }
       else {
         dfd.resolve(docs.map(function(item) {
@@ -143,11 +143,37 @@ var facade = {
     var db = connection.database(DB_GIFT);
     db.save(gift, function(err, data) {
       if(err) {
-        dfd.reject(err);
+        dfd.reject(err.reason);
       }
       else {
         glom(gift, data);
         dfd.resolve(data);
+      }
+    });
+    return dfd.promise;
+  },
+  updateGift: function(giftId, revision, data) {
+    var dfd = defer();
+    var db = connection.database(DB_GIFT);
+    db.save(giftId, revision, data, function(err, data) {
+      if(err) {
+        dfd.reject(err.reason);
+      }
+      else {
+        dfd.resolve(data);
+      }
+    });
+    return dfd.promise;
+  },
+  deleteGift: function(giftId, revision) {
+    var dfd = defer();
+    var db = connection.database(DB_GIFT);
+    db.remove(giftId, revision, function(err) {
+      if(err) {
+        dfd.reject(err.reason);
+      }
+      else {
+        dfd.resolve(true);
       }
     });
     return dfd.promise;
