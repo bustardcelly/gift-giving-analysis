@@ -2,11 +2,32 @@
 'use strict';
 var React = require('react');
 var giftDialog = require('./gift-dialog');
+var giftService = require('../service/gift');
 
 var GiftListItem = React.createClass({displayName: 'GiftListItem',
+  onSaveGift: function() {
+    var exchange = this.props.exchange;
+    var gift = this.props.data;
+    giftService.updateGift(gift)
+      .then(function() {
+        exchange.gifts.refresh();
+      }, function(error) {
+        // TODO: Show error.
+      });
+  },
+  onDeleteGift: function() {
+    var exchange = this.props.exchange;
+    var gift = this.props.data;
+     giftService.deleteGift(gift)
+      .then(function() {
+        exchange.gifts.remove(gift);
+      }, function(error) {
+        // TODO: Show error.
+      });
+  },
   handleEdit: function(event) {
     event.preventDefault();
-    giftDialog.render(this.props, false);
+    giftDialog.render(this.props.data, this.onSaveGift, this.onDeleteGift, false);
     return false;
   },
   render: function() {
@@ -25,7 +46,7 @@ var GiftListItem = React.createClass({displayName: 'GiftListItem',
             height: 24,
             src: 'img/edit.svg'
           }),
-          React.DOM.span(null, '(' + this.props.amount + ') ' + this.props.kind + ' : ' + this.props.description)
+          React.DOM.span(null, '(' + this.props.data.amount + ') ' + this.props.data.kind + ' : ' + this.props.data.description)
         )
       )
     );
@@ -33,19 +54,32 @@ var GiftListItem = React.createClass({displayName: 'GiftListItem',
 });
 
 var GiftList = React.createClass({displayName: 'GiftList',
+  onSaveNewGift: function(newGift) {
+    var exchange = this.props.data;
+    giftService.addGift(exchange._id, newGift)
+      .then(function(data) {
+        exchange.gifts.add(data);
+      }, function(error) {
+        // TODO: Show error.
+      });
+  },
   handleAddGift: function(event) {
     event.preventDefault();
     giftDialog.render({
       exchange_id: this.props.data._id,
-      exchange_title: this.props.data.title
-    }, true);
+      exchange_title: this.props.data.title,
+    }, this.onSaveNewGift, null, true);
     return false;
   },
   render: function() {
     var rows = [];
-    Array.prototype.forEach.call(this.props.data.gifts.get(), function(item) {
+    var exchange = this.props.data;
+    Array.prototype.forEach.call(exchange.gifts.get(), function(item) {
       rows.push(
-        GiftListItem(item)
+        GiftListItem({
+          exchange: exchange,
+          data: item
+        })
       );
     });
     return (

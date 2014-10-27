@@ -24,6 +24,10 @@ Collection.prototype.remove = function(item) {
   }
 };
 
+Collection.prototype.refresh = function() {
+  this.emit(EVENTS.CHANGE, this.source);
+};
+
 Collection.prototype.get = function() {
   return this.source;
 };

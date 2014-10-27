@@ -9,60 +9,18 @@ module.exports = {
     this.port = port;
     return this;
   },
-  all: function() {
-    var dfd = $.Deferred();
-    var theUrl = 'http://' + this.host + ':' + this.port + '/exchange';
-    $.ajax({
-      type: 'GET',
-      url: theUrl,
-      contentType: 'json'
-    })
-    .done(function(data) {
-      if(data.hasOwnProperty('error')) {
-        dfd.reject(data.error);
-      }
-      else {
-        dfd.resolve(data);
-      }
-    })
-    .fail(function(error) {
-      dfd.reject(error);
-    });
-    return dfd;
-  },
-  getGiftsForExchangeId: function(exchangeId) {
+  addGift: function(exchangeId, gift) {
     var dfd = $.Deferred();
     var theUrl = 'http://' + this.host + ':' + this.port + '/gift/exchange/' + exchangeId;
     $.ajax({
-      type: 'GET',
+      type: 'POST',
       url: theUrl,
-      contentType: 'json'
-    })
-    .done(function(data) {
-      if(data.hasOwnProperty('error')) {
-        dfd.reject(data.error);
-      }
-      else {
-        dfd.resolve(data);
-      }
-    })
-    .fail(function(error) {
-      dfd.reject(error);
-    });
-    return dfd;
-  },
-  updateExchange: function(exchange) {
-    var dfd = $.Deferred();
-    var theUrl = 'http://' + this.host + ':' + this.port + '/exchange/' + exchange._id;
-    $.ajax({
-      type: 'PUT',
-      url: theUrl,
-      data: exchange
+      data: gift
     })
     .done(function(data) {
       if(data.hasOwnProperty('ok') && data.ok) {
-        exchange._id = data.id;
-        exchange._rev = data.rev;
+        gift._id = data.id;
+        gift._rev = data.rev;
         dfd.resolve(data);
       }
       else if(data.hasOwnProperty('error')) {
@@ -77,14 +35,40 @@ module.exports = {
     });
     return dfd;
   },
-  deleteExchange: function(exchange) {
+  updateGift: function(gift) {
     var dfd = $.Deferred();
-    var theUrl = 'http://' + this.host + ':' + this.port + '/exchange/' + exchange._id;
+    var theUrl = 'http://' + this.host + ':' + this.port + '/gift/' + gift._id;
+    $.ajax({
+      type: 'PUT',
+      url: theUrl,
+      data: gift
+    })
+    .done(function(data) {
+      if(data.hasOwnProperty('ok') && data.ok) {
+        gift._id = data.id;
+        gift._rev = data.rev;
+        dfd.resolve(data);
+      }
+      else if(data.hasOwnProperty('error')) {
+        dfd.reject(data.error);
+      }
+      else {
+        dfd.reject(JSON.stringify(data, null, 2));
+      }
+    })
+    .fail(function(error) {
+      dfd.reject(error);
+    });
+    return dfd;
+  },
+  deleteGift: function(gift) {
+    var dfd = $.Deferred();
+    var theUrl = 'http://' + this.host + ':' + this.port + '/gift/' + gift._id;
     $.ajax({
       type: 'DELETE',
       url: theUrl,
       contentType: 'json',
-      data: exchange
+      data: gift
     })
     .done(function(data) {
       if(data.hasOwnProperty('error')) {

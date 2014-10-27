@@ -3,6 +3,9 @@
 var collFactory = require('./model/collection');
 var exchangeList = require('./view/exchange-list');
 var exchangeService = require('./service/exchange');
+var giftService = require('./service/gift');
+
+giftService.init(window.serviceHost, window.servicePort);
 
 exchangeService
   .init(window.serviceHost, window.servicePort)

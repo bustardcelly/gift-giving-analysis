@@ -19,6 +19,7 @@ var HostBody = React.createClass({
             className: 'control-label exchange-form-label'
           }, 'Kind:'),
           React.DOM.input({
+            id: 'gift-kind-input',
             name: 'gift-kind-input',
             className: 'form-control input-md gift-kind-input',
             placeholder: 'Kind',
@@ -34,6 +35,7 @@ var HostBody = React.createClass({
             className: 'control-label exchange-form-label'
           }, 'Is Actual:'),
           React.DOM.input({
+            id: 'gift-actual-input',
             name: 'gift-actual-input',
             className: 'form-control input-md gift-actual-input',
             type: 'checkbox',
@@ -48,6 +50,7 @@ var HostBody = React.createClass({
             className: 'control-label exchange-form-label'
           }, 'Amount Given:'),
           React.DOM.input({
+            id: 'gift-amount-input',
             name: 'gift-amount-input',
             className: 'form-control input-md gift-amount-input',
             type: 'number',
@@ -63,6 +66,7 @@ var HostBody = React.createClass({
             className: 'control-label exchange-form-label'
           }, 'Giver:'),
           React.DOM.input({
+            id: 'gift-giver-input',
             name: 'gift-giver-input',
             className: 'form-control input-md gift-giver-input',
             placeholder: 'Giver',
@@ -78,6 +82,7 @@ var HostBody = React.createClass({
             className: 'control-label exchange-form-label'
           }, 'Recipient:'),
           React.DOM.input({
+            id: 'gift-recipient-input',
             name: 'gift-recipient-input',
             className: 'form-control input-md gift-recipient-input',
             placeholder: 'Recipient',
@@ -93,6 +98,7 @@ var HostBody = React.createClass({
             className: 'control-label exchange-form-label'
           }, 'Is Accepted:'),
           React.DOM.input({
+            id: 'gift-accepted-input',
             name: 'gift-accepted-input',
             className: 'form-control input-md gift-accepted-input',
             type: 'checkbox',
@@ -107,6 +113,7 @@ var HostBody = React.createClass({
             className: 'control-label exchange-form-label'
           }, 'Description:'),
           React.DOM.textarea({
+            id: 'gift-description-input',
             name: 'gift-description-input',
             className: 'form-control input-md gift-description-input',
             placeholder: 'Description...',
@@ -122,6 +129,7 @@ var HostBody = React.createClass({
             className: 'control-label exchange-form-label'
           }, 'Type:'),
           React.DOM.select({
+            id: 'gift-type-input',
             name: 'gift-type-input',
             className: 'form-control input-md gift-type-input',
             defaultValue: this.props.isNew ? 'Official' : this.props.data.type
@@ -151,6 +159,25 @@ var Dialog = React.createClass({
       $dom.remove();
     });
   },
+  serializeCopy: function(toCopy) {
+    var $dom = $(this.getDOMNode());
+    var serialized = {};
+    var key;
+    for(key in toCopy) {
+      if(toCopy.hasOwnProperty(key)) {
+        serialized[key] = toCopy[key];
+      }
+    }
+    serialized.kind = $('#gift-kind-input', $dom).val();
+    serialized.amount = parseInt($('#gift-amount-input', $dom).val(), 10);
+    serialized.giver = $('#gift-giver-input', $dom).val();
+    serialized.recipient = $('#gift-recipient-input', $dom).val();
+    serialized.description = $('#gift-description-input', $dom).val();
+    serialized.type = $('#gift-type-input', $dom).val();
+    serialized.actual = $('#gift-actual-input', $dom).is(":checked");
+    serialized.accepted = $('#gift-accepted-input', $dom).is(":checked");
+    return serialized;
+  },
   show: function() {
     this.setState({
       className: 'modal fade show'
@@ -174,14 +201,19 @@ var Dialog = React.createClass({
     if(e) {
       e.stopPropagation();
     }
-    console.log('Save.');
+    if(this.props.onSave) {
+      this.props.onSave(this.serializeCopy(this.props.data));
+    }
     this.hide();
   },
   delete: function(e) {
      if(e) {
       e.stopPropagation();
     }
-    console.log('Delete?');
+    if(this.props.onDelete) {
+      this.props.onDelete(this.props.data);
+    }
+    this.hide();
   },
   handleHostEditComplete: function() {
     this.hide();
@@ -236,12 +268,14 @@ var Dialog = React.createClass({
 });
 
 module.exports = {
-  render: function(giftData, isNew) {
+  render: function(giftData, saveResponder, deleteResponder, isNew) {
     var title = isNew ? 'Add Gift to ' + giftData.exchange_title : 'Edit Gift \'' + '(' + giftData.amount + ') ' + giftData.kind + ' : ' + giftData.description + '\'';
     var dialog = Dialog({
       title: title,
       data: giftData,
-      isNew: isNew
+      isNew: isNew,
+      onSave: saveResponder,
+      onDelete: deleteResponder
     });
     React.renderComponent(
       dialog,

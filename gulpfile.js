@@ -12,12 +12,15 @@ var socketHost = isProduction ? '54.86.176.185' : 'localhost';
 var socketPort = isProduction ? 8002 : 8002;
 
 gulp.task('browserify', ['clean'], function() {
-  gulp.src('client/script/main.js', {read:false})
-      .pipe(gulpify({
-        transform: ['reactify']
-      }))
-      .pipe(uglify())
-      .pipe(gulp.dest('./static/script'));
+  var p = gulp.src('client/script/main.js', {read:false})
+              .pipe(gulpify({
+                transform: ['reactify']
+              }));
+              
+  if(isProduction) {
+    p.pipe(uglify);
+  }
+  p.pipe(gulp.dest('./static/script'));
 });
   
 gulp.task('minify', ['browserify'], function() {

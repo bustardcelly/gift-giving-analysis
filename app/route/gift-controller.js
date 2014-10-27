@@ -52,7 +52,7 @@ module.exports = {
     res.setHeader('Access-Control-Allow-Origin','*');
 
     exchangeId = params.id;
-    gift = giftFactory.inflate(exchangeId, params);
+    gift = giftFactory.inflate(exchangeId, req.params);
     db.newGift(gift)
       .then(function(doc) {
         res.send(200, doc);
@@ -67,6 +67,7 @@ module.exports = {
     var giftId = req.params.id;
     var params = req.params;
     res.setHeader('Access-Control-Allow-Origin','*');
+    console.log('CAME IN AS: ' + JSON.stringify(params, null, 2));
     db.updateGift(giftId, params._rev, params)
       .then(function(doc) {
         res.send(200, doc);
