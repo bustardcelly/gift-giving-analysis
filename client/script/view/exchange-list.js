@@ -2,6 +2,7 @@
 var React = require('react');
 
 var EditableForm = require('./exchange-form').EditableForm;
+var exchangeService = require('../service/exchange');
 
 var ExchangeListItem = React.createClass({displayName: 'ExchangeListItem',
   onCancel: function() {
@@ -10,8 +11,20 @@ var ExchangeListItem = React.createClass({displayName: 'ExchangeListItem',
     });
   },
   onSubmit: function(exchangeData) {
-    console.log('editing? ' + this.state.editing);
-    console.log('Send exchange data: ' + JSON.stringify(exchangeData, null, 2));
+    var self = this;
+    exchangeService.updateExchange(exchangeData)
+      .then(function(update) {
+        self.props._id = update._id;
+        self.props._rev = update._rev;
+        self.setState({
+          editing: false
+        });
+      }, function(error) {
+        // TODO: show error.
+      });
+  },
+  onDelete: function(exchangeData) {
+    console.log('delete>');
   },
   getInitialState: function() {
     return {
@@ -60,7 +73,8 @@ var ExchangeListItem = React.createClass({displayName: 'ExchangeListItem',
           EditableForm({
             data: this.props,
             onCancel: this.onCancel,
-            onSubmit: this.onSubmit
+            onSubmit: this.onSubmit,
+            onDelete: this.onDelete
           })
         )
       )

@@ -17,8 +17,13 @@ Collection.prototype.add = function(item) {
 };
 
 Collection.prototype.remove = function(item) {
-  var index = this.source.indexOf(item);
-  if(index > 1) {
+  var index = this.source.length;
+  while(--index > -1) {
+    if(this.source[index]._id === item._id) {
+      break;
+    }
+  }
+  if(index > -1) {
     this.source.splice(index, 1);
     this.emit(EVENTS.CHANGE, this.source);
   }

@@ -51,6 +51,32 @@ module.exports = {
     });
     return dfd;
   },
+  addExchange: function(exchange) {
+    var dfd = $.Deferred();
+    var theUrl = 'http://' + this.host + ':' + this.port + '/exchange';
+    $.ajax({
+      type: 'POST',
+      url: theUrl,
+      data: exchange
+    })
+    .done(function(data) {
+      if(data.hasOwnProperty('ok') && data.ok) {
+        exchange._id = data.id;
+        exchange._rev = data.rev;
+        dfd.resolve(exchange);
+      }
+      else if(data.hasOwnProperty('error')) {
+        dfd.reject(data.error);
+      }
+      else {
+        dfd.reject(JSON.stringify(data, null, 2));
+      }
+    })
+    .fail(function(error) {
+      dfd.reject(error);
+    });
+    return dfd;
+  },
   updateExchange: function(exchange) {
     var dfd = $.Deferred();
     var theUrl = 'http://' + this.host + ':' + this.port + '/exchange/' + exchange._id;
@@ -63,7 +89,7 @@ module.exports = {
       if(data.hasOwnProperty('ok') && data.ok) {
         exchange._id = data.id;
         exchange._rev = data.rev;
-        dfd.resolve(data);
+        dfd.resolve(exchange);
       }
       else if(data.hasOwnProperty('error')) {
         dfd.reject(data.error);

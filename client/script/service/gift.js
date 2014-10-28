@@ -47,7 +47,7 @@ module.exports = {
       if(data.hasOwnProperty('ok') && data.ok) {
         gift._id = data.id;
         gift._rev = data.rev;
-        dfd.resolve(data);
+        dfd.resolve(gift);
       }
       else if(data.hasOwnProperty('error')) {
         dfd.reject(data.error);

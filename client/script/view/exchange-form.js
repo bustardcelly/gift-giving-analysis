@@ -8,8 +8,8 @@ var GiftListItem = React.createClass({displayName: 'GiftListItem',
   onSaveGift: function(updatedGift) {
     var exchange = this.props.exchange;
     giftService.updateGift(updatedGift)
-      .then(function() {
-        exchange.gifts.update(updatedGift);
+      .then(function(update) {
+        exchange.gifts.update(update);
       }, function(error) {
         // TODO: Show error.
       });
@@ -108,20 +108,29 @@ var EditableForm = React.createClass({displayName: 'ExchangeForm',
       editable: true
     };
   },
-  handleSubmit: function(event) {
-    event.preventDefault();
+  serializeCopy: function(toCopy) {
     var $dom = this.getDOMNode();
     var $title = $('input.exchange-title-input', $dom);
     var $source = $('input.exchange-source-input', $dom);
     var $location = $('input.exchange-location-str-input', $dom);
     var $description = $('textarea.exchange-description-input', $dom);
+    var serialized = {};
+    var key;
+    for(key in toCopy) {
+      if(toCopy.hasOwnProperty(key) && key !== 'gifts') {
+        serialized[key] = toCopy[key];
+      }
+    }
+    serialized.title = $title.val();
+    serialized.source = $source.val();
+    serialized.location_str = $location.val();
+    serialized.description = $description.val();
+    return serialized;
+  },
+  handleSubmit: function(event) {
+    event.preventDefault();
     if(this.props.onSubmit) {
-      this.props.onSubmit({
-        title: $title.val(),
-        source: $source.val(),
-        description: $description.val(),
-        location_str: $location.val()
-      });
+      this.props.onSubmit(this.serializeCopy(this.props.data));
     }
     return false;
   },
@@ -134,7 +143,9 @@ var EditableForm = React.createClass({displayName: 'ExchangeForm',
   },
   handleDelete: function(event) {
     event.preventDefault();
-    console.log('Delete?');
+    if(this.props.onDelete) {
+      this.props.onDelete(this.props.data);
+    }
     return false;
   },
   render: function() {
