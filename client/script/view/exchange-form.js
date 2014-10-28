@@ -127,21 +127,31 @@ var EditableForm = React.createClass({displayName: 'ExchangeForm',
     serialized.description = $description.val();
     return serialized;
   },
-  handleSubmit: function(event) {
+  handleExchangeSubmit: function(event) {
     event.preventDefault();
     if(this.props.onSubmit) {
       this.props.onSubmit(this.serializeCopy(this.props.data));
     }
     return false;
   },
-  handleCancel: function(event) {
+  handleExchangeCancel: function(event) {
     event.preventDefault();
+    var $dom = this.getDOMNode();
+    var $title = $('input.exchange-title-input', $dom);
+    var $source = $('input.exchange-source-input', $dom);
+    var $location = $('input.exchange-location-str-input', $dom);
+    var $description = $('textarea.exchange-description-input', $dom);
+    $title.val(this.props.data.title);
+    $source.val(this.props.data.source);
+    $location.val(this.props.data.location_str);
+    $description.val(this.props.data.description);
+    
     if(this.props.onCancel) {
       this.props.onCancel();
     }
     return false;
   },
-  handleDelete: function(event) {
+  handleExchangeDelete: function(event) {
     event.preventDefault();
     if(this.props.onDelete) {
       this.props.onDelete(this.props.data);
@@ -221,19 +231,19 @@ var EditableForm = React.createClass({displayName: 'ExchangeForm',
             id: 'exchange-submit-button',
             type: 'submit',
             className: 'btn btn-md',
-            onClick: this.handleCancel
+            onClick: this.handleExchangeCancel
           }, 'cancel'),
           React.DOM.button({
             id: 'exchange-submit-button',
             type: 'submit',
             className: 'btn btn-info btn-md',
-            onClick: this.handleSubmit
+            onClick: this.handleExchangeSubmit
           }, 'save'),
           React.DOM.button({
             id: 'exchange-submit-button',
             type: 'submit',
             className: 'btn btn-danger btn-md',
-            onClick: this.handleDelete
+            onClick: this.handleExchangeDelete
           }, 'delete')
         ),
         GiftList({
