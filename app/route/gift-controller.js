@@ -32,7 +32,6 @@ module.exports = {
   getGiftExchangesById: function(req, res, next) {
     var exchangeId;
     res.setHeader('Access-Control-Allow-Origin','*');
-
     exchangeId = req.params.id;
     db.giftsByExchangeId(exchangeId)
       .then(function(docs) {
@@ -50,7 +49,6 @@ module.exports = {
     var exchangeId;
     var params = req.params;
     res.setHeader('Access-Control-Allow-Origin','*');
-
     exchangeId = params.id;
     gift = giftFactory.inflate(exchangeId, req.params);
     db.newGift(gift)
@@ -66,9 +64,10 @@ module.exports = {
   updateGift: function(req, res, next) {
     var giftId = req.params.id;
     var params = req.params;
+    var gift;
     res.setHeader('Access-Control-Allow-Origin','*');
-    console.log('CAME IN AS: ' + JSON.stringify(params, null, 2));
-    db.updateGift(giftId, params._rev, params)
+    gift = giftFactory.inflate(params.exchange_id, params);
+    db.updateGift(giftId, params._rev, gift)
       .then(function(doc) {
         res.send(200, doc);
       }, function(err) {

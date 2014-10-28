@@ -6,9 +6,9 @@ module.exports = {
       description: desc,
       location_str: location,
       source: src,
-      year: year || 0,
-      month: month || 0,
-      day: day || 0
+      year: year ? parseInt(year, 10) : 0,
+      month: month ? parseInt(month, 10) : 0,
+      day: day ? parseInt(day, 10) : 0
     };
   }
 };

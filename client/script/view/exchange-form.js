@@ -5,12 +5,11 @@ var giftDialog = require('./gift-dialog');
 var giftService = require('../service/gift');
 
 var GiftListItem = React.createClass({displayName: 'GiftListItem',
-  onSaveGift: function() {
+  onSaveGift: function(updatedGift) {
     var exchange = this.props.exchange;
-    var gift = this.props.data;
-    giftService.updateGift(gift)
+    giftService.updateGift(updatedGift)
       .then(function() {
-        exchange.gifts.refresh();
+        exchange.gifts.update(updatedGift);
       }, function(error) {
         // TODO: Show error.
       });

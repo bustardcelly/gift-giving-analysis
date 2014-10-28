@@ -34,7 +34,7 @@ var ExchangeListItem = React.createClass({displayName: 'ExchangeListItem',
   },
   render: function() {
     var total = this.props.gifts.get().reduce(function(prev, curr, index, array) {
-      return prev + curr.amount;
+      return prev + parseInt(curr.amount, 10);
     }, 0);
     return (
       React.DOM.li({

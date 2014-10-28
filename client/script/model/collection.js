@@ -24,6 +24,18 @@ Collection.prototype.remove = function(item) {
   }
 };
 
+Collection.prototype.update = function(item) {
+  var itemId = item._id;
+  var length = this.source.length;
+  while(--length > -1) {
+    if(this.source[length]._id === itemId) {
+      this.source[length] = item;
+      this.emit(EVENTS.CHANGE, this.source);
+      break;
+    }
+  }
+};
+
 Collection.prototype.refresh = function() {
   this.emit(EVENTS.CHANGE, this.source);
 };

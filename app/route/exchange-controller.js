@@ -32,7 +32,6 @@ module.exports = {
   addExchange: function(req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     var params = req.params;
-    console.log('Data: ' + JSON.stringify(params, null, 2));
     var exchange = exchangeFactory.create(params.title, params.description,
                       params.source, params.location,
                       params.year, params.month, params.day);

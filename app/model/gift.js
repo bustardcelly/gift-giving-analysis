@@ -3,9 +3,15 @@ module.exports = {
   inflate: function(exchangeId, fromObj) {
     return {
       exchange_id: exchangeId,
-      accepted: fromObj.hasOwnProperty('accepted') ? fromObj.accepted : false,
-      actual: fromObj.hasOwnProperty('actual') ? fromObj.actual : false,
-      amount: fromObj.hasOwnProperty('amount') ? parseInt(fromObj.amount) : 1,
+      accepted: fromObj.hasOwnProperty('accepted') ? 
+                  typeof fromObj.accepted === 'string' ?
+                    fromObj.accepted === 'true' : false
+                  : false,
+      actual: fromObj.hasOwnProperty('actual') ? 
+                  typeof fromObj.actual === 'string' ?
+                    fromObj.actual === 'true' : false
+                  : false,
+      amount: fromObj.hasOwnProperty('amount') ? parseInt(fromObj.amount, 10) : 1,
       description: fromObj['description'],
       giver: fromObj['giver'],
       kind: fromObj['kind'],
