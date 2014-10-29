@@ -22,7 +22,7 @@ exchangeService
           });
         });
     });
-    exchangeList.render(window.document.getElementById('exchange-form-container'), list);
+    exchangeList.render(window.document.getElementById('exchange-form-container'), collFactory.create(list));
   });
 
 module.exports = {};

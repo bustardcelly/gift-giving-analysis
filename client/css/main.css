@@ -61,6 +61,15 @@ body {
   margin-left: 1rem;
 }
 
+.add-exchange-title {
+  display: inline-block;
+  margin-right: 0.3rem;
+}
+
+.add-exchange-button {
+  margin-top: -0.8rem;
+}
+
 .add-gift-title {
   display: inline-block;
 }

@@ -5,8 +5,8 @@ var EVENTS = {
   CHANGE: 'change'
 };
 
-var Collection = function() {
-  this.source = [];
+var Collection = function(src) {
+  this.source = src || [];
 };
 
 Collection.prototype = new EventEmitter();
@@ -52,7 +52,7 @@ Collection.prototype.get = function() {
 
 module.exports = {
   events: EVENTS,
-  create: function() {
-    return new Collection();
+  create: function(src) {
+    return new Collection(src);
   }  
 };

@@ -14,8 +14,8 @@ var ExchangeListItem = React.createClass({displayName: 'ExchangeListItem',
     var self = this;
     exchangeService.updateExchange(exchangeData)
       .then(function(update) {
-        self.props._id = update._id;
-        self.props._rev = update._rev;
+        self.props.data._id = update._id;
+        self.props.data._rev = update._rev;
         self.setState({
           editing: false
         });
@@ -24,7 +24,18 @@ var ExchangeListItem = React.createClass({displayName: 'ExchangeListItem',
       });
   },
   onDelete: function(exchangeData) {
-    console.log('delete>');
+    var self = this;
+    exchangeService.deleteExchange(exchangeData)
+      .then(function() {
+        self.setState({
+          editing: false
+        });
+        if(this.props.onDelete) {
+          this.props.onDelete(exchangeData);
+        }
+      }, function(error) {
+        // TODO: show error.
+      });
   },
   getInitialState: function() {
     return {
@@ -40,13 +51,13 @@ var ExchangeListItem = React.createClass({displayName: 'ExchangeListItem',
   },
   componentDidMount: function() {
     this._boundForceUpdate = this.forceUpdate.bind(this, null);
-    this.props.gifts.on("change", this._boundForceUpdate, this);
+    this.props.data.gifts.on('change', this._boundForceUpdate, this);
   },
   componentWillUnmount: function() {
-    this.props.gifts.off("change", this._boundForceUpdate);
+    this.props.data.gifts.off('change', this._boundForceUpdate);
   },
   render: function() {
-    var total = this.props.gifts.get().reduce(function(prev, curr, index, array) {
+    var total = this.props.data.gifts.get().reduce(function(prev, curr, index, array) {
       return prev + parseInt(curr.amount, 10);
     }, 0);
     return (
@@ -65,13 +76,13 @@ var ExchangeListItem = React.createClass({displayName: 'ExchangeListItem',
           React.DOM.a({
             href: '#',
             onClick: this.handleSelect
-          }, this.props.title + ' (' + total + ' gifts)')
+          }, this.props.data.title + ' (' + total + ' gifts)')
         ),
         React.DOM.div({
             className: 'exchange-form ' + (this.state.editing ? '' : 'hidden'),
           },
           EditableForm({
-            data: this.props,
+            data: this.props.data,
             onCancel: this.onCancel,
             onSubmit: this.onSubmit,
             onDelete: this.onDelete
@@ -83,18 +94,44 @@ var ExchangeListItem = React.createClass({displayName: 'ExchangeListItem',
 });
 
 var ExchangeList = React.createClass({displayName: 'ExchangeList',
-    render: function() {
+  handleExchangeAdd: function() {
+    console.log('add new exchange-list-item');
+  },
+  onDeleteExchange: function(exchange) {
+    this.props.list.remove(exchange);
+  },
+  componentDidMount: function() {
+    this._boundForceUpdate = this.forceUpdate.bind(this, null);
+    this.props.list.on('change', this._boundForceUpdate, this);
+  },
+  componentWillUnmount: function() {
+    this.props.list.off('change', this._boundForceUpdate);
+  },
+  render: function() {
+    var deleteDelegate = this.onDeleteExchange;
     var rows = [];
-    Array.prototype.forEach.call(this.props.list, function(item) {
+    Array.prototype.forEach.call(this.props.list.get(), function(item) {
       rows.push(
-        ExchangeListItem(item)
+        ExchangeListItem({
+          data: item,
+          onDelete: deleteDelegate
+        })
       );
     });
     return (
       React.DOM.div(null,
         React.DOM.h2({
-          id: 'exchanges-title'
+          id: 'exchanges-title',
+          className: 'add-exchange-title'
         }, 'Exchanges'),
+         React.DOM.img({
+          className: 'svg-icon-btn add-exchange-button svg-icon-right',
+          type: 'image/svg+xml',
+          width: '24',
+          height: '24',
+          src: 'img/add-plus.svg',
+          onClick: this.handleExchangeAdd
+        }),
         React.DOM.ul({
           className: 'exchange-list'
         }, rows)
