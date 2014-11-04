@@ -2,6 +2,7 @@
 var React = require('react');
 
 var EditableForm = require('./exchange-form').EditableForm;
+var exchangeDialog = require('./new-exchange-dialog');
 var exchangeService = require('../service/exchange');
 
 var ExchangeListItem = React.createClass({displayName: 'ExchangeListItem',
@@ -25,6 +26,8 @@ var ExchangeListItem = React.createClass({displayName: 'ExchangeListItem',
   },
   onDelete: function(exchangeData) {
     var self = this;
+    var giftCollection = this.props.data.gifts;
+    exchangeData.gifts = giftCollection.get();
     exchangeService.deleteExchange(exchangeData)
       .then(function() {
         self.setState({
@@ -35,6 +38,7 @@ var ExchangeListItem = React.createClass({displayName: 'ExchangeListItem',
         }
       }, function(error) {
         // TODO: show error.
+        exchangeData.gifts = giftCollection;
       });
   },
   getInitialState: function() {
@@ -95,7 +99,7 @@ var ExchangeListItem = React.createClass({displayName: 'ExchangeListItem',
 
 var ExchangeList = React.createClass({displayName: 'ExchangeList',
   handleExchangeAdd: function() {
-    console.log('add new exchange-list-item');
+    exchangeDialog.render();
   },
   onDeleteExchange: function(exchange) {
     this.props.list.remove(exchange);

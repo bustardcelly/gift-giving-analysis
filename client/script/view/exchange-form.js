@@ -102,7 +102,85 @@ var GiftList = React.createClass({displayName: 'GiftList',
   }
 });
 
-var EditableForm = React.createClass({displayName: 'ExchangeForm',
+var ExchangeForm = React.createClass({displayName: 'ExchangeForm',
+  unpack: function(property) {
+    return this.props.data ? 
+              this.props.data.hasOwnProperty(property) ? 
+                this.props.data[property] 
+              : undefined
+            : undefined;
+  },
+  render: function() {
+    return (
+      React.DOM.div({
+        className: 'form-group'
+      },
+        React.DOM.h3({
+          className: this.props.title ? '' : 'hidden'
+        }, this.props.title),
+        React.DOM.div({
+          className: 'form-group'
+        },
+          React.DOM.label({
+            htmlFor: 'exchange-title-input',
+            className: 'control-label exchange-form-label'
+          }, 'Title:'),
+          React.DOM.input({
+            name: 'exchange-title-input',
+            className: 'form-control input-md exchange-title-input',
+            placeholder: 'Title',
+            type: 'text',
+            defaultValue: this.unpack('title')
+          })
+        ),
+        React.DOM.div({
+          className: 'form-group'
+        },
+          React.DOM.label({
+            htmlFor: 'exchange-location-str-input',
+            className: 'control-label exchange-form-label'
+          }, 'Location:'),
+          React.DOM.input({
+            name: 'exchange-location-str-input',
+            className: 'form-control input-md exchange-location-str-input',
+            placeholder: 'Location',
+            type: 'text',
+            defaultValue: this.unpack('location_str')
+          })
+        ),
+        React.DOM.div({
+          className: 'form-group'
+        },
+          React.DOM.label({
+            htmlFor: 'exchange-source-input',
+            className: 'control-label exchange-form-label'
+          }, 'Source:'),
+          React.DOM.input({
+            className: 'form-control input-md exchange-source-input',
+            placeholder: 'Source',
+            type: 'text',
+            defaultValue: this.unpack('source')
+          })
+        ),
+        React.DOM.div({
+          className: 'form-group'
+        },
+          React.DOM.label({
+            htmlFor: 'exchange-description-input',
+            className: 'control-label exchange-form-label'
+          }, 'Description:'),
+          React.DOM.textarea({
+            className: 'form-control input-md exchange-description-input',
+            placeholder: 'Description',
+            defaultValue: this.unpack('description')
+          })
+        )
+      )
+    );
+  }
+});
+
+var EditableForm = React.createClass({displayName: 'EditableExchangeForm',
   getInitialState: function() {
     return {
       editable: true
@@ -166,64 +244,10 @@ var EditableForm = React.createClass({displayName: 'ExchangeForm',
         role: 'form',
         action: '#'
       },
-        React.DOM.h3(null, [type, 'Exchange'].join(' ')),
-        React.DOM.div({
-          className: 'form-group'
-        },
-          React.DOM.label({
-            htmlFor: 'exchange-title-input',
-            className: 'control-label exchange-form-label'
-          }, 'Title:'),
-          React.DOM.input({
-            name: 'exchange-title-input',
-            className: 'form-control input-md exchange-title-input',
-            placeholder: 'Title',
-            type: 'text',
-            defaultValue: this.props.data.title ? this.props.data.title : undefined
-          })
-        ),
-        React.DOM.div({
-          className: 'form-group'
-        },
-          React.DOM.label({
-            htmlFor: 'exchange-location-str-input',
-            className: 'control-label exchange-form-label'
-          }, 'Location:'),
-          React.DOM.input({
-            name: 'exchange-location-str-input',
-            className: 'form-control input-md exchange-location-str-input',
-            placeholder: 'Location',
-            type: 'text',
-            defaultValue: this.props.data.location_str ? this.props.data.location_str : undefined
-          })
-        ),
-        React.DOM.div({
-          className: 'form-group'
-        },
-          React.DOM.label({
-            htmlFor: 'exchange-source-input',
-            className: 'control-label exchange-form-label'
-          }, 'Source:'),
-          React.DOM.input({
-            className: 'form-control input-md exchange-source-input',
-            placeholder: 'Source',
-            type: 'text',
-            defaultValue: this.props.data.source ? this.props.data.source : undefined
-          })
-        ),
-        React.DOM.div({
-          className: 'form-group'
-        },
-          React.DOM.label({
-            htmlFor: 'exchange-description-input',
-            className: 'control-label exchange-form-label'
-          }, 'Description:'),
-          React.DOM.textarea({
-            className: 'form-control input-md exchange-description-input',
-            placeholder: 'Description',
-            defaultValue: this.props.data.description ? this.props.data.description : undefined
-          })
-        ),
+        ExchangeForm({
+          title: 'Edit Exchange',
+          data: this.props.data
+        }),
         React.DOM.div({
           className: 'form-group exchange-form-buttonbar'
         },
@@ -255,14 +279,6 @@ var EditableForm = React.createClass({displayName: 'ExchangeForm',
 });
 
 module.exports = {
-  EditableForm: EditableForm,
-  render: function(element, exchangeData) {
-    React.renderComponent(
-      EditableForm({
-        isNew: typeof exchangeData === 'undefined',
-        data: exchangeData
-      }),
-      element
-    );
-  }
+  ExchangeForm: ExchangeForm,
+  EditableForm: EditableForm
 };
