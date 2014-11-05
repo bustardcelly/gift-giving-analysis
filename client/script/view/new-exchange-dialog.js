@@ -21,12 +21,17 @@ var Dialog = React.createClass({
     });
   },
   serializeForm: function() {
-    var form = {};
-    // form.title;
-    // form.description;
-    // form.location_str;
-    // form.source;
-    return form;
+    var $dom = this.getDOMNode();
+    var $title = $('input.exchange-title-input', $dom);
+    var $source = $('input.exchange-source-input', $dom);
+    var $location = $('input.exchange-location-str-input', $dom);
+    var $description = $('textarea.exchange-description-input', $dom);
+    return {
+      title: $title.val(),
+      source: $source.val(),
+      location_str: $location.val(),
+      description: $description.val()
+    };
   },
   show: function() {
     this.setState({

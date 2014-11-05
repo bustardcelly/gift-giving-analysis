@@ -4,6 +4,7 @@ var React = require('react');
 var EditableForm = require('./exchange-form').EditableForm;
 var exchangeDialog = require('./new-exchange-dialog');
 var exchangeService = require('../service/exchange');
+var collFactory = require('../model/collection');
 
 var ExchangeListItem = React.createClass({displayName: 'ExchangeListItem',
   onCancel: function() {
@@ -99,7 +100,18 @@ var ExchangeListItem = React.createClass({displayName: 'ExchangeListItem',
 
 var ExchangeList = React.createClass({displayName: 'ExchangeList',
   handleExchangeAdd: function() {
-    exchangeDialog.render();
+    exchangeDialog.render(this.handleSubmitNewExchange);
+  },
+  handleSubmitNewExchange: function(excgangeData) {
+    console.log('Submit new exchange: ' + JSON.stringify(excgangeData, null, 2));
+    var list = this.props.list;
+    exchangeService.addExchange(excgangeData)
+      .then(function(data) {
+        data.gifts = collFactory.create();
+        list.add(data);
+      }, function(error) {
+        // TODO: Show error.
+      });
   },
   onDeleteExchange: function(exchange) {
     this.props.list.remove(exchange);
