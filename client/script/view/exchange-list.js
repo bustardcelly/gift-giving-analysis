@@ -31,12 +31,12 @@ var ExchangeListItem = React.createClass({displayName: 'ExchangeListItem',
     exchangeData.gifts = giftCollection.get();
     exchangeService.deleteExchange(exchangeData)
       .then(function() {
+        if(self.props.onDelete) {
+          self.props.onDelete(exchangeData);
+        }
         self.setState({
           editing: false
         });
-        if(this.props.onDelete) {
-          this.props.onDelete(exchangeData);
-        }
       }, function(error) {
         // TODO: show error.
         exchangeData.gifts = giftCollection;
