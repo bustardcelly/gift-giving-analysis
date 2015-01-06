@@ -18,7 +18,7 @@ gulp.task('browserify', ['clean'], function() {
               }));
               
   if(isProduction) {
-    p.pipe(uglify);
+    p.pipe(uglify());
   }
   p.pipe(gulp.dest('./static/script'));
 });
