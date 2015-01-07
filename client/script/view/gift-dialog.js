@@ -135,7 +135,8 @@ var HostBody = React.createClass({
             defaultValue: this.props.isNew ? 'Official' : this.props.data.type
           }, 
             React.DOM.option(null, 'Official'),
-            React.DOM.option(null, 'Personal')
+            React.DOM.option(null, 'Personal'),
+            React.DOM.option(null, 'Unknown')
           )
         )
       )

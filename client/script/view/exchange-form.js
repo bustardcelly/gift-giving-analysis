@@ -4,6 +4,9 @@ var React = require('react');
 var giftDialog = require('./gift-dialog');
 var giftService = require('../service/gift');
 
+var monthList = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+                'August', 'September', 'October', 'November', 'December'];
+
 var GiftListItem = React.createClass({displayName: 'GiftListItem',
   onSaveGift: function(updatedGift) {
     var exchange = this.props.exchange;
@@ -110,6 +113,22 @@ var ExchangeForm = React.createClass({displayName: 'ExchangeForm',
               : undefined
             : undefined;
   },
+  generateDays: function() {
+    var days = [React.DOM.option(null, 'Unknown')];
+    var i, length = 31;
+    for(i = 1; i <= length; i++) {
+      days.push(React.DOM.option(null, i));
+    }
+    return days;
+  },
+  generateMonths: function() {
+    var months = [React.DOM.option(null, 'Unknown')];
+    var i, length = monthList.length;
+    for(i = 0; i < length; i++) {
+      months.push(React.DOM.option(null, monthList[i]));
+    }
+    return months;
+  },
   render: function() {
     return (
       React.DOM.div({
@@ -174,6 +193,77 @@ var ExchangeForm = React.createClass({displayName: 'ExchangeForm',
             placeholder: 'Description',
             defaultValue: this.unpack('description')
           })
+        ),
+        React.DOM.div({
+          className: 'form-group'
+        },
+          React.DOM.label({
+            htmlFor: 'exchange-latitude-input',
+            className: 'control-label exchange-form-label'
+          }, 'Latitude:'),
+          React.DOM.input({
+            className: 'form-control input-md exchange-latitude-input',
+            type: 'text',
+            defaultValue: this.unpack('latitude')
+          })
+        ),
+        React.DOM.div({
+          className: 'form-group'
+        },
+          React.DOM.label({
+            htmlFor: 'exchange-longitude-input',
+            className: 'control-label exchange-form-label'
+          }, 'Longitude:'),
+          React.DOM.input({
+            className: 'form-control input-md exchange-longitude-input',
+            type: 'text',
+            defaultValue: this.unpack('longitude')
+          })
+        ),
+        React.DOM.div({
+          className: 'form-group'
+        },
+          React.DOM.label({
+            htmlFor: 'exchange-day-input',
+            className: 'control-label exchange-form-label'
+          }, 'Day:'),
+          React.DOM.select({
+            id: 'exchange-day-input',
+            name: 'exchange-day-input',
+            className: 'form-control input-md exchange-day-input',
+            defaultValue: this.unpack('day')
+          },
+            this.generateDays()
+          )
+        ),
+        React.DOM.div({
+          className: 'form-group'
+        },
+          React.DOM.label({
+            htmlFor: 'exchange-month-input',
+            className: 'control-label exchange-form-label'
+          }, 'Month:'),
+          React.DOM.select({
+            id: 'exchange-day-input',
+            name: 'exchange-day-input',
+            className: 'form-control input-md exchange-month-input',
+            defaultValue: this.unpack('month')
+          },
+            this.generateMonths()
+          )
+        ),
+        React.DOM.div({
+          className: 'form-group'
+        },
+          React.DOM.label({
+            htmlFor: 'exchange-year-input',
+            className: 'control-label exchange-form-label'
+          }, 'Year:'),
+          React.DOM.input({
+            className: 'form-control input-md exchange-year-input',
+            type: 'text',
+            defaultValue: this.unpack('year')
+          })
         )
       )
     );
@@ -192,6 +282,8 @@ var EditableForm = React.createClass({displayName: 'EditableExchangeForm',
     var $source = $('input.exchange-source-input', $dom);
     var $location = $('input.exchange-location-str-input', $dom);
     var $description = $('textarea.exchange-description-input', $dom);
+    var $latitude = $('input.exchange-latitude-input', $dom);
+    var $longitude = $('input.exchange-longitude-input', $dom);
     var serialized = {};
     var key;
     for(key in toCopy) {
@@ -203,6 +295,8 @@ var EditableForm = React.createClass({displayName: 'EditableExchangeForm',
     serialized.source = $source.val();
     serialized.location_str = $location.val();
     serialized.description = $description.val();
+    serialized.latitude = Number($latitude.val());
+    serialized.longitude = Number($longitude.val());
     return serialized;
   },
   handleExchangeSubmit: function(event) {
@@ -219,10 +313,15 @@ var EditableForm = React.createClass({displayName: 'EditableExchangeForm',
     var $source = $('input.exchange-source-input', $dom);
     var $location = $('input.exchange-location-str-input', $dom);
     var $description = $('textarea.exchange-description-input', $dom);
+    var $latitude = $('input.exchange-latitude-input', $dom);
+    var $longitude = $('input.exchange-longitude-input', $dom);
+
     $title.val(this.props.data.title);
     $source.val(this.props.data.source);
     $location.val(this.props.data.location_str);
     $description.val(this.props.data.description);
+    $latitude.val(this.props.data.latitude);
+    $longitude.val(this.props.data.longitude);
     
     if(this.props.onCancel) {
       this.props.onCancel();
