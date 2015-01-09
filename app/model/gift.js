@@ -16,7 +16,8 @@ module.exports = {
       giver: fromObj['giver'],
       kind: fromObj['kind'],
       type: fromObj['type'],
-      recipient: fromObj['recipient']
+      recipient: fromObj['recipient'],
+      motifs: fromObj['motifs'] 
     };
   }
 };

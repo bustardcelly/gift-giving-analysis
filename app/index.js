@@ -15,6 +15,7 @@ var version = require(path.join(process.cwd(), 'package.json')).version;
 var client = require('./client');
 var exchangeRouteController = require('./route/exchange-controller');
 var giftRouteController = require('./route/gift-controller');
+var motifRouteController = require('./route/motif-controller');
 
 var server = restify.createServer({
   version: version
@@ -47,7 +48,8 @@ server.put('/gift/:id', giftRouteController.updateGift);
 // DELETE Gift previous
 server.del('/gift/:id', giftRouteController.deleteGift);
 
-
+// GET Motif (all|id)
+server.get('/motif', motifRouteController.getAllMotifs);
 
 // Initialize DB
 require('./db').init(dbhost, dbport);

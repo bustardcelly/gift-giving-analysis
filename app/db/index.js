@@ -5,6 +5,7 @@ var cradle = require('cradle');
 var defer = require('node-promise').defer;
 
 var DB_GIFT = 'gift';
+var DB_MOTIF = 'motif';
 var DB_EXCHANGE = 'exchange';
 
 var glom = function(fromObject, toObject) {
@@ -18,6 +19,7 @@ var glom = function(fromObject, toObject) {
 
 var facade = {
   init: function(host, port) {
+    console.log('Connecting to ' + host + ':' + port);
     connection = new(cradle.Connection)(host, port, {
       cache: true,
       raw: false,
@@ -174,6 +176,19 @@ var facade = {
       }
       else {
         dfd.resolve(true);
+      }
+    });
+    return dfd.promise;
+  },
+  getAllMotifs: function() {
+    var dfd = defer();
+    var db = connection.database(DB_MOTIF);
+    db.view('motif/byName', function(err, docs) {
+      if(err) {
+        dfd.reject(err.reason);
+      }
+      else {
+        dfd.resolve(docs);
       }
     });
     return dfd.promise;

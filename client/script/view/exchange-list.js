@@ -1,3 +1,4 @@
+/** @jsx React.DOM */
 'use strict';
 var React = require('react');
 
@@ -66,34 +67,26 @@ var ExchangeListItem = React.createClass({displayName: 'ExchangeListItem',
       return prev + parseInt(curr.amount, 10);
     }, 0);
     return (
-      React.DOM.li({
-        className: 'exchange-list-item'
-      },
-        React.DOM.p(null,
-          React.DOM.img({
-            className: 'svg-icon-btn svg-icon-left',
-            type: 'image/svg+xml',
-            width: 24,
-            height: 24,
-            src: this.state.editing ? 'img/close.svg' : 'img/open.svg',
-            onClick: this.handleSelect
-          }),
-          React.DOM.a({
-            href: '#',
-            onClick: this.handleSelect
-          }, this.props.data.title + ' (' + total + ' gifts)')
-        ),
-        React.DOM.div({
-            className: 'exchange-form ' + (this.state.editing ? '' : 'hidden'),
-          },
-          EditableForm({
-            data: this.props.data,
-            onCancel: this.onCancel,
-            onSubmit: this.onSubmit,
-            onDelete: this.onDelete
-          })
-        )
-      )
+      <li class="exchange-list-item">
+        <p>
+          <img className="svg-icon-btn svg-icon-left"
+                type="image/svg+xml"
+                width="24" height="24"
+                src={this.state.editing ? 'img/close.svg' : 'img/open.svg'}
+                onClick={this.handleSelect} />
+          <a href="#" onClick={this.handleSelect}>{this.props.data.title + ' (' + total + ' gifts)'}</a>
+        </p>
+        <div className={(this.state.editing ? 'exchange-form' : 'exchange-form hidden')}>
+          {
+            EditableForm({
+              data: this.props.data,
+              onCancel: this.onCancel,
+              onSubmit: this.onSubmit,
+              onDelete: this.onDelete
+            })
+          }
+        </div>
+      </li>
     );
   }
 });
@@ -135,23 +128,16 @@ var ExchangeList = React.createClass({displayName: 'ExchangeList',
       );
     });
     return (
-      React.DOM.div(null,
-        React.DOM.h2({
-          id: 'exchanges-title',
-          className: 'add-exchange-title'
-        }, 'Exchanges'),
-         React.DOM.img({
-          className: 'svg-icon-btn add-exchange-button svg-icon-right',
-          type: 'image/svg+xml',
-          width: '24',
-          height: '24',
-          src: 'img/add-plus.svg',
-          onClick: this.handleExchangeAdd
-        }),
-        React.DOM.ul({
-          className: 'exchange-list'
-        }, rows)
-      )
+      <div>
+        <h2 id="exchange-title" class="add-exchange-title">Exchanges:
+          <img className="svg-icon-btn add-exchange-button svg-icon-right"
+                type="image/svg+xml"
+                width="24" height="24"
+                src="img/add-plus.svg"
+                onClick={this.handleExchangeAdd} />
+        </h2>
+        <ul className="exchange-list">{rows}</ul>
+      </div>
     );
   }
 });

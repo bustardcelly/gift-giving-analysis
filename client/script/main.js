@@ -4,8 +4,10 @@ var collFactory = require('./model/collection');
 var exchangeList = require('./view/exchange-list');
 var exchangeService = require('./service/exchange');
 var giftService = require('./service/gift');
+var motifService = require('./service/motif');
 
 giftService.init(window.serviceHost, window.servicePort);
+motifService.init(window.serviceHost, window.servicePort);
 
 exchangeService
   .init(window.serviceHost, window.servicePort)

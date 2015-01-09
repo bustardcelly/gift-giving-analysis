@@ -5,6 +5,10 @@ var uglify = require('gulp-uglify');
 var minifycss = require('gulp-minify-css');
 var del = require('del');
 
+var source = require('vinyl-source-stream');
+var browserify = require('browserify');
+var reactify = require('reactify');
+
 var isProduction = process.env.NODE_ENV === 'production';
 var serviceHost = isProduction ? '54.86.176.185' : 'localhost';
 var servicePort = isProduction ? 8001 : 8001;
@@ -14,6 +18,12 @@ var socketPort = isProduction ? 8002 : 8002;
 gulp.task('browserify', ['clean'], function() {
   var p = gulp.src('client/script/main.js', {read:false})
               .pipe(gulpify({
+                shim: {
+                  react: {
+                    path: 'client/lib/react-0.12.2.min.js',
+                    exports: 'React'
+                  }
+                },
                 transform: ['reactify']
               }));
               
