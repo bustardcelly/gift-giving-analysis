@@ -43,7 +43,8 @@ gulp.task('copy', ['clean'], function() {
   gulp.src([
       'client/lib/jquery-1.11.1.min.js',
       'client/lib/socket.io-1.1.0.min.js',
-      'client/lib/bootstrap.min.js'
+      'client/lib/bootstrap.min.js',
+      'client/lib/react-0.12.2.min.js'
       ])
       .pipe(gulp.dest('./static/lib'));
 

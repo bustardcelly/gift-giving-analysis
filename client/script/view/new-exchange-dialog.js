@@ -1,3 +1,4 @@
+/** @jsx React.DOM */
 /*global $, window*/
 'use strict';
 
@@ -66,45 +67,29 @@ var Dialog = React.createClass({
     var closeDelegate = this.hide;
     var submitDelegate = this.submit;
     return (
-      React.DOM.div({className: this.state.className},
-        React.DOM.div({className: 'modal-dialog'},
-          React.DOM.div({className: 'modal-content'},
-            React.DOM.div({className: 'modal-header'},
-              React.DOM.button({
-                type:'button', 
-                className:'close', 
-                'aria-hidden':true,
-                'data-dismiss': 'modal',
-                onClick: closeDelegate
-              }, 'x'),
-              React.DOM.h4({className: 'modal-title'}, this.props.title)
-            ),
-            React.DOM.div({className: 'modal-body'},
-              React.DOM.div({
-                className: 'form-inline',
-                role: 'form',
-                action: '#'
-              },
-                ExchangeForm({
-                  title: null, data: null
-                })
-              )
-            ),
-            React.DOM.div({className: 'modal-footer'},
-              React.DOM.button({
-                type:'button', 
-                className:'btn btn-default',
-                onClick: closeDelegate
-              }, 'cancel'),
-              React.DOM.button({
-                type: 'button',
-                className: 'btn btn-info',
-                onClick: submitDelegate
-              }, 'submit')
-            )
-          )
-        )
-      )
+      <div className={this.state.className}>
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <button type="button" className="close" aria-hidden="true" data-dismiss="modal" onClick={closeDelegate}>x</button>
+              <h4 className="modal-title">{this.props.title}</h4>
+            </div>
+            <div className="modal-body">
+              <div className="form-inline" role="form" action="#">
+                {
+                  ExchangeForm({
+                    title: null, data: null
+                  })
+                }
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-default" onClick={closeDelegate}>cancel</button>
+              <button type="button" className="btn btn-info" onClick={submitDelegate}>submit</button>
+            </div>
+          </div>
+        </div>
+      </div>
     );
   }
 });

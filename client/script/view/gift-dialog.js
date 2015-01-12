@@ -1,3 +1,4 @@
+/** @jsx React.DOM */
 /*global window, $*/
 'use strict';
 var React = require('react');
@@ -5,141 +6,75 @@ var React = require('react');
 var HostBody = React.createClass({
   render: function() {
     return (
-      React.DOM.div({
-        id: 'exchange-form',
-        className: 'form-inline',
-        role: 'form',
-        action: '#'
-      },
-        React.DOM.div({
-          className: 'form-group'
-        },
-          React.DOM.label({
-            htmlFor: 'gift-kind-input',
-            className: 'control-label exchange-form-label'
-          }, 'Kind:'),
-          React.DOM.input({
-            id: 'gift-kind-input',
-            name: 'gift-kind-input',
-            className: 'form-control input-md gift-kind-input',
-            placeholder: 'Kind',
-            type: 'text',
-            defaultValue: this.props.isNew ? undefined : this.props.data.kind
-          })
-        ),
-        React.DOM.div({
-          className: 'form-group'
-        },
-          React.DOM.label({
-            htmlFor: 'gift-actual-input',
-            className: 'control-label exchange-form-label'
-          }, 'Is Actual:'),
-          React.DOM.input({
-            id: 'gift-actual-input',
-            name: 'gift-actual-input',
-            className: 'form-control input-md gift-actual-input',
-            type: 'checkbox',
-            defaultChecked: this.props.isNew ? false : this.props.data.actual
-          })
-        ),
-        React.DOM.div({
-          className: 'form-group'
-        },
-          React.DOM.label({
-            htmlFor: 'gift-amount-input',
-            className: 'control-label exchange-form-label'
-          }, 'Amount Given:'),
-          React.DOM.input({
-            id: 'gift-amount-input',
-            name: 'gift-amount-input',
-            className: 'form-control input-md gift-amount-input',
-            type: 'number',
-            min: 1,
-            defaultValue:this.props.isNew ? 0 : this.props.data.amount
-          })
-        ),
-        React.DOM.div({
-          className: 'form-group'
-        },
-          React.DOM.label({
-            htmlFor: 'gift-giver-input',
-            className: 'control-label exchange-form-label'
-          }, 'Giver:'),
-          React.DOM.input({
-            id: 'gift-giver-input',
-            name: 'gift-giver-input',
-            className: 'form-control input-md gift-giver-input',
-            placeholder: 'Giver',
-            type: 'text',
-            defaultValue: this.props.isNew ? undefined : this.props.data.giver
-          })
-        ),
-        React.DOM.div({
-          className: 'form-group'
-        },
-          React.DOM.label({
-            htmlFor: 'gift-recipient-input',
-            className: 'control-label exchange-form-label'
-          }, 'Recipient:'),
-          React.DOM.input({
-            id: 'gift-recipient-input',
-            name: 'gift-recipient-input',
-            className: 'form-control input-md gift-recipient-input',
-            placeholder: 'Recipient',
-            type: 'text',
-            defaultValue: this.props.isNew ? undefined : this.props.data.recipient
-          })
-        ),
-        React.DOM.div({
-          className: 'form-group'
-        },
-          React.DOM.label({
-            htmlFor: 'gift-accepted-input',
-            className: 'control-label exchange-form-label'
-          }, 'Is Accepted:'),
-          React.DOM.input({
-            id: 'gift-accepted-input',
-            name: 'gift-accepted-input',
-            className: 'form-control input-md gift-accepted-input',
-            type: 'checkbox',
-            defaultChecked: this.props.isNew? false : this.props.data.accepted
-          })
-        ),
-        React.DOM.div({
-          className: 'form-group'
-        },
-          React.DOM.label({
-            htmlFor: 'gift-description-input',
-            className: 'control-label exchange-form-label'
-          }, 'Description:'),
-          React.DOM.textarea({
-            id: 'gift-description-input',
-            name: 'gift-description-input',
-            className: 'form-control input-md gift-description-input',
-            placeholder: 'Description...',
-            type: 'text',
-            defaultValue: this.props.isNew ? undefined : this.props.data.description
-          })
-        ),
-        React.DOM.div({
-          className: 'form-group'
-        },
-          React.DOM.label({
-            htmlFor: 'gift-type-input',
-            className: 'control-label exchange-form-label'
-          }, 'Type:'),
-          React.DOM.select({
-            id: 'gift-type-input',
-            name: 'gift-type-input',
-            className: 'form-control input-md gift-type-input',
-            defaultValue: this.props.isNew ? 'Official' : this.props.data.type
-          }, 
-            React.DOM.option(null, 'Official'),
-            React.DOM.option(null, 'Personal'),
-            React.DOM.option(null, 'Unknown')
-          )
-        )
-      )
+      <div id="gift-form" className="form-inline" role="form" action="#">
+        <div className="form-group">
+          <label htmlFor="gift-kind-input" className="control-label exchange-form-label">Kind:</label>
+          <input id="gift-kind-input"
+                  name="gift-kind-input" 
+                  className="form-control input-md gift-kind-input" 
+                  type="text" placeholder="Kind" 
+                  defaultValue={this.props.isNew ? undefined : this.props.data.kind} />
+        </div>
+        <div className="form-group">
+          <label htmlFor="gift-actual-input" className="control-label exchange-form-label">Is Actual:</label>
+          <input id="gift-actual-input"
+                  name="gift-actual-input" 
+                  className="form-control input-md gift-actual-input" 
+                  type="checkbox"
+                  defaultChecked={this.props.isNew ? false : this.props.data.actual} />
+        </div>
+        <div className="form-group">
+          <label htmlFor="gift-amount-input" className="control-label exchange-form-label">Amount Given::</label>
+          <input id="gift-amount-input"
+                  name="gift-amount-input" 
+                  className="form-control input-md gift-amount-input" 
+                  type="number" min="1" 
+                  defaultValue={this.props.isNew ? undefined : this.props.data.amount} />
+        </div>
+        <div className="form-group">
+          <label htmlFor="gift-giver-input" className="control-label exchange-form-label">Giver:</label>
+          <input id="gift-giver-input"
+                  name="gift-giver-input" 
+                  className="form-control input-md gift-giver-input" 
+                  type="text" placeholder="Giver" 
+                  defaultValue={this.props.isNew ? undefined : this.props.data.giver} />
+        </div>
+        <div className="form-group">
+          <label htmlFor="gift-recipient-input" className="control-label exchange-form-label">Recipient:</label>
+          <input id="gift-recipient-input"
+                  name="gift-recipient-input" 
+                  className="form-control input-md gift-recipient-input" 
+                  type="text" placeholder="Recipient" 
+                  defaultValue={this.props.isNew ? undefined : this.props.data.recipient} />
+        </div>
+        <div className="form-group">
+          <label htmlFor="gift-accepted-input" className="control-label exchange-form-label">Is Accepted:</label>
+          <input id="gift-accepted-input"
+                  name="gift-accepted-input" 
+                  className="form-control input-md gift-accepted-input" 
+                  type="checkbox"
+                  defaultChecked={this.props.isNew ? false : this.props.data.accepted} />
+        </div>
+        <div className="form-group">
+          <label htmlFor="gift-description-input" className="control-label exchange-form-label">Description:</label>
+          <textarea id="gift-description-input"
+                  name="gift-description-input" 
+                  className="form-control input-md gift-description-input" 
+                  type="text" placeholder="Description..."
+                   defaultValue={this.props.isNew ? false : this.props.data.description} />
+        </div>
+        <div className="form-group">
+          <label htmlFor="gift-type-input" className="control-label exchange-form-label">Type:</label>
+          <select id="gift-type-input"
+                  name="gift-type-input"
+                  className="form-control input-md gift-type-input" 
+                  defaultValue={this.props.isNew ? 'Official' : this.props.data.type}>
+                  <option>Official</option>
+                  <option>Personal</option>
+                  <option>Unknown</option>
+          </select>
+        </div>
+      </div>
     );
   }
 });
@@ -224,46 +159,30 @@ var Dialog = React.createClass({
     var saveDelegate = this.save;
     var deleteDelegate = this.delete;
     return (
-      React.DOM.div({className: this.state.className},
-        React.DOM.div({className: 'modal-dialog'},
-          React.DOM.div({className: 'modal-content'},
-            React.DOM.div({className: 'modal-header'},
-              React.DOM.button({
-                type:'button', 
-                className:'close', 
-                'aria-hidden':true,
-                'data-dismiss': 'modal',
-                onClick: closeDelegate
-              }, 'x'),
-              React.DOM.h4({className: 'modal-title'}, this.props.title)
-            ),
-            React.DOM.div({className: 'modal-body'},
-              HostBody({
-                data: this.props.data,
-                isNew: this.props.isNew,
-                onComplete: this.handleHostEditComplete
-              })
-            ),
-            React.DOM.div({className: 'modal-footer'},
-              React.DOM.button({
-                type:'button', 
-                className:'btn btn-default',
-                onClick: closeDelegate
-              }, 'cancel'),
-              React.DOM.button({
-                type: 'button',
-                className: 'btn btn-info',
-                onClick: saveDelegate
-              }, 'save'),
-              React.DOM.button({
-                type: 'button',
-                className: 'btn btn-danger ' + (this.props.isNew ? 'hidden' : ''),
-                onClick: deleteDelegate
-              }, 'delete')
-            )
-          )
-        )
-      )
+      <div className={this.state.className}>
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <button type="button" className="close" aria-hidden="true" data-dismiss="modal" onClick={closeDelegate}>x</button>
+              <h4 className="modal-title">{this.props.title}</h4>
+            </div>
+            <div className="modal-body">
+              {
+                HostBody({
+                  data: this.props.data,
+                  isNew: this.props.isNew,
+                  onComplete: this.handleHostEditComplete
+                })
+              }
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-default" onClick={closeDelegate}>cancel</button>
+              <button type="button" className="btn btn-info" onClick={saveDelegate}>save</button>
+              <button type="button" className="btn btn-danger {(this.props.isNew ? 'hidden' : '')}" onClick={deleteDelegate}>delete</button>
+            </div>
+          </div>
+        </div>
+      </div>
     );
   }
 });
