@@ -2,6 +2,7 @@
 /*global window, $*/
 'use strict';
 var React = require('react');
+var MotifSelector = require('./motif-selector');
 
 var HostBody = React.createClass({
   render: function() {
@@ -73,6 +74,14 @@ var HostBody = React.createClass({
                   <option>Personal</option>
                   <option>Unknown</option>
           </select>
+        </div>
+        <div className="form-group">
+          <label htmlFor="gift-motif-checklist" className="control-label exchange-form-label">Motif(s):</label>
+          {
+            MotifSelector({
+              selectedMotifs: this.props.data.motifs
+            })
+          }
         </div>
       </div>
     );

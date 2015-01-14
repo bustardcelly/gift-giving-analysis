@@ -19,6 +19,14 @@ body {
   margin-bottom: 1rem;
 }
 
+.motif-list-item {
+  margin: 5px;
+}
+
+.motif-list-item.active {
+  background-color: #BDBDBD;
+}
+
 .exchange-list-item, .gifts-list-item {
   border-bottom: 1px solid #ccc;
   padding: 1rem 0;

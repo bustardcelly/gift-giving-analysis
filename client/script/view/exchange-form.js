@@ -146,7 +146,7 @@ var ExchangeForm = React.createClass({displayName: 'ExchangeForm',
           <select id="exchange-day-input" name="exchange-day-input" className="form-control input-md exchange-day-input" defaultValue={this.unpack('day')}>{this.generateDays()}</select>
         </div>
         <div className="form-group">
-          <label htmlFor="exchange-month-input" className="control-label exchange-form-label">Day:</label>
+          <label htmlFor="exchange-month-input" className="control-label exchange-form-label">Month:</label>
           <select id="exchange-month-input" name="exchange-month-input" className="form-control input-md exchange-month-input" defaultValue={this.unpack('month')}>{this.generateMonths()}</select>
         </div>
         <div className="form-group">
