@@ -77,11 +77,14 @@ var HostBody = React.createClass({
         </div>
         <div className="form-group">
           <label htmlFor="gift-motif-checklist" className="control-label exchange-form-label">Motif(s):</label>
-          {
-            MotifSelector({
-              selectedMotifs: this.props.data.motifs
-            })
-          }
+          <div id="gift-motif-selector" name="gift-motif-checklist">
+            {
+              MotifSelector({
+                itemClassName: 'motif-list-item',
+                selectedMotifs: this.props.data.motifs
+              })
+            }
+          </div>
         </div>
       </div>
     );
@@ -104,6 +107,15 @@ var Dialog = React.createClass({
       $dom.remove();
     });
   },
+  getSelectedMotifList: function() {
+    var $dom = $(this.getDOMNode());
+    var $items = $('#gift-motif-selector .motif-list-item.active', $dom);
+    var selectedIds = [];
+    $items.each(function() {
+      selectedIds.push($(this).data('motifid'));
+    });
+    return selectedIds.join(',');
+  },
   serializeCopy: function(toCopy) {
     var $dom = $(this.getDOMNode());
     var serialized = {};
@@ -121,6 +133,7 @@ var Dialog = React.createClass({
     serialized.type = $('#gift-type-input', $dom).val();
     serialized.actual = $('#gift-actual-input', $dom).is(":checked");
     serialized.accepted = $('#gift-accepted-input', $dom).is(":checked");
+    serialized.motifs = this.getSelectedMotifList();
     return serialized;
   },
   show: function() {
