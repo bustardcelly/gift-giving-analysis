@@ -5,6 +5,9 @@
 var React = require('react');
 var ExchangeForm = require('./exchange-form').ExchangeForm;
 
+var monthList = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+                'August', 'September', 'October', 'November', 'December'];
+
 var Dialog = React.createClass({
   getInitialState: function() {
     return {
@@ -24,14 +27,24 @@ var Dialog = React.createClass({
   serializeForm: function() {
     var $dom = this.getDOMNode();
     var $title = $('input.exchange-title-input', $dom);
-    var $source = $('input.exchange-source-input', $dom);
+    var $source = $('textarea.exchange-source-input', $dom);
     var $location = $('input.exchange-location-str-input', $dom);
     var $description = $('textarea.exchange-description-input', $dom);
+    var $latitude = $('input.exchange-latitude-input', $dom);
+    var $longitude = $('input.exchange-longitude-input', $dom);
+    var $day = $('select.exchange-day-input', $dom);
+    var $month = $('select.exchange-month-input', $dom);
+    var $year = $('input.exchange-year-input', $dom);
     return {
       title: $title.val(),
       source: $source.val(),
       location_str: $location.val(),
-      description: $description.val()
+      description: $description.val(),
+      latitude: Number($latitude.val()),
+      longitude: Number($longitude.val()),
+      day: isNaN(Number($day.val())) ? null : Number($day.val()),
+      month: monthList.indexOf($month.val()),
+      year: $year.val().length === 0 ? null : $year.val()
     };
   },
   show: function() {

@@ -15,6 +15,7 @@ module.exports = {
       description: fromObj['description'],
       giver: fromObj['giver'],
       kind: fromObj['kind'],
+      artist: fromObj['artist'],
       type: fromObj['type'],
       recipient: fromObj['recipient'],
       motifs: fromObj['motifs'] 

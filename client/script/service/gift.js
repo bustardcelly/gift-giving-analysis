@@ -12,6 +12,7 @@ module.exports = {
   addGift: function(exchangeId, gift) {
     var dfd = $.Deferred();
     var theUrl = 'http://' + this.host + ':' + this.port + '/gift/exchange/' + exchangeId;
+    console.log('Add: ' + JSON.stringify(gift, null, 2));
     $.ajax({
       type: 'POST',
       url: theUrl,
@@ -38,6 +39,7 @@ module.exports = {
   updateGift: function(gift) {
     var dfd = $.Deferred();
     var theUrl = 'http://' + this.host + ':' + this.port + '/gift/' + gift._id;
+    console.log('Update: ' + JSON.stringify(gift, null, 2));
     $.ajax({
       type: 'PUT',
       url: theUrl,

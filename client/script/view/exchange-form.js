@@ -97,6 +97,19 @@ var ExchangeForm = React.createClass({displayName: 'ExchangeForm',
               : undefined
             : undefined;
   },
+  unpackOnMonthListIndex: function(property, list) {
+    var index = this.props.data ? 
+                  this.props.data.hasOwnProperty(property) ? 
+                    parseInt(this.props.data[property], 10)
+                  : undefined
+                : undefined;
+    if(index <= 0 || isNaN(index) || index === undefined) {
+      return 'Unknown';
+    }
+    else {
+      return list[index - 1];
+    }
+  },
   generateDays: function() {
     var days = [React.DOM.option(null, 'Unknown')];
     var i, length = 31;
@@ -127,7 +140,7 @@ var ExchangeForm = React.createClass({displayName: 'ExchangeForm',
         </div>
         <div className="form-group">
           <label htmlFor="exchange-source-input" className="control-label exchange-form-label">Source:</label>
-          <input type="text" name="exchange-source-input" className="form-control input-md input-md exchange-source-input" placeholder="Source" defaultValue={this.unpack('source')}></input>
+          <textarea type="text" name="exchange-source-input" className="form-control input-md input-md exchange-source-input" placeholder="Source" defaultValue={this.unpack('source')}></textarea>
         </div>
         <div className="form-group">
           <label htmlFor="exchange-description-input" className="control-label exchange-form-label">Description:</label>
@@ -147,7 +160,7 @@ var ExchangeForm = React.createClass({displayName: 'ExchangeForm',
         </div>
         <div className="form-group">
           <label htmlFor="exchange-month-input" className="control-label exchange-form-label">Month:</label>
-          <select id="exchange-month-input" name="exchange-month-input" className="form-control input-md exchange-month-input" defaultValue={this.unpack('month')}>{this.generateMonths()}</select>
+          <select id="exchange-month-input" name="exchange-month-input" className="form-control input-md exchange-month-input" defaultValue={this.unpackOnMonthListIndex('month', monthList)}>{this.generateMonths()}</select>
         </div>
         <div className="form-group">
           <label htmlFor="exchange-year-input" className="control-label exchange-form-label">Year:</label>
@@ -167,11 +180,14 @@ var EditableForm = React.createClass({displayName: 'EditableExchangeForm',
   serializeCopy: function(toCopy) {
     var $dom = this.getDOMNode();
     var $title = $('input.exchange-title-input', $dom);
-    var $source = $('input.exchange-source-input', $dom);
+    var $source = $('textarea.exchange-source-input', $dom);
     var $location = $('input.exchange-location-str-input', $dom);
     var $description = $('textarea.exchange-description-input', $dom);
     var $latitude = $('input.exchange-latitude-input', $dom);
     var $longitude = $('input.exchange-longitude-input', $dom);
+    var $day = $('select.exchange-day-input', $dom);
+    var $month = $('select.exchange-month-input', $dom);
+    var $year = $('input.exchange-year-input', $dom);
     var serialized = {};
     var key;
     for(key in toCopy) {
@@ -185,6 +201,9 @@ var EditableForm = React.createClass({displayName: 'EditableExchangeForm',
     serialized.description = $description.val();
     serialized.latitude = Number($latitude.val());
     serialized.longitude = Number($longitude.val());
+    serialized.day = isNaN(Number($day.val())) ? null : Number($day.val());
+    serialized.month = monthList.indexOf($month.val());
+    serialized.year = $year.val().length === 0 ? null : $year.val();
     return serialized;
   },
   handleExchangeSubmit: function(event) {
@@ -203,6 +222,9 @@ var EditableForm = React.createClass({displayName: 'EditableExchangeForm',
     var $description = $('textarea.exchange-description-input', $dom);
     var $latitude = $('input.exchange-latitude-input', $dom);
     var $longitude = $('input.exchange-longitude-input', $dom);
+    var $day = $('select.exchange-day-input', $dom);
+    var $month = $('select.exchange-month-input', $dom);
+    var $year = $('input.exchange-year-input', $dom);
 
     $title.val(this.props.data.title);
     $source.val(this.props.data.source);
@@ -210,7 +232,10 @@ var EditableForm = React.createClass({displayName: 'EditableExchangeForm',
     $description.val(this.props.data.description);
     $latitude.val(this.props.data.latitude);
     $longitude.val(this.props.data.longitude);
-    
+    $day.val(this.props.data.day);
+    $month.val(monthList[this.props.data.month]);
+    $year.val(this.props.data.year);
+
     if(this.props.onCancel) {
       this.props.onCancel();
     }

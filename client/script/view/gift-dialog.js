@@ -17,6 +17,14 @@ var HostBody = React.createClass({
                   defaultValue={this.props.isNew ? undefined : this.props.data.kind} />
         </div>
         <div className="form-group">
+          <label htmlFor="gift-artist-input" className="control-label exchange-form-label">Artist:</label>
+          <input id="gift-artist-input"
+                  name="gift-artist-input" 
+                  className="form-control input-md gift-artist-input" 
+                  type="text" placeholder="Artist" 
+                  defaultValue={this.props.isNew ? undefined : this.props.data.artist} />
+        </div>
+        <div className="form-group">
           <label htmlFor="gift-actual-input" className="control-label exchange-form-label">Is Actual:</label>
           <input id="gift-actual-input"
                   name="gift-actual-input" 
@@ -25,7 +33,7 @@ var HostBody = React.createClass({
                   defaultChecked={this.props.isNew ? false : this.props.data.actual} />
         </div>
         <div className="form-group">
-          <label htmlFor="gift-amount-input" className="control-label exchange-form-label">Amount Given::</label>
+          <label htmlFor="gift-amount-input" className="control-label exchange-form-label">Amount Given:</label>
           <input id="gift-amount-input"
                   name="gift-amount-input" 
                   className="form-control input-md gift-amount-input" 
@@ -62,7 +70,7 @@ var HostBody = React.createClass({
                   name="gift-description-input" 
                   className="form-control input-md gift-description-input" 
                   type="text" placeholder="Description..."
-                   defaultValue={this.props.isNew ? false : this.props.data.description} />
+                   defaultValue={this.props.isNew ? undefined : this.props.data.description} />
         </div>
         <div className="form-group">
           <label htmlFor="gift-type-input" className="control-label exchange-form-label">Type:</label>
@@ -126,6 +134,7 @@ var Dialog = React.createClass({
       }
     }
     serialized.kind = $('#gift-kind-input', $dom).val();
+    serialized.artist = $('#gift-artist-input', $dom).val();
     serialized.amount = parseInt($('#gift-amount-input', $dom).val(), 10);
     serialized.giver = $('#gift-giver-input', $dom).val();
     serialized.recipient = $('#gift-recipient-input', $dom).val();

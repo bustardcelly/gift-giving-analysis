@@ -95,10 +95,10 @@ var ExchangeList = React.createClass({displayName: 'ExchangeList',
   handleExchangeAdd: function() {
     exchangeDialog.render(this.handleSubmitNewExchange);
   },
-  handleSubmitNewExchange: function(excgangeData) {
-    console.log('Submit new exchange: ' + JSON.stringify(excgangeData, null, 2));
+  handleSubmitNewExchange: function(exchangeData) {
+    console.log('Submit new exchange: ' + JSON.stringify(exchangeData, null, 2));
     var list = this.props.list;
-    exchangeService.addExchange(excgangeData)
+    exchangeService.addExchange(exchangeData)
       .then(function(data) {
         data.gifts = collFactory.create();
         list.add(data);
