@@ -43,7 +43,7 @@ var Dialog = React.createClass({
       latitude: Number($latitude.val()),
       longitude: Number($longitude.val()),
       day: isNaN(Number($day.val())) ? null : Number($day.val()),
-      month: monthList.indexOf($month.val()),
+      month: monthList.indexOf($month.val()) === -1 ? -1 : monthList.indexOf($month.val()),
       year: $year.val().length === 0 ? null : $year.val()
     };
   },

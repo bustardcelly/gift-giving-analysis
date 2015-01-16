@@ -103,11 +103,11 @@ var ExchangeForm = React.createClass({displayName: 'ExchangeForm',
                     parseInt(this.props.data[property], 10)
                   : undefined
                 : undefined;
-    if(index <= 0 || isNaN(index) || index === undefined) {
+    if(index < 0 || isNaN(index) || index === undefined) {
       return 'Unknown';
     }
     else {
-      return list[index - 1];
+      return list[index];
     }
   },
   generateDays: function() {
