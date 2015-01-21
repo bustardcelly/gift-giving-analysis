@@ -6,6 +6,7 @@ module.exports = {
     var latitude = parseInt(fromObj['latitude'], 10);
     var longitude = parseInt(fromObj['longitude'], 10);
     return {
+      title: fromObj['title'],
       copy: fromObj['copy'],
       location_str: fromObj['location'],
       maker_author: fromObj['maker_author'],

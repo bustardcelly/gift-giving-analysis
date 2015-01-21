@@ -1,0 +1,30 @@
+#reproductions-title {
+  margin-left: 1rem;
+}
+
+.add-reproduction-title {
+  display: inline-block;
+  margin-right: 0.3rem;
+}
+
+.add-reproduction-button {
+  margin-top: -0.8rem;
+}
+
+.reproduction-list {
+  list-style: none;
+  margin: 0 1rem;
+}
+
+.reproduction-list-item {
+  border-bottom: 1px solid #ccc;
+  padding: 1rem 0;
+}
+
+.reproduction-list-item > p  {
+  margin: 10px 0;
+}
+
+.reproduction-list-item a, .reproduction-list-item img {
+  vertical-align: middle;
+}

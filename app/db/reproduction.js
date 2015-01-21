@@ -1,7 +1,7 @@
 'use strict';
 var defer = require('node-promise').defer;
 
-var DB_NAME = 'reproductions';
+var DB_NAME = 'reproduction';
 
 module.exports = {
   connection: undefined,

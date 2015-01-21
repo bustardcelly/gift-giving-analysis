@@ -75,33 +75,12 @@
   margin-right: 0.3rem;
 }
 
-.add-exchange-button {
-  margin-top: -0.8rem;
-}
-
 .add-gift-title {
   display: inline-block;
 }
 
 .add-gift-button {
   margin-top: -0.5rem;
-}
-
-.svg-icon-btn {
-  cursor: pointer
-}
-
-.svg-icon-left {
-  margin-right: 0.5rem;
-}
-
-.svg-icon-right {
-  margin-left: 0.5rem;
-}
-
-footer {
-  margin: 1rem 0 0 1rem;
-  font-size: 0.8rem;
 }
 
 @media screen and (max-width: 400px) {
