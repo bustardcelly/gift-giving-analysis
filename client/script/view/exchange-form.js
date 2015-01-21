@@ -79,8 +79,9 @@ var GiftList = React.createClass({displayName: 'GiftList',
     });
     return (
       <div className="add-gift-title">
-        <h3>Gifts:</h3>
-        <img className="svg-icon-btn add-gift-button svg-icon-right" type="image/svg+xml" width="24" height="24" src="img/add-plus.svg" onClick={this.handleAddGift} />
+        <h3>Gifts:
+          <img className="svg-icon-btn add-gift-button svg-icon-right" type="image/svg+xml" width="24" height="24" src="img/add-plus.svg" onClick={this.handleAddGift} />
+        </h3>
         <ul className="gifts-list">
           {rows}
         </ul>

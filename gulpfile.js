@@ -72,6 +72,10 @@ gulp.task('copy', ['clean'], function() {
       .pipe(minifycss())
       .pipe(gulp.dest('./static/css'));
 
+  gulp.src('client/css/reproduction.css')
+      .pipe(minifycss())
+      .pipe(gulp.dest('./static/css'));
+
   gulp.src('client/exchange.html')
       .pipe(replace(/@serviceHost/, serviceHost))
       .pipe(replace(/@servicePort/, servicePort))

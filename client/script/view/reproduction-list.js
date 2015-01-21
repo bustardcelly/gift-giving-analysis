@@ -2,10 +2,76 @@
 'use strict';
 var React = require('react');
 
+var ReproductionForm = require('./reproduction-form').ReproductionForm;
+
 var ReproductionListItem = React.createClass({displayName: 'ReproductionListItem',
+  onCancel: function() {
+    this.setState({
+      editing: false
+    });
+  },
+  onSubmit: function(exchangeData) {
+    var self = this;
+    // exchangeService.updateExchange(exchangeData)
+    //   .then(function(update) {
+    //     self.props.data._id = update._id;
+    //     self.props.data._rev = update._rev;
+    //     self.setState({
+    //       editing: false
+    //     });
+    //   }, function(error) {
+    //     // TODO: show error.
+    //   });
+  },
+  onDelete: function(exchangeData) {
+    var self = this;
+    // exchangeService.deleteExchange(exchangeData)
+    //   .then(function() {
+    //     if(self.props.onDelete) {
+    //       self.props.onDelete(exchangeData);
+    //     }
+    //     self.setState({
+    //       editing: false
+    //     });
+    //   }, function(error) {
+    //     // TODO: show error.
+    //     exchangeData.gifts = giftCollection;
+    //   });
+  },
+  getInitialState: function() {
+    return {
+      editing: false
+    };
+  },
+  handleSelect: function(event) {
+    event.preventDefault();
+    this.setState({
+      editing: !this.state.editing
+    });
+    return false;
+  },
   render: function() {
     return (
-      <h1>hello, world.</h1>
+      <li class="reproduction-list-item">
+        <p>
+          <img className="svg-icon-btn svg-icon-left"
+                type="image/svg+xml"
+                width="24" height="24"
+                src={this.state.editing ? 'img/close.svg' : 'img/open.svg'}
+                onClick={this.handleSelect} />
+          <a href="#" onClick={this.handleSelect}>{this.props.data.title}</a>
+        </p>
+        <div className={(this.state.editing ? 'reproduction-form' : 'reproduction-form hidden')}>
+          {
+            ReproductionForm({
+              data: this.props.data,
+              onCancel: this.onCancel,
+              onSubmit: this.onSubmit,
+              onDelete: this.onDelete
+            })
+          }
+        </div>
+      </li>
     );
   }
 });
