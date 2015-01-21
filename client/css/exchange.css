@@ -11,19 +11,6 @@
   margin-bottom: 1rem;
 }
 
-#gift-motif-selector {
-  margin-top: -30px;
-  margin-left: 90px;
-}
-
-.motif-list-item {
-  margin: 5px;
-}
-
-.motif-list-item.active {
-  background-color: #BDBDBD;
-}
-
 .exchange-list-item, .gifts-list-item {
   border-bottom: 1px solid #ccc;
   padding: 1rem 0;
@@ -84,21 +71,15 @@
 }
 
 @media screen and (max-width: 400px) {
+
   .exchange-form-label {
     width: 100%;
     text-align: left;
     margin-right: 0;
   }
 
-  .form-control.input-md {
-    width: 100%;
-  }
-
-  .modal-body .form-control.input-md {
-    width: 90%;
-  }
-
   .exchange-form-buttonbar {
     text-align: left;
   }
+  
 }

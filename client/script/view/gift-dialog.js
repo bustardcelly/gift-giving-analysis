@@ -84,8 +84,8 @@ var HostBody = React.createClass({
           </select>
         </div>
         <div className="form-group">
-          <label htmlFor="gift-motif-checklist" className="control-label exchange-form-label">Motif(s):</label>
-          <div id="gift-motif-selector" name="gift-motif-checklist">
+          <label htmlFor="motif-checklist" className="control-label exchange-form-label">Motif(s):</label>
+          <div id="motif-selector" name="motif-checklist">
             {
               MotifSelector({
                 itemClassName: 'motif-list-item',

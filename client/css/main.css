@@ -1,5 +1,7 @@
 body {
   font-size: 16px;
+  padding-right: 20px;
+  padding-left: 20px;
 }
 
 .form-group {
@@ -18,7 +20,32 @@ body {
   margin-left: 0.5rem;
 }
 
+#motif-selector {
+  margin-top: -30px;
+  margin-left: 90px;
+}
+
+.motif-list-item {
+  margin: 5px;
+}
+
+.motif-list-item.active {
+  background-color: #BDBDBD;
+}
+
 footer {
   margin: 1rem 0 0 1rem;
   font-size: 0.8rem;
+}
+
+@media screen and (max-width: 400px) {
+  
+  .form-control.input-md {
+    width: 100%;
+  }
+
+  .modal-body .form-control.input-md {
+    width: 90%;
+  }
+
 }
