@@ -64,31 +64,24 @@ gulp.task('copy', ['clean'], function() {
       ])
       .pipe(gulp.dest('./static/css'));
 
-  gulp.src('client/css/main.css')
+  gulp.src([
+        'client/css/main.css',
+        'client/css/exchange.css',
+        'client/css/reproduction.css'
+      ])
       .pipe(minifycss())
       .pipe(gulp.dest('./static/css'));
 
-  gulp.src('client/css/exchange.css')
-      .pipe(minifycss())
-      .pipe(gulp.dest('./static/css'));
-
-  gulp.src('client/css/reproduction.css')
-      .pipe(minifycss())
-      .pipe(gulp.dest('./static/css'));
-
-  gulp.src('client/exchange.html')
+  gulp.src([
+        'client/exchange.html',
+        'client/reproduction.html'
+      ])
       .pipe(replace(/@serviceHost/, serviceHost))
       .pipe(replace(/@servicePort/, servicePort))
       .pipe(replace(/@socketHost/, socketHost))
       .pipe(replace(/@socketPort/, socketPort))
       .pipe(gulp.dest('./static'));
 
-  gulp.src('client/reproduction.html')
-      .pipe(replace(/@serviceHost/, serviceHost))
-      .pipe(replace(/@servicePort/, servicePort))
-      .pipe(replace(/@socketHost/, socketHost))
-      .pipe(replace(/@socketPort/, socketPort))
-      .pipe(gulp.dest('./static'));
 });
 
 gulp.task('clean', function(cb) {
