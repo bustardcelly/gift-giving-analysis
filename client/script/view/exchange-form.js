@@ -266,7 +266,7 @@ var EditableForm = React.createClass({displayName: 'EditableExchangeForm',
         </div>
         {
           GiftList({
-          data: this.props.data
+            data: this.props.data
           })
         }
       </div>

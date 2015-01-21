@@ -2,7 +2,7 @@
 'use strict';
 var React = require('react');
 
-var ReproductionForm = require('./reproduction-form').ReproductionForm;
+var EditableReproductionForm = require('./reproduction-form').EditableReproductionForm;
 
 var ReproductionListItem = React.createClass({displayName: 'ReproductionListItem',
   onCancel: function() {
@@ -63,7 +63,7 @@ var ReproductionListItem = React.createClass({displayName: 'ReproductionListItem
         </p>
         <div className={(this.state.editing ? 'reproduction-form' : 'reproduction-form hidden')}>
           {
-            ReproductionForm({
+            EditableReproductionForm({
               data: this.props.data,
               onCancel: this.onCancel,
               onSubmit: this.onSubmit,
