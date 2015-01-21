@@ -15,8 +15,8 @@ var servicePort = isProduction ? 8001 : 8001;
 var socketHost = isProduction ? '54.86.176.185' : 'localhost';
 var socketPort = isProduction ? 8002 : 8002;
 
-gulp.task('browserify', ['clean'], function() {
-  var p = gulp.src('client/script/main.js', {read:false})
+var convertify = function(target) {
+  var p = gulp.src(target, {read:false})
               .pipe(gulpify({
                 shim: {
                   react: {
@@ -28,17 +28,16 @@ gulp.task('browserify', ['clean'], function() {
               }));
               
   if(isProduction) {
-    p.pipe(uglify());
+    // p.pipe(uglify());
   }
   p.pipe(gulp.dest('./static/script'));
+}
+
+gulp.task('browserify', ['clean'], function() {
+  convertify('client/script/exchange.js');
+  convertify('client/script/reproduction.js')
 });
   
-gulp.task('minify', ['browserify'], function() {
-  gulp.src('static/script/main.js')
-      .pipe(uglify())
-      .pipe(gulp.dest('./static/script/main.js'));
-});
-
 gulp.task('copy', ['clean'], function() {
   gulp.src([
       'client/lib/jquery-1.11.1.min.js',
@@ -69,7 +68,14 @@ gulp.task('copy', ['clean'], function() {
       .pipe(minifycss())
       .pipe(gulp.dest('./static/css'));
 
-  gulp.src('client/index.html')
+  gulp.src('client/exchange.html')
+      .pipe(replace(/@serviceHost/, serviceHost))
+      .pipe(replace(/@servicePort/, servicePort))
+      .pipe(replace(/@socketHost/, socketHost))
+      .pipe(replace(/@socketPort/, socketPort))
+      .pipe(gulp.dest('./static'));
+
+  gulp.src('client/reproduction.html')
       .pipe(replace(/@serviceHost/, serviceHost))
       .pipe(replace(/@servicePort/, servicePort))
       .pipe(replace(/@socketHost/, socketHost))

@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta content="initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" name="viewport">
+    <title>Gift Giving Analysis: Exchange</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap-responsive.min.css">
+    <link rel="stylesheet" href="css/main.css">
+  </head>
+  <body>
+    <div id="exchange-form-container"></div>
+    <div id="exchange-dialog"></div>
+    <div id="gift-dialog"></div>
+    <footer>icons provided from <a href="http://linhpham.me/#works" target="_blank">LinhPham.me</a></footer>
+    <script>
+      (function(window) {
+        window.serviceHost = '@serviceHost';
+        window.servicePort = @servicePort;
+        window.socketHost = '@socketHost';
+        window.socketPort = @socketPort;
+      }(this));
+    </script>
+    <script src="lib/jquery-1.11.1.min.js"></script>
+    <script src="lib/socket.io-1.1.0.min.js"></script>
+    <script src="lib/bootstrap-2.3.2.min.js"></script>
+    <script src="lib/react-0.12.2.min.js"></script>
+    <script src="script/exchange.js"></script>
+  </body>
+</html>
