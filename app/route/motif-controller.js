@@ -1,5 +1,5 @@
 'use strict';
-var db = require('../db');
+var db = require('../db').motif;
 
 module.exports = {
   getAllMotifs: function(req, res, next) {

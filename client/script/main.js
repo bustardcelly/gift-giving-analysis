@@ -32,9 +32,6 @@ var accessExchanges = function() {
 
 motifService.all()
   .then(function(list) {
-    Array.prototype.map.call(list, function(item) {
-      return item.value;
-    });
     motifStore.init(list);
     accessExchanges();
   });

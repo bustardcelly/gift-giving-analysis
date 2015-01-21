@@ -1,5 +1,5 @@
 'use strict';
-var db = require('../db');
+var db = require('../db').gift;
 var giftFactory = require('../model/gift');
 
 module.exports = {

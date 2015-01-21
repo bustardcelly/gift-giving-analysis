@@ -1,5 +1,5 @@
 'use strict';
-var db = require('../db');
+var db = require('../db').exchange;
 var exchangeFactory = require('../model/exchange');
 
 module.exports = {

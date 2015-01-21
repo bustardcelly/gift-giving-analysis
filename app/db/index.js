@@ -2,22 +2,17 @@
 
 var connection;
 var cradle = require('cradle');
-var defer = require('node-promise').defer;
 
-var DB_GIFT = 'gift';
-var DB_MOTIF = 'motif';
-var DB_EXCHANGE = 'exchange';
+var exchange = require('./exchange');
+var gift = require('./gift');
+var motif = require('./motif');
+var reproduction = require('./reproduction');
 
-var glom = function(fromObject, toObject) {
-  var prop;
-  for(prop in fromObject) {
-    if(!toObject.hasOwnProperty(prop)) {
-      toObject[prop] = fromObject[prop];
-    }
-  }
-};
-
-var facade = {
+module.exports = {
+  exchange: exchange,
+  gift: gift,
+  motif: motif,
+  reproduction: reproduction,
   init: function(host, port) {
     console.log('Connecting to ' + host + ':' + port);
     connection = new(cradle.Connection)(host, port, {
@@ -25,174 +20,10 @@ var facade = {
       raw: false,
       forceSave: true
     });
+    this.exchange.init(connection);
+    this.gift.init(connection);
+    this.motif.init(connection);
+    this.reproduction.init(connection);
     return this;
-  },
-  getAllExchanges: function() {
-    var dfd = defer();
-    var db = connection.database(DB_EXCHANGE);
-    db.view('exchange/all', function(err, docs) {
-      if(err) {
-        dfd.reject(err.reason);
-      }
-      else {
-        dfd.resolve(docs.map(function(item) {
-          return item;
-        }));
-      }
-    });
-    return dfd.promise;
-  },
-  getExchangeById: function(exchangeId) {
-    var dfd = defer();
-    var db = connection.database(DB_EXCHANGE);
-    db.get(exchangeId, function(err, doc) {
-      if(err) {
-        dfd.reject(err.reason);
-      }
-      else {
-        dfd.resolve(doc);
-      }
-    });
-    return dfd.promise;
-  },
-  newExchange: function(exchange) {
-    var dfd = defer();
-    var db = connection.database(DB_EXCHANGE);
-    db.save(exchange, function(err, data) {
-      if(err) {
-        dfd.reject(err.reason);
-      }
-      else {
-        glom(exchange, data);
-        dfd.resolve(data);
-      }
-    });
-    return dfd.promise;
-  },
-  updateExchange: function(exchangeId, revision, data) {
-    var dfd = defer();
-    var db = connection.database(DB_EXCHANGE);
-    db.save(exchangeId, revision, data, function(err, data) {
-      if(err) {
-        dfd.reject(err.reason);
-      }
-      else {
-        dfd.resolve(data);
-      }
-    });
-    return dfd.promise;
-  },
-  deleteExchange: function(exchangeId, revision) {
-    var dfd = defer();
-    var db = connection.database(DB_EXCHANGE);
-    db.remove(exchangeId, revision, function(err) {
-      if(err) {
-        dfd.reject(err.reason);
-      }
-      else {
-        dfd.resolve(true);
-      }
-    });
-    return dfd.promise;
-  },
-  getAllGifts: function() {
-    var dfd = defer();
-    var db = connection.database(DB_GIFT);
-    db.view('gift/all', function(err, docs) {
-      if(err) {
-        dfd.reject(err.reason);
-      }
-      else {
-        dfd.resolve(docs.map(function(item) {
-          return item;
-        }));
-      }
-    });
-    return dfd.promise;
-  },
-  getGiftById: function(giftId) {
-    var dfd = defer();
-    var db = connection.database(DB_GIFT);
-    db.get(giftId, function(err, doc) {
-      if(err) {
-        dfd.reject(err.reason);
-      }
-      else {
-        dfd.resolve(doc);
-      }
-    });
-    return dfd.promise;
-  },
-  giftsByExchangeId: function(exchangeId) {
-    var dfd = defer();
-    var db = connection.database(DB_GIFT);
-    db.view('gift/byExchangeId', {
-      key: exchangeId
-    }, function(err, docs) {
-      if(err) {
-        dfd.reject(err.reason);
-      }
-      else {
-        dfd.resolve(docs.map(function(item) {
-          return item;
-        }));
-      }
-    });
-    return dfd.promise;
-  },
-  newGift: function(gift) {
-    var dfd = defer();
-    var db = connection.database(DB_GIFT);
-    db.save(gift, function(err, data) {
-      if(err) {
-        dfd.reject(err.reason);
-      }
-      else {
-        glom(gift, data);
-        dfd.resolve(data);
-      }
-    });
-    return dfd.promise;
-  },
-  updateGift: function(giftId, revision, data) {
-    var dfd = defer();
-    var db = connection.database(DB_GIFT);
-    db.save(giftId, revision, data, function(err, data) {
-      if(err) {
-        dfd.reject(err.reason);
-      }
-      else {
-        dfd.resolve(data);
-      }
-    });
-    return dfd.promise;
-  },
-  deleteGift: function(giftId, revision) {
-    var dfd = defer();
-    var db = connection.database(DB_GIFT);
-    db.remove(giftId, revision, function(err) {
-      if(err) {
-        dfd.reject(err.reason);
-      }
-      else {
-        dfd.resolve(true);
-      }
-    });
-    return dfd.promise;
-  },
-  getAllMotifs: function() {
-    var dfd = defer();
-    var db = connection.database(DB_MOTIF);
-    db.view('motif/byName', function(err, docs) {
-      if(err) {
-        dfd.reject(err.reason);
-      }
-      else {
-        dfd.resolve(docs);
-      }
-    });
-    return dfd.promise;
   }
 };
-
-module.exports = facade;
