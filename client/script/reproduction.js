@@ -9,6 +9,7 @@ var motifStore = require('./store/motif-store');
 
 giftService.init(window.serviceHost, window.servicePort);
 motifService.init(window.serviceHost, window.servicePort);
+reproductionService.init(window.serviceHost, window.servicePort);
 
 var accessReproductions = function() {
   reproductionService

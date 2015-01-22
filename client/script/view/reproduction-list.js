@@ -2,6 +2,7 @@
 'use strict';
 var React = require('react');
 
+var reproductionService = require('../service/reproduction');
 var EditableReproductionForm = require('./reproduction-form').EditableReproductionForm;
 
 var ReproductionListItem = React.createClass({displayName: 'ReproductionListItem',
@@ -10,19 +11,19 @@ var ReproductionListItem = React.createClass({displayName: 'ReproductionListItem
       editing: false
     });
   },
-  onSubmit: function(exchangeData) {
+  onSubmit: function(reproductionData) {
     var self = this;
     console.log('submit');
-    // exchangeService.updateExchange(exchangeData)
-    //   .then(function(update) {
-    //     self.props.data._id = update._id;
-    //     self.props.data._rev = update._rev;
-    //     self.setState({
-    //       editing: false
-    //     });
-    //   }, function(error) {
-    //     // TODO: show error.
-    //   });
+    reproductionService.updateReproduction(reproductionData)
+      .then(function(update) {
+        self.props.data._id = update._id;
+        self.props.data._rev = update._rev;
+        self.setState({
+          editing: false
+        });
+      }, function(error) {
+        // TODO: show error.
+      });
   },
   onDelete: function(exchangeData) {
     var self = this;

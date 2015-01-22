@@ -13,5 +13,20 @@ module.exports = {
         });
       });
     return next();
+  },
+  updateReproduction: function(req, res, next) {
+    console.log('update reproduction');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    var params = req.params;
+    var reproductionId = params.id;
+    db.updateReproduction(reproductionId, params._rev, params)
+      .then(function(item) {
+        res.send(200, item);
+      }, function(err) {
+        res.send(200, {
+          error: 'Could not update exchange ' + reproductionId + ': ' + err
+        });
+      });
+    return next();
   }
 };

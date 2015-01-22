@@ -29,5 +29,31 @@ module.exports = {
       dfd.reject(error);
     });
     return dfd;
+  },
+  updateReproduction: function(reproduction) {
+    var dfd = $.Deferred();
+    var theUrl = 'http://' + this.host + ':' + this.port + '/reproduction/' + reproduction._id;
+    $.ajax({
+      type: 'PUT',
+      url: theUrl,
+      data: reproduction
+    })
+    .done(function(data) {
+      if(data.hasOwnProperty('ok') && data.ok) {
+        reproduction._id = data.id;
+        reproduction._rev = data.rev;
+        dfd.resolve(reproduction);
+      }
+      else if(data.hasOwnProperty('error')) {
+        dfd.reject(data.error);
+      }
+      else {
+        dfd.reject(JSON.stringify(data, null, 2));
+      }
+    })
+    .fail(function(error) {
+      dfd.reject(error);
+    });
+    return dfd;
   }
 };

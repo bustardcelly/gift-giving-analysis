@@ -54,6 +54,8 @@ server.get('/motif', motifRouteController.getAllMotifs);
 
 // GET Reproduction (all)
 server.get('/reproduction', reproductionRouteController.getAllReproductions);
+// PUT Exchange update
+server.put('/reproduction/:id', reproductionRouteController.updateReproduction);
 
 // Initialize DB
 require('./db').init(dbhost, dbport);
