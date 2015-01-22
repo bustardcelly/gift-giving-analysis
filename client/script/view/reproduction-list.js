@@ -12,6 +12,7 @@ var ReproductionListItem = React.createClass({displayName: 'ReproductionListItem
   },
   onSubmit: function(exchangeData) {
     var self = this;
+    console.log('submit');
     // exchangeService.updateExchange(exchangeData)
     //   .then(function(update) {
     //     self.props.data._id = update._id;
@@ -25,6 +26,7 @@ var ReproductionListItem = React.createClass({displayName: 'ReproductionListItem
   },
   onDelete: function(exchangeData) {
     var self = this;
+    console.log('delete');
     // exchangeService.deleteExchange(exchangeData)
     //   .then(function() {
     //     if(self.props.onDelete) {

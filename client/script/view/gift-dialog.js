@@ -117,7 +117,7 @@ var Dialog = React.createClass({
   },
   getSelectedMotifList: function() {
     var $dom = $(this.getDOMNode());
-    var $items = $('#gift-motif-selector .motif-list-item.active', $dom);
+    var $items = $('#motif-selector .motif-list-item.active', $dom);
     var selectedIds = [];
     $items.each(function() {
       selectedIds.push($(this).data('motifid'));

@@ -60,16 +60,16 @@ var ReproductionForm = React.createClass({displayName: 'ReproductionForm',
           <input type="text" name="reproduction-location-str-input" className="form-control input-md reproduction-location-str-input" placeholder="Location" defaultValue={this.unpack('location_str')}></input>
         </div>
         <div className="form-group">
-          <label htmlFor="reproduction-maker-str-input" className="control-label reproduction-form-label">Maker/Author:</label>
-          <input type="text" name="reproduction-maker-str-input" className="form-control input-md reproduction-maker-str-input" placeholder="Maker/Author" defaultValue={this.unpack('maker_author')}></input>
+          <label htmlFor="reproduction-maker-input" className="control-label reproduction-form-label">Maker/Author:</label>
+          <input type="text" name="reproduction-maker-input" className="form-control input-md reproduction-maker-input" placeholder="Maker/Author" defaultValue={this.unpack('maker_author')}></input>
         </div>
         <div className="form-group">
-          <label htmlFor="reproduction-publisher-str-input" className="control-label reproduction-form-label">Publisher:</label>
-          <input type="text" name="reproduction-publisher-str-input" className="form-control input-md reproduction-publisher-str-input" placeholder="Publisher" defaultValue={this.unpack('publisher')}></input>
+          <label htmlFor="reproduction-publisher-input" className="control-label reproduction-form-label">Publisher:</label>
+          <input type="text" name="reproduction-publisher-input" className="form-control input-md reproduction-publisher-input" placeholder="Publisher" defaultValue={this.unpack('publisher')}></input>
         </div>
         <div className="form-group">
-          <label htmlFor="reproduction-medium-str-input" className="control-label reproduction-form-label">Medium:</label>
-          <input type="text" name="reproduction-medium-str-input" className="form-control input-md reproduction-medium-str-input" placeholder="Medium" defaultValue={this.unpack('medium')}></input>
+          <label htmlFor="reproduction-medium-input" className="control-label reproduction-form-label">Medium:</label>
+          <input type="text" name="reproduction-medium-input" className="form-control input-md reproduction-medium-input" placeholder="Medium" defaultValue={this.unpack('medium')}></input>
         </div>
         <div className="form-group">
           <label htmlFor="reproduction-day-input" className="control-label reproduction-form-label">Day:</label>
@@ -116,6 +116,115 @@ var ReproductionForm = React.createClass({displayName: 'ReproductionForm',
 });
 
 var EditableReproductionForm = React.createClass({displayName: 'EditableReproductionForm',
+  getInitialState: function() {
+    return {
+      editable: true
+    };
+  },
+  getOriginalMotifSelection: function() {
+    var motifs = this.props.data.motifs;
+    return (motifs === null || typeof motifs === 'undefined') ? [] : motifs.split(',');
+  },
+  getSelectedMotifList: function() {
+    var $dom = $(this.getDOMNode());
+    var $items = $('#motif-selector .motif-list-item.active', $dom);
+    var selectedIds = [];
+    $items.each(function() {
+      selectedIds.push($(this).data('motifid'));
+    });
+    return selectedIds.join(',');
+  },
+  revertSelectedMotifs: function() {
+    var motifs = this.getOriginalMotifSelection();
+    var $dom = $(this.getDOMNode());
+    var $items = $('#motif-selector .motif-list-item', $dom);
+    $items.each(function() {
+      var $item = $(this);
+      var id = $item.data('motifid');
+      $item.removeClass('active');
+      if(motifs.indexOf(id) > -1) {
+        $item.addClass('active');
+      }
+    });
+  },
+  revert: function(fieldSelector, property) {
+    var $dom = this.getDOMNode();
+    var $field = $(fieldSelector, $dom);
+    $field.val(this.props.data[property]);
+  },
+  serializeCopy: function(toCopy) {
+    var $dom = this.getDOMNode();
+    var $title = $('input.reproduction-title-input', $dom);
+    var $copy = $('input.reproduction-copy-input', $dom);
+    var $location = $('input.reproduction-location-str-input', $dom);
+    var $maker = $('input.reproduction-maker-input', $dom);
+    var $publisher = $('input.reproduction-publisher-input', $dom);
+    var $medium = $('input.reproduction-medium-input', $dom);
+    var $day = $('select.reproduction-day-input', $dom);
+    var $month = $('select.reproduction-month-input', $dom);
+    var $year = $('input.reproduction-year-input', $dom);
+    var $latitude = $('input.reproduction-latitude-input', $dom);
+    var $longitude = $('input.reproduction-longitude-input', $dom);
+    var $source = $('textarea.reproduction-source-input', $dom);
+    var $notes = $('textarea.reproduction-notes-input', $dom);
+    var serialized = {};
+    var key;
+    for(key in toCopy) {
+      if(toCopy.hasOwnProperty(key) && key !== 'gifts') {
+        serialized[key] = toCopy[key];
+      }
+    }
+    serialized.title = $title.val();
+    serialized.copy = $copy.val();
+    serialized.location_str = $location.val();
+    serialized.maker_author = $maker.val();
+    serialized.publisher = $publisher.val();
+    serialized.medium = $medium.val();
+    serialized.day = isNaN(Number($day.val())) ? null : Number($day.val());
+    serialized.month = monthList.indexOf($month.val());
+    serialized.year = $year.val().length === 0 ? null : $year.val();
+    serialized.latitude = Number($latitude.val());
+    serialized.longitude = Number($longitude.val());
+    serialized.source = $source.val();
+    serialized.notes = $notes.val();
+    serialized.motifs = this.getSelectedMotifList();
+    return serialized;
+  },
+  handleReproductionSubmit: function(event) {
+    event.preventDefault();
+    if(this.props.onSubmit) {
+      this.props.onSubmit(this.serializeCopy(this.props.data));
+    }
+    return false;
+  },
+  handleReproductionCancel: function(event) {
+    event.preventDefault();
+    this.revert('input.reproduction-title-input', 'title');
+    this.revert('input.reproduction-copy-input', 'copy');
+    this.revert('input.reproduction-location-str-input', 'location_str');
+    this.revert('input.reproduction-maker-input', 'maker_str');
+    this.revert('input.reproduction-publisher-input', 'publisher');
+    this.revert('input.reproduction-medium-input', 'medium');
+    this.revert('input.reproduction-day-input', 'day');
+    this.revert('input.reproduction-month-input', 'month');
+    this.revert('input.reproduction-year-input', 'year');
+    this.revert('input.reproduction-latitude-input', 'latitude');
+    this.revert('input.reproduction-longitude-input', 'longitude');
+    this.revert('input.reproduction-source-input', 'source');
+    this.revert('input.reproduction-notes-input', 'notes');
+    this.revertSelectedMotifs();
+    if(this.props.onCancel) {
+      this.props.onCancel();
+    }
+    return false;
+  },
+  handleReproductionDelete: function(event) {
+    event.preventDefault();
+    if(this.props.onDelete) {
+      this.props.onDelete(this.props.data);
+    }
+    return false;
+  },
   render: function() {
     return (
       <div className="form-inline" role="form" action="#">
@@ -125,6 +234,11 @@ var EditableReproductionForm = React.createClass({displayName: 'EditableReproduc
             data: this.props.data
           })
         }
+        <div className='form-group reproduction-form-buttonbar'>
+          <button id="reproduction-cancel-button" type="submit" className="btn btn-md" onClick={this.handleReproductionCancel}>cancel</button>
+          <button id="reproduction-submit-button" type="submit" className="btn btn-info btn-md" onClick={this.handleReproductionSubmit}>save</button>
+          <button id="reproduction-delete-button" type="submit" className="btn btn-danger btn-md" onClick={this.handleReproductionDelete}>delete</button>
+        </div>
       </div>
     );
   }

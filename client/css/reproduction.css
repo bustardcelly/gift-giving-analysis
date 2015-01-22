@@ -36,6 +36,16 @@
   margin-right: 1rem;
 }
 
+.reproduction-form-buttonbar {
+  width: 100%;
+  max-width: 308px;
+  text-align: right;
+}
+
+.reproduction-form-buttonbar .btn {
+  margin-left: 1rem;
+}
+
 @media screen and (max-width: 400px) {
 
   .reproduction-form-label {
