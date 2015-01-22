@@ -66,6 +66,11 @@ var ReproductionForm = React.createClass({displayName: 'ReproductionForm',
     }
     return months;
   },
+  resetSeletedCopyOf: function(value) {
+    this.setState({
+      selectedGiftId: value
+    })
+  },
   onSaveCopyOfGift: function(selectedGiftId) {
     this.setState({
       selectedGiftId: selectedGiftId
@@ -267,6 +272,7 @@ var EditableReproductionForm = React.createClass({displayName: 'EditableReproduc
     if(this.props.onCancel) {
       this.props.onCancel();
     }
+    this.refs.reproductionForm.resetSeletedCopyOf(this.props.data.copy_of);
     return false;
   },
   handleReproductionDelete: function(event) {
@@ -277,14 +283,13 @@ var EditableReproductionForm = React.createClass({displayName: 'EditableReproduc
     return false;
   },
   render: function() {
+    var formProps = {
+      title: 'Edit Reproduction',
+      data: this.props.data
+    };
     return (
       <div className="form-inline" role="form" action="#">
-        {
-          ReproductionForm({
-            title: 'Edit Reproduction',
-            data: this.props.data
-          })
-        }
+        <ReproductionForm {... formProps} ref="reproductionForm" />
         <div className='form-group reproduction-form-buttonbar'>
           <button id="reproduction-cancel-button" type="submit" className="btn btn-md" onClick={this.handleReproductionCancel}>cancel</button>
           <button id="reproduction-submit-button" type="submit" className="btn btn-info btn-md" onClick={this.handleReproductionSubmit}>save</button>

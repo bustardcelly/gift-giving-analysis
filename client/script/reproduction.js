@@ -1,5 +1,6 @@
 /*global window, $*/
 'use strict';
+Object.assign = require('object-assign');
 var collFactory = require('./model/collection');
 var reproductionList = require('./view/reproduction-list');
 var reproductionService = require('./service/reproduction');
