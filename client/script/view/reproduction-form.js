@@ -2,11 +2,24 @@
 'use strict';
 var React = require('react');
 var MotifSelector = require('./motif-selector');
+var giftStore = require('../store/gift-store');
+var exchangeStore = require('../store/exchange-store');
+var copyOfGiftDialog = require('./copyof-selector-dialog');
 
 var monthList = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
                 'August', 'September', 'October', 'November', 'December'];
 
 var ReproductionForm = React.createClass({displayName: 'ReproductionForm',
+  getInitialState: function() {
+    return {
+      selectedGiftId: undefined
+    };
+  },
+  componentWillMount: function() {
+    this.setState({
+      selectedGiftId: this.unpack('copy_of')
+    });
+  },
   unpack: function(property) {
     return this.props.data ? 
               this.props.data.hasOwnProperty(property) ? 
@@ -27,6 +40,15 @@ var ReproductionForm = React.createClass({displayName: 'ReproductionForm',
       return list[index];
     }
   },
+  getGiftNameFromId: function(id) {
+    var gift = giftStore.withId(id);
+    var exchange;
+    if(gift !== undefined) {
+      exchange = exchangeStore.withId(gift.exchange_id);
+      return [exchange.title, gift.description].join(': ');
+    }
+    return 'Unknown';
+  },
   generateDays: function() {
     var days = [React.DOM.option(null, 'Unknown')];
     var i, length = 31;
@@ -43,6 +65,16 @@ var ReproductionForm = React.createClass({displayName: 'ReproductionForm',
     }
     return months;
   },
+  onSaveCopyOfGift: function(selectedGiftId) {
+    this.setState({
+      selectedGiftId: selectedGiftId
+    })
+  },
+  handleChangeCopyOf: function(event) {
+    event.preventDefault();
+    copyOfGiftDialog.render(this.state.selectedGiftId, this.onSaveCopyOfGift);
+    return false;
+  },
   render: function() {
     return (
       <div className="form-group">
@@ -54,6 +86,13 @@ var ReproductionForm = React.createClass({displayName: 'ReproductionForm',
         <div className="form-group">
           <label htmlFor="reproduction-copy-input" className="control-label reproduction-form-label">Copy:</label>
           <input type="text" name="reproduction-copy-input" className="form-control input-md reproduction-copy-input" placeholder="Copy" defaultValue={this.unpack('copy')}></input>
+        </div>
+        <div className="form-group">
+          <label htmlFor="reproduction-copy-of-input" className="control-label reproduction-form-label">Copy Of:</label>
+          <div name="reproduction-copy-of-input" className="form-control reproduction-copy-of-container" data-copyofid={this.state.selectedGiftId}>
+            <p>{this.getGiftNameFromId(this.state.selectedGiftId)}</p>
+            <button type="button" className="btn" onClick={this.handleChangeCopyOf}>Change</button>
+          </div>
         </div>
         <div className="form-group">
           <label htmlFor="reproduction-location-str-input" className="control-label reproduction-form-label">Location:</label>
@@ -156,6 +195,7 @@ var EditableReproductionForm = React.createClass({displayName: 'EditableReproduc
     var $dom = this.getDOMNode();
     var $title = $('input.reproduction-title-input', $dom);
     var $copy = $('input.reproduction-copy-input', $dom);
+    var $copyof = $('.reproduction-copy-of-container', $dom);
     var $location = $('input.reproduction-location-str-input', $dom);
     var $maker = $('input.reproduction-maker-input', $dom);
     var $publisher = $('input.reproduction-publisher-input', $dom);
@@ -176,6 +216,7 @@ var EditableReproductionForm = React.createClass({displayName: 'EditableReproduc
     }
     serialized.title = $title.val();
     serialized.copy = $copy.val();
+    serialized.copy_of = $copyof.data('copyofid');
     serialized.location_str = $location.val();
     serialized.maker_author = $maker.val();
     serialized.publisher = $publisher.val();

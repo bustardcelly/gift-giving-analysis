@@ -46,7 +46,31 @@
   margin-left: 1rem;
 }
 
-@media screen and (max-width: 400px) {
+.reproduction-copy-of-container {
+  display: inline-block;
+  font-size: 14px;
+  max-width: 220px;
+}
+
+.reproduction-copy-of-container > p {
+  color: #717171;
+}
+
+#exchange-selector-list {
+  list-style: none;
+  margin: 0;
+}
+
+#exchange-selector-list > li {
+  padding: 0.6em;
+  cursor: pointer;
+}
+
+#exchange-selector-list > li.selected {
+  background-color: #5bc0de;
+}
+
+@media screen and (max-width: 453px) {
 
   .reproduction-form-label {
     width: 100%;
