@@ -23,7 +23,10 @@ var server = restify.createServer({
 });
 server.use(restify.acceptParser(server.acceptable));
 server.use(restify.queryParser());
-server.use(restify.bodyParser());
+server.use(restify.bodyParser({
+  mapParams: true,
+  mapFiles: true
+}));
 
 // GET Exchange (all|id)
 server.get('/exchange', exchangeRouteController.getAllExchanges);
@@ -56,6 +59,9 @@ server.get('/motif', motifRouteController.getAllMotifs);
 server.get('/reproduction', reproductionRouteController.getAllReproductions);
 // PUT Exchange update
 server.put('/reproduction/:id', reproductionRouteController.updateReproduction);
+
+// PUT Image on Reproduction Document
+server.put('/reproduction/image/:id?rev=:rev', reproductionRouteController.saveAttachment);
 
 // Initialize DB
 require('./db').init(dbhost, dbport);

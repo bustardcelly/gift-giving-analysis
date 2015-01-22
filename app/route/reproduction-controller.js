@@ -27,5 +27,19 @@ module.exports = {
         });
       });
     return next();
+  },
+  saveAttachment: function(req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    var params = req.params;
+    var reproductionId = params.id;
+    var reproductionRev = params.rev;
+    var files = req.files;
+    db.saveAttachments(reproductionId, reproductionRev, files)
+      .then(function() {
+        console.log('Complete!');
+      }, function(err) {
+        console.log('Error: ' + JSON.stringify(err, null, 2));
+      });
+    return next();
   }
 };

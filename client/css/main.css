@@ -33,6 +33,22 @@ body {
   background-color: #BDBDBD;
 }
 
+.image-dropbox {
+  padding: 50px;
+  text-align: center;
+  background-color: #eee;
+  border: #ddd solid 1px;
+  color: #717171;
+}
+
+.image-preview-list {
+  list-style: none
+}
+
+.image-preview-list > li {
+  margin: 0.3em;
+}
+
 footer {
   margin: 1rem 0 0 1rem;
   font-size: 0.8rem;

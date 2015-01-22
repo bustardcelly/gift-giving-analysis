@@ -55,5 +55,33 @@ module.exports = {
       dfd.reject(error);
     });
     return dfd;
+  },
+  addAttachments: function(reproduction, formData) {
+    var dfd = $.Deferred();
+    var theUrl = 'http://' + this.host + ':' + this.port + '/reproduction/image/' + reproduction._id + '?rev=' + reproduction._rev;
+    $.ajax({
+      type: 'PUT',
+      url: theUrl,
+      processData: false,
+      contentType: false,
+      data: formData
+    })
+    .done(function(data) {
+      if(data.hasOwnProperty('ok') && data.ok) {
+        reproduction._id = data.id;
+        reproduction._rev = data.rev;
+        dfd.resolve(reproduction);
+      }
+      else if(data.hasOwnProperty('error')) {
+        dfd.reject(data.error);
+      }
+      else {
+        dfd.reject(JSON.stringify(data, null, 2));
+      }
+    })
+    .fail(function(error) {
+      dfd.reject(error);
+    });
+    return dfd;
   }
 };
