@@ -9,6 +9,16 @@ var copyOfGiftDialog = require('./copyof-selector-dialog');
 var monthList = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
                 'August', 'September', 'October', 'November', 'December'];
 
+var getGiftNameFromId = function(id) {
+  var gift = giftStore.withId(id);
+  var exchange;
+  if(gift !== undefined) {
+    exchange = exchangeStore.withId(gift.exchange_id);
+    return [exchange.title, gift.description].join(': ');
+  }
+  return 'Unknown';
+};
+
 var ReproductionForm = React.createClass({displayName: 'ReproductionForm',
   getInitialState: function() {
     return {
@@ -39,15 +49,6 @@ var ReproductionForm = React.createClass({displayName: 'ReproductionForm',
     else {
       return list[index];
     }
-  },
-  getGiftNameFromId: function(id) {
-    var gift = giftStore.withId(id);
-    var exchange;
-    if(gift !== undefined) {
-      exchange = exchangeStore.withId(gift.exchange_id);
-      return [exchange.title, gift.description].join(': ');
-    }
-    return 'Unknown';
   },
   generateDays: function() {
     var days = [React.DOM.option(null, 'Unknown')];
@@ -90,7 +91,7 @@ var ReproductionForm = React.createClass({displayName: 'ReproductionForm',
         <div className="form-group">
           <label htmlFor="reproduction-copy-of-input" className="control-label reproduction-form-label">Copy Of:</label>
           <div name="reproduction-copy-of-input" className="form-control reproduction-copy-of-container" data-copyofid={this.state.selectedGiftId}>
-            <p>{this.getGiftNameFromId(this.state.selectedGiftId)}</p>
+            <p className="copy-of-title">{getGiftNameFromId(this.state.selectedGiftId)}</p>
             <button type="button" className="btn" onClick={this.handleChangeCopyOf}>Change</button>
           </div>
         </div>
@@ -186,6 +187,14 @@ var EditableReproductionForm = React.createClass({displayName: 'EditableReproduc
       }
     });
   },
+  revertSelectedCopyOf: function() {
+    var $dom = this.getDOMNode();
+    var $elem = $('.reproduction-copy-of-container', $dom);
+    var $title = $('p.copy-of-title', $elem);
+    $elem.data('copyofid', this.props.data.copy_of);
+    $elem.attr('data-copyofid', this.props.data.copy_of);
+    $title.text(getGiftNameFromId(this.props.data.copy_of));
+  },
   revert: function(fieldSelector, property) {
     var $dom = this.getDOMNode();
     var $field = $(fieldSelector, $dom);
@@ -216,7 +225,7 @@ var EditableReproductionForm = React.createClass({displayName: 'EditableReproduc
     }
     serialized.title = $title.val();
     serialized.copy = $copy.val();
-    serialized.copy_of = $copyof.data('copyofid');
+    serialized.copy_of = $copyof.attr('data-copyofid');
     serialized.location_str = $location.val();
     serialized.maker_author = $maker.val();
     serialized.publisher = $publisher.val();
@@ -253,6 +262,7 @@ var EditableReproductionForm = React.createClass({displayName: 'EditableReproduc
     this.revert('input.reproduction-longitude-input', 'longitude');
     this.revert('input.reproduction-source-input', 'source');
     this.revert('input.reproduction-notes-input', 'notes');
+    this.revertSelectedCopyOf();
     this.revertSelectedMotifs();
     if(this.props.onCancel) {
       this.props.onCancel();
