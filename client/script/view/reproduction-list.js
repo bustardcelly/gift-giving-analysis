@@ -13,7 +13,6 @@ var ReproductionListItem = React.createClass({displayName: 'ReproductionListItem
   },
   onSubmit: function(reproductionData) {
     var self = this;
-    console.log('submit');
     reproductionService.updateReproduction(reproductionData)
       .then(function(update) {
         self.props.data._id = update._id;
@@ -23,6 +22,7 @@ var ReproductionListItem = React.createClass({displayName: 'ReproductionListItem
         });
       }, function(error) {
         // TODO: show error.
+        console.log('Could not update Reproduction: ' + error);
       });
   },
   onDelete: function(exchangeData) {

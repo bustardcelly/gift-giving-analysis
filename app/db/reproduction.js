@@ -27,7 +27,9 @@ module.exports = {
   updateReproduction: function(id, revision, data) {
     var dfd = defer();
     var db = this.connection.database(DB_NAME);
-    db.save(id, revision, data, function(err, data) {
+    // remove _attachments for put/post and do merge.
+    delete data._attachments;
+    db.merge(id, data, function(err, data) {
       if(err) {
         dfd.reject(err.reason);
       }

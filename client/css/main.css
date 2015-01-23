@@ -41,11 +41,11 @@ body {
   color: #717171;
 }
 
-.image-preview-list {
+.image-attachment-list {
   list-style: none
 }
 
-.image-preview-list > li {
+.image-attachment-list > li {
   margin: 0.3em;
 }
 

@@ -22,8 +22,9 @@ module.exports = {
       .then(function(item) {
         res.send(200, item);
       }, function(err) {
+        console.error('Could not update exchange ' + reproductionId + ': ' + JSON.stringify(err, null, 2));
         res.send(200, {
-          error: 'Could not update exchange ' + reproductionId + ': ' + err
+          error: 'Could not update exchange ' + reproductionId + ': ' + JSON.stringify(err, null, 2)
         });
       });
     return next();

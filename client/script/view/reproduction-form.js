@@ -5,6 +5,8 @@ var MotifSelector = require('./motif-selector');
 var ImageDropBox = require('./image-dropbox');
 var giftStore = require('../store/gift-store');
 var exchangeStore = require('../store/exchange-store');
+var reproductionService = require('../service/reproduction');
+
 var copyOfGiftDialog = require('./copyof-selector-dialog');
 
 var monthList = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
@@ -70,12 +72,18 @@ var ReproductionForm = React.createClass({displayName: 'ReproductionForm',
   resetSeletedCopyOf: function(value) {
     this.setState({
       selectedGiftId: value
-    })
+    });
+  },
+  save: function() {
+    this.refs.imageDropbox.savePendingAttachments();
+  },
+  cancel: function() {
+    this.refs.imageDropbox.savePendingAttachments();
   },
   onSaveCopyOfGift: function(selectedGiftId) {
     this.setState({
       selectedGiftId: selectedGiftId
-    })
+    });
   },
   handleChangeCopyOf: function(event) {
     event.preventDefault();
@@ -156,7 +164,10 @@ var ReproductionForm = React.createClass({displayName: 'ReproductionForm',
           <label htmlFor="reproduction-notes-input" className="control-label reproduction-form-label">Notes:</label>
           <textarea type="text" name="reproduction-notes-input" className="form-control input-md input-md reproduction-notes-input" placeholder="Notes" defaultValue={this.unpack('notes')}></textarea>
         </div>
-        <ImageDropBox ref="imageDropbox" {... this.props} />
+        <ImageDropBox ref="imageDropbox" {... {
+          data: this.props.data,
+          service: reproductionService
+        }} />
       </div>
     );
   }
