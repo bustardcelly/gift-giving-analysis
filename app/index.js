@@ -62,6 +62,14 @@ server.put('/reproduction/:id', reproductionRouteController.updateReproduction);
 
 // PUT Image on Reproduction Document
 server.put('/reproduction/image/:id?rev=:rev', reproductionRouteController.saveAttachment);
+// GET Image Attachment on Reproduction
+server.get('/reproduction/:id/:filename', function(req, res, next) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.send({
+    url:'http://' + dbhost + ':' + dbport + '/reproduction/' + req.params.id + '/' + req.params.filename
+  });
+  return next();
+});
 
 // Initialize DB
 require('./db').init(dbhost, dbport);

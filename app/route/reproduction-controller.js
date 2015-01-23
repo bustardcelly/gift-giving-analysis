@@ -35,10 +35,12 @@ module.exports = {
     var reproductionRev = params.rev;
     var files = req.files;
     db.saveAttachments(reproductionId, reproductionRev, files)
-      .then(function() {
-        console.log('Complete!');
+      .then(function(data) {
+        res.send(200, data);
       }, function(err) {
-        console.log('Error: ' + JSON.stringify(err, null, 2));
+        res.send(200, {
+          error: 'Could not save attachment(s): ' +  JSON.stringify(err, null, 2)
+        });
       });
     return next();
   }

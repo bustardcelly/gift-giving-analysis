@@ -4,6 +4,18 @@ var React = require('react');
 var reproductionService = require('../service/reproduction');
 
 module.exports = React.createClass({displayName: 'ImageDropBox',
+  componentDidMount: function() {
+    var $dom = $(this.getDOMNode());
+    var $list = $('.image-preview-list', $dom);
+    var reproduction = this.props.data;
+    var attachments = this.props.data._attachments;
+    Object.keys(attachments).map(function(filename) {
+      reproductionService.getImageAttachmentURL(reproduction, filename)
+        .then(function(url) {
+          $list.append('<li><img src="' + url + '" /></li>');
+        });
+      });
+  },
   previewDroppedFile: function(file) {
     var $dom = $(this.getDOMNode());
     var $list = $('.image-preview-list', $dom);
@@ -47,6 +59,7 @@ module.exports = React.createClass({displayName: 'ImageDropBox',
     return false;
   },
   render: function() {
+    var reproduction = this.props.data;
     return (
       <div className="form-group">
         <label htmlFor="reproduction-image-container" className="control-label reproduction-form-label">Images:</label>

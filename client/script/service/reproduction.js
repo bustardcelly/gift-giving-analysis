@@ -83,5 +83,26 @@ module.exports = {
       dfd.reject(error);
     });
     return dfd;
+  },
+  getImageAttachmentURL: function(reproduction, filename) {
+    var dfd = $.Deferred();
+    var theUrl = 'http://' + this.host + ':' + this.port + '/reproduction/' + reproduction._id + '/' + filename;
+    $.ajax({
+      type: 'GET',
+      url: theUrl,
+      contentType: 'json'
+    })
+    .done(function(data) {
+      if(data.hasOwnProperty('error')) {
+        dfd.reject(data.error);
+      }
+      else {
+        dfd.resolve(data.url);
+      }
+    })
+    .fail(function(error) {
+      dfd.reject(error);
+    });
+    return dfd;
   }
 };
