@@ -74,5 +74,19 @@ module.exports = {
     };
     uploadNext();
     return dfd.promise;
+  },
+  removeAttachment: function(id, filename) {
+    var dfd = defer();
+    var db = this.connection.database(DB_NAME);
+    db.removeAttachment(id, filename, function(err, data) {
+      if(err) {
+        console.dir(err);
+        dfd.reject(err.reason);
+      }
+      else {
+        dfd.resolve(data);
+      }
+    });
+    return dfd.promise;
   }
 };

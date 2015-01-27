@@ -44,5 +44,21 @@ module.exports = {
         });
       });
     return next();
+  },
+  removeAttachment: function(req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    var params = req.params;
+    var reproductionId = params.id;
+    var reproductionRev = params.rev;
+    var filename = params.filename;
+    db.removeAttachment({id:reproductionId, rev:reproductionRev}, filename)
+      .then(function(data) {
+        res.send(200, data);
+      }, function(err) {
+        res.send(200, {
+          error: 'Could not remove attachment: ' + JSON.stringify(err, null, 2)
+        });
+      });
+    return next();
   }
 };

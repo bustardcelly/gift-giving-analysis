@@ -23,6 +23,9 @@ var accessReproductions = function() {
     .init(window.serviceHost, window.servicePort)
     .all()
     .then(function(list) {
+      list.map(function(i) {
+        i._attachmentList = collFactory.create();
+      });
       reproductionList.render(window.document.getElementById('reproduction-form-container'), collFactory.create(list));
     });
 };

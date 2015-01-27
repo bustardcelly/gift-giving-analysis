@@ -66,10 +66,13 @@ server.put('/reproduction/image/:id?rev=:rev', reproductionRouteController.saveA
 server.get('/reproduction/:id/:filename', function(req, res, next) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.send({
-    url:'http://' + dbhost + ':' + dbport + '/reproduction/' + req.params.id + '/' + req.params.filename
+    filename: req.params.filename,
+    url: 'http://' + dbhost + ':' + dbport + '/reproduction/' + req.params.id + '/' + req.params.filename
   });
   return next();
 });
+// DELETE Image Attachment on Reproduction
+server.del('/reproduction/:id/:filename?rev=:rev', reproductionRouteController.removeAttachment);
 
 // Initialize DB
 require('./db').init(dbhost, dbport);
