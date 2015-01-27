@@ -61,6 +61,8 @@ server.get('/reproduction', reproductionRouteController.getAllReproductions);
 server.post('/reproduction', reproductionRouteController.addReproduction);
 // PUT Reproduction update
 server.put('/reproduction/:id', reproductionRouteController.updateReproduction);
+// DELETE Reproduction previous
+server.del('/reproduction/:id', reproductionRouteController.deleteReproduction);
 
 // PUT Image on Reproduction Document
 server.put('/reproduction/image/:id?rev=:rev', reproductionRouteController.saveAttachment);

@@ -27,21 +27,19 @@ var ReproductionListItem = React.createClass({displayName: 'ReproductionListItem
         console.log('Could not update Reproduction: ' + error);
       });
   },
-  onDelete: function(exchangeData) {
+  onDelete: function(reproductionData) {
     var self = this;
-    console.log('delete');
-    // exchangeService.deleteExchange(exchangeData)
-    //   .then(function() {
-    //     if(self.props.onDelete) {
-    //       self.props.onDelete(exchangeData);
-    //     }
-    //     self.setState({
-    //       editing: false
-    //     });
-    //   }, function(error) {
-    //     // TODO: show error.
-    //     exchangeData.gifts = giftCollection;
-    //   });
+    reproductionService.deleteReproduction(reproductionData)
+      .then(function() {
+        if(self.props.onDelete) {
+          self.setState({
+            editing: false
+          });
+          self.props.onDelete(reproductionData);
+        }
+      }, function(error) {
+        // TODO: show error.
+      });
   },
   getInitialState: function() {
     return {
@@ -94,8 +92,8 @@ var ReproductionList = React.createClass({displayName: 'ReproductionList',
         // TODO: Show error.
       });
   },
-  onDeleteReproduction: function(exchange) {
-    this.props.list.remove(exchange);
+  onDeleteReproduction: function(reproduction) {
+    this.props.list.remove(reproduction);
   },
   componentDidMount: function() {
     this._boundForceUpdate = this.forceUpdate.bind(this, null);
@@ -106,14 +104,11 @@ var ReproductionList = React.createClass({displayName: 'ReproductionList',
   },
   render: function() {
     var deleteDelegate = this.onDeleteReproduction;
-    var rows = [];
-    Array.prototype.forEach.call(this.props.list.get(), function(item) {
-      rows.push(
-        ReproductionListItem({
+    var rows = this.props.list.get().map(function(item) {
+        return <ReproductionListItem {... {
           data: item,
           onDelete: deleteDelegate
-        })
-      );
+        }} />
     });
     return (
       <div>

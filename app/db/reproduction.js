@@ -58,6 +58,19 @@ module.exports = {
     });
     return dfd.promise;
   },
+  deleteReproduction: function(id, revision) {
+    var dfd = defer();
+    var db = this.connection.database(DB_NAME);
+    db.remove(id, revision, function(err) {
+      if(err) {
+        dfd.reject(err.reason);
+      }
+      else {
+        dfd.resolve(true);
+      }
+    });
+    return dfd.promise;
+  },
   getAttachment: function(id, filename) {
     var dfd = defer();
     dfd.resolve({

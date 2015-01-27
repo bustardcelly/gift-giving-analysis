@@ -37,7 +37,7 @@ var GiftList = React.createClass({
       selectedGiftId: undefined
     };
   },
-  componentWillMount: function() {
+  componentDidMount: function() {
     this.setState({
       selectedGiftId: this.props.selectedGiftId
     });

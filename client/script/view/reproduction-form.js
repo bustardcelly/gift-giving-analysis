@@ -28,7 +28,7 @@ var ReproductionForm = React.createClass({displayName: 'ReproductionForm',
       selectedGiftId: undefined
     };
   },
-  componentWillMount: function() {
+  componentDidMount: function() {
     this.setState({
       selectedGiftId: this.unpack('copy_of')
     });

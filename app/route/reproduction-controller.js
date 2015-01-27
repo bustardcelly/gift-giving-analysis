@@ -44,6 +44,21 @@ module.exports = {
       });
     return next();
   },
+  deleteReproduction: function(req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    var params = req.params;
+    var reproductionId = params.id;
+    db.deleteReproduction(reproductionId, params._rev, params)
+      .then(function(item) {
+        res.send(200, item);
+      }, function(err) {
+        console.error('Could not update exchange ' + reproductionId + ': ' + JSON.stringify(err, null, 2));
+        res.send(200, {
+          error: 'Could not update exchange ' + reproductionId + ': ' + JSON.stringify(err, null, 2)
+        });
+      });
+    return next();
+  },
   getAttachment: function(req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     var id = req.params.id;

@@ -6,9 +6,14 @@ var imgAttachmentFactory = require('../model/image-attachment-item');
 var statesEnum = imgAttachmentFactory.states;
 
 var ImageAttachmentItem = React.createClass({displayName: 'ImageAttachmentItem',
+  _imageBoxItemUpdate: function() {
+    if (this.isMounted()) {
+      this.forceUpdate();
+    }
+  },
   componentDidMount: function() {
     var attachment = this.props.data;
-    this._boundForceUpdate = this.forceUpdate.bind(this, null);
+    this._boundForceUpdate = this._imageBoxItemUpdate.bind(this, null);
     attachment.on('change', this._boundForceUpdate, this);
   },
   componentWillUnmount: function() {
@@ -38,6 +43,11 @@ var ImageAttachmentItem = React.createClass({displayName: 'ImageAttachmentItem',
 });
 
 module.exports = React.createClass({displayName: 'ImageDropBox',
+  _imageBoxUpdate: function() {
+    if (this.isMounted()) {
+      this.forceUpdate();
+    }
+  },
   getAttachmentCollection: function() {
     return this.props.data._attachmentList;
   },
@@ -47,7 +57,7 @@ module.exports = React.createClass({displayName: 'ImageDropBox',
     var attachmentService = this.props.service;
     var attachmentList = this.getAttachmentCollection();
 
-    this._boundForceUpdate = this.forceUpdate.bind(this, null);
+    this._boundForceUpdate = this._imageBoxUpdate.bind(this, null);
     attachmentList.on('change', this._boundForceUpdate, this);
 
     if(attachments) {

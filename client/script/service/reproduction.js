@@ -87,6 +87,33 @@ module.exports = {
     });
     return dfd;
   },
+  deleteReproduction: function(reproduction) {
+    var dfd = $.Deferred();
+    var theUrl = 'http://' + this.host + ':' + this.port + '/reproduction/' + reproduction._id;
+    var detachedAttachments = reproduction._attachmentList;
+    delete reproduction._attachmentList;
+    $.ajax({
+      type: 'DELETE',
+      url: theUrl,
+      contentType: 'json',
+      data: reproduction
+    })
+    .done(function(data) {
+      if(data.hasOwnProperty('error')) {
+        reproduction._attachmentList = detachedAttachments;
+        dfd.reject(data.error);
+      }
+      else {
+        reproduction._attachmentList = detachedAttachments;
+        dfd.resolve();
+      }
+    })
+    .fail(function(error) {
+      reproduction._attachmentList = detachedAttachments;
+      dfd.reject(error);
+    });
+    return dfd;
+  },
   addAttachments: function(reproduction, formData) {
     var dfd = $.Deferred();
     var theUrl = 'http://' + this.host + ':' + this.port + '/reproduction/image/' + reproduction._id + '?rev=' + reproduction._rev;
