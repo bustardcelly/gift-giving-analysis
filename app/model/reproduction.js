@@ -1,6 +1,6 @@
 'use strict';
 module.exports = {
-  inflate: function(fromObj) {
+  create: function(fromObj) {
     var month = parseInt(fromObj['month'], 10);
     var day = parseInt(fromObj['day'], 10);
     var latitude = parseInt(fromObj['latitude'], 10);
@@ -8,7 +8,8 @@ module.exports = {
     return {
       title: fromObj['title'],
       copy: fromObj['copy'],
-      location_str: fromObj['location'],
+      copy_of: fromObj['copy_of'],
+      location_str: fromObj['location'] || fromObj['location_str'],
       maker_author: fromObj['maker_author'],
       publisher: fromObj['publisher'],
       medium: fromObj['medium'],

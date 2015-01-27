@@ -1,6 +1,7 @@
 'use strict';
 var fs = require('fs');
 var defer = require('node-promise').defer;
+var objectAssign = require('object-assign');
 
 var DB_NAME = 'reproduction';
 
@@ -12,6 +13,20 @@ module.exports = {
     this.connection = connection;
     this.dbhost = dbhost;
     this.dbport = dbport;
+  },
+  newReproduction: function(reproduction) {
+    var dfd = defer();
+    var db = this.connection.database(DB_NAME);
+    db.save(reproduction, function(err, data) {
+      if(err) {
+        dfd.reject(err.reason);
+      }
+      else {
+        objectAssign(data, reproduction);
+        dfd.resolve(data);
+      }
+    });
+    return dfd.promise;
   },
   getAllReproductions: function() {
     var dfd = defer();

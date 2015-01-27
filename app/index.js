@@ -57,7 +57,9 @@ server.get('/motif', motifRouteController.getAllMotifs);
 
 // GET Reproduction (all)
 server.get('/reproduction', reproductionRouteController.getAllReproductions);
-// PUT Exchange update
+// POST Reproduction new
+server.post('/reproduction', reproductionRouteController.addReproduction);
+// PUT Reproduction update
 server.put('/reproduction/:id', reproductionRouteController.updateReproduction);
 
 // PUT Image on Reproduction Document

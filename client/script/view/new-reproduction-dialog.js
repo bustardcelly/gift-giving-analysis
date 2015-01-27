@@ -1,12 +1,8 @@
 /** @jsx React.DOM */
 /*global $, window*/
 'use strict';
-
 var React = require('react');
-var ExchangeForm = require('./exchange-form').ExchangeForm;
-
-var monthList = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
-                'August', 'September', 'October', 'November', 'December'];
+var ReproductionForm = require('./reproduction-form').ReproductionForm;
 
 var Dialog = React.createClass({
   getInitialState: function() {
@@ -25,27 +21,7 @@ var Dialog = React.createClass({
     });
   },
   serializeForm: function() {
-    var $dom = this.getDOMNode();
-    var $title = $('input.exchange-title-input', $dom);
-    var $source = $('textarea.exchange-source-input', $dom);
-    var $location = $('input.exchange-location-str-input', $dom);
-    var $description = $('textarea.exchange-description-input', $dom);
-    var $latitude = $('input.exchange-latitude-input', $dom);
-    var $longitude = $('input.exchange-longitude-input', $dom);
-    var $day = $('select.exchange-day-input', $dom);
-    var $month = $('select.exchange-month-input', $dom);
-    var $year = $('input.exchange-year-input', $dom);
-    return {
-      title: $title.val(),
-      source: $source.val(),
-      location_str: $location.val(),
-      description: $description.val(),
-      latitude: Number($latitude.val()),
-      longitude: Number($longitude.val()),
-      day: isNaN(Number($day.val())) ? null : Number($day.val()),
-      month: monthList.indexOf($month.val()) === -1 ? -1 : monthList.indexOf($month.val()),
-      year: $year.val().length === 0 ? null : $year.val()
-    };
+    return this.refs.reproductionForm.serialize();
   },
   show: function() {
     this.setState({
@@ -88,11 +64,10 @@ var Dialog = React.createClass({
             </div>
             <div className="modal-body">
               <div className="form-inline" role="form" action="#">
-                {
-                  ExchangeForm({
-                    title: null, data: null
-                  })
-                }
+                <ReproductionForm ref="reproductionForm" {... {
+                    title: null, 
+                    data: null
+                  }} />
               </div>
             </div>
             <div className="modal-footer">
@@ -109,12 +84,12 @@ var Dialog = React.createClass({
 module.exports = {
   render: function(submitResponder) {
     var dialog = Dialog({
-      title: 'Add New Exchange',
+      title: 'Add New Reproduction',
       onSubmit: submitResponder
     });
     React.renderComponent(
       dialog,
-      window.document.getElementById('exchange-dialog')
+      window.document.getElementById('reproduction-dialog')
     );
   }
 };

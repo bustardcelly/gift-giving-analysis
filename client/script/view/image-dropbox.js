@@ -1,7 +1,6 @@
 /** @jsx React.DOM */
 'use strict';
 var React = require('react');
-var reproductionService = require('../service/reproduction');
 var imgAttachmentFactory = require('../model/image-attachment-item');
 
 var statesEnum = imgAttachmentFactory.states;
@@ -43,8 +42,9 @@ module.exports = React.createClass({displayName: 'ImageDropBox',
     return this.props.data._attachmentList;
   },
   componentDidMount: function() {
-    var reproduction = this.props.data;
-    var attachments = reproduction._attachments;
+    var model = this.props.data;
+    var attachments = model._attachments;
+    var attachmentService = this.props.service;
     var attachmentList = this.getAttachmentCollection();
 
     this._boundForceUpdate = this.forceUpdate.bind(this, null);
@@ -52,10 +52,10 @@ module.exports = React.createClass({displayName: 'ImageDropBox',
 
     if(attachments) {
       Object.keys(attachments).map(function(filename) {
-        reproductionService.getImageAttachmentURL(reproduction, filename)
+        attachmentService.getImageAttachmentURL(model, filename)
           .then(function(data) {
             var img = imgAttachmentFactory.create(data);
-            img.setState(statesEnum.LOADED);
+            img.updateState(statesEnum.LOADED);
             attachmentList.add(img);
           });
         });
@@ -102,6 +102,7 @@ module.exports = React.createClass({displayName: 'ImageDropBox',
     var d = this.props.data;
     var file = event.dataTransfer.files ? event.dataTransfer.files[0] : undefined;
     var attachmentList = this.getAttachmentCollection();
+    var attachmentService = this.props.service;
     if(file !== undefined) {
       data = new FormData();
       data.append('file_1', file);
@@ -115,13 +116,13 @@ module.exports = React.createClass({displayName: 'ImageDropBox',
 
           attachmentList.add(img);
           
-          reproductionService.addAttachments(d, data)
-            .then(function(reproductionData) {
-              img.setState(statesEnum.LOADED);
+          attachmentService.addAttachments(d, data)
+            .then(function(data) {
+              img.updateState(statesEnum.LOADED);
             }, function(error) {
               // TODO: Remove from list.
               // TODO:  Show error.
-              img.setState(statesEnum.ERROR);
+              img.updateState(statesEnum.ERROR);
             });
 
         }, function(error) {
@@ -131,17 +132,17 @@ module.exports = React.createClass({displayName: 'ImageDropBox',
     return false;
   },
   handleRemoveAttachment: function(attachmentData) {
-    var reproduction = this.props.data;
+    var model = this.props.data;
     var filename = attachmentData.filename;
+    var attachmentService = this.props.service;
     var attachmentList = this.getAttachmentCollection();
-    reproductionService.removeAttachment(reproduction, filename)
+    attachmentService.removeAttachment(model, filename)
       .then(function() {
         attachmentList.remove(attachmentData);
       });
   },
   render: function() {
     var rows = [];
-    var reproduction = this.props.data;
     var removeDelegate = this.handleRemoveAttachment;
     var attachments = this.getAttachmentCollection();
     attachments.get().map(function(data) {
@@ -152,14 +153,16 @@ module.exports = React.createClass({displayName: 'ImageDropBox',
     });
     return (
       <div className="form-group">
-        <label htmlFor="reproduction-image-container" className="control-label reproduction-form-label">Images:</label>
-        <ul className="image-attachment-list">
-          {rows}
-        </ul>
-        <div className="image-dropbox" 
-              onDragOver={this.noop} onDragExit={this.noop} 
-              onDragEnter={this.handleDragEnter} onDrop={this.handleDrop}>
-          <span>Drop image file here</span>
+        <label htmlFor="image-attachment-container" className="control-label form-label">Images:</label>
+        <div name="image-attachment-container">
+          <ul className="image-attachment-list">
+            {rows}
+          </ul>
+          <div className="image-dropbox" 
+                onDragOver={this.noop} onDragExit={this.noop} 
+                onDragEnter={this.handleDragEnter} onDrop={this.handleDrop}>
+            <span>Drop image file here</span>
+          </div>
         </div>
       </div>
     );

@@ -8,7 +8,7 @@ module.exports = {
     return {
       title: fromObj['title'],
       description: fromObj['description'],
-      location_str: fromObj['location'],
+      location_str: fromObj['location'] || fromObj['location_str'],
       source: fromObj['source'],
       year: fromObj.hasOwnProperty('year') ? fromObj['year'] : undefined,
       month: isNaN(month) ? -1 : month,

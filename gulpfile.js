@@ -73,6 +73,7 @@ gulp.task('copy', ['clean'], function() {
       .pipe(gulp.dest('./static/css'));
 
   gulp.src([
+        'client/index.html',
         'client/exchange.html',
         'client/reproduction.html'
       ])

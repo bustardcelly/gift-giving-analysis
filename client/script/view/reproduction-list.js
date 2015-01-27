@@ -2,7 +2,9 @@
 'use strict';
 var React = require('react');
 
+var collFactory = require('../model/collection');
 var reproductionService = require('../service/reproduction');
+var reproductionDialog = require('./new-reproduction-dialog');
 var EditableReproductionForm = require('./reproduction-form').EditableReproductionForm;
 
 var ReproductionListItem = React.createClass({displayName: 'ReproductionListItem',
@@ -65,14 +67,12 @@ var ReproductionListItem = React.createClass({displayName: 'ReproductionListItem
           <a href="#" onClick={this.handleSelect}>{this.props.data.title}</a>
         </p>
         <div className={(this.state.editing ? 'reproduction-form' : 'reproduction-form hidden')}>
-          {
-            EditableReproductionForm({
+          <EditableReproductionForm {... {
               data: this.props.data,
               onCancel: this.onCancel,
               onSubmit: this.onSubmit,
               onDelete: this.onDelete
-            })
-          }
+            }} />
         </div>
       </li>
     );
@@ -81,20 +81,20 @@ var ReproductionListItem = React.createClass({displayName: 'ReproductionListItem
 
 var ReproductionList = React.createClass({displayName: 'ReproductionList',
   handleReproductionAdd: function() {
-    // exchangeDialog.render(this.handleSubmitNewExchange);
+    reproductionDialog.render(this.handleSubmitNewReproduction);
   },
-  // handleSubmitNewExchange: function(exchangeData) {
-  //   console.log('Submit new exchange: ' + JSON.stringify(exchangeData, null, 2));
-  //   var list = this.props.list;
-  //   exchangeService.addExchange(exchangeData)
-  //     .then(function(data) {
-  //       data.gifts = collFactory.create();
-  //       list.add(data);
-  //     }, function(error) {
-  //       // TODO: Show error.
-  //     });
-  // },
-  onDeleteExchange: function(exchange) {
+  handleSubmitNewReproduction: function(reproductionData) {
+    console.log('Submit new reproduction: ' + JSON.stringify(reproductionData, null, 2));
+    var list = this.props.list;
+    reproductionService.addReproduction(reproductionData)
+      .then(function(data) {
+        data._attachmentList = collFactory.create();
+        list.add(data);
+      }, function(error) {
+        // TODO: Show error.
+      });
+  },
+  onDeleteReproduction: function(exchange) {
     this.props.list.remove(exchange);
   },
   componentDidMount: function() {
@@ -105,7 +105,7 @@ var ReproductionList = React.createClass({displayName: 'ReproductionList',
     this.props.list.removeListener('change', this._boundForceUpdate);
   },
   render: function() {
-    var deleteDelegate = this.onDeleteExchange;
+    var deleteDelegate = this.onDeleteReproduction;
     var rows = [];
     Array.prototype.forEach.call(this.props.list.get(), function(item) {
       rows.push(

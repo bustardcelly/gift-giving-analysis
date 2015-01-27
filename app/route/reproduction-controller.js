@@ -1,5 +1,6 @@
 'use strict';
 var db = require('../db').reproduction;
+var reproductionFactory = require('../model/reproduction');
 
 module.exports = {
   getAllReproductions: function(req, res, next) {
@@ -10,6 +11,20 @@ module.exports = {
       }, function(err) {
         res.send(200, {
           error: err
+        });
+      });
+    return next();
+  },
+  addReproduction: function(req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    var params = req.params;
+    var reproduction = reproductionFactory.create(params);
+    db.newReproduction(reproduction)
+      .then(function(item) {
+        res.send(200, item);
+      }, function(err) {
+        res.send(200, {
+          error: 'Could not save new reproduction: ' + err
         });
       });
     return next();
@@ -35,7 +50,7 @@ module.exports = {
     var filename = req.params.filename;
     db.getAttachment(id, filename)
       .then(function(data) {
-        res.send(200, data)
+        res.send(200, data);
       }, function(err) {
 
       });

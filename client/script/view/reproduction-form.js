@@ -69,16 +69,108 @@ var ReproductionForm = React.createClass({displayName: 'ReproductionForm',
     }
     return months;
   },
-  resetSeletedCopyOf: function(value) {
+  getOriginalMotifSelection: function() {
+    var motifs = this.props.data.motifs;
+    return (motifs === null || typeof motifs === 'undefined') ? [] : motifs.split(',');
+  },
+  getSelectedMotifList: function() {
+    var $dom = $(this.getDOMNode());
+    var $items = $('#motif-selector .motif-list-item.active', $dom);
+    var selectedIds = [];
+    $items.each(function() {
+      selectedIds.push($(this).data('motifid'));
+    });
+    return selectedIds.join(',');
+  },
+  serialize: function() {
+    var toCopy = this.props.data;
+    var $dom = this.getDOMNode();
+    var $title = $('input.reproduction-title-input', $dom);
+    var $copy = $('input.reproduction-copy-input', $dom);
+    var $copyof = $('.reproduction-copy-of-container', $dom);
+    var $location = $('input.reproduction-location-str-input', $dom);
+    var $maker = $('input.reproduction-maker-input', $dom);
+    var $publisher = $('input.reproduction-publisher-input', $dom);
+    var $medium = $('input.reproduction-medium-input', $dom);
+    var $day = $('select.reproduction-day-input', $dom);
+    var $month = $('select.reproduction-month-input', $dom);
+    var $year = $('input.reproduction-year-input', $dom);
+    var $latitude = $('input.reproduction-latitude-input', $dom);
+    var $longitude = $('input.reproduction-longitude-input', $dom);
+    var $source = $('textarea.reproduction-source-input', $dom);
+    var $notes = $('textarea.reproduction-notes-input', $dom);
+    var serialized = {};
+    var key;
+    for(key in toCopy) {
+      if(toCopy.hasOwnProperty(key) && key !== 'gifts') {
+        serialized[key] = toCopy[key];
+      }
+    }
+    serialized.title = $title.val();
+    serialized.copy = $copy.val();
+    serialized.copy_of = $copyof.attr('data-copyofid');
+    serialized.location_str = $location.val();
+    serialized.maker_author = $maker.val();
+    serialized.publisher = $publisher.val();
+    serialized.medium = $medium.val();
+    serialized.day = isNaN(Number($day.val())) ? null : Number($day.val());
+    serialized.month = monthList.indexOf($month.val());
+    serialized.year = $year.val().length === 0 ? null : $year.val();
+    serialized.latitude = Number($latitude.val());
+    serialized.longitude = Number($longitude.val());
+    serialized.source = $source.val();
+    serialized.notes = $notes.val();
+    serialized.motifs = this.getSelectedMotifList();
+    return serialized;
+  },
+  revert: function(fieldSelector, property) {
+    var $dom = this.getDOMNode();
+    var $field = $(fieldSelector, $dom);
+    $field.val(this.props.data[property]);
+  },
+  revertSelectedMotifs: function() {
+    var motifs = this.getOriginalMotifSelection();
+    var $dom = $(this.getDOMNode());
+    var $items = $('#motif-selector .motif-list-item', $dom);
+    $items.each(function() {
+      var $item = $(this);
+      var id = $item.data('motifid');
+      $item.removeClass('active');
+      if(motifs.indexOf(id) > -1) {
+        $item.addClass('active');
+      }
+    });
+  },
+  revertSelectedCopyOf: function() {
+    var $dom = this.getDOMNode();
+    var $elem = $('.reproduction-copy-of-container', $dom);
+    var $title = $('p.copy-of-title', $elem);
+    $elem.data('copyofid', this.props.data.copy_of);
+    $elem.attr('data-copyofid', this.props.data.copy_of);
+    $title.text(getGiftNameFromId(this.props.data.copy_of));
+  },
+  resetSelectedCopyOf: function(value) {
     this.setState({
       selectedGiftId: value
     });
   },
-  save: function() {
-    this.refs.imageDropbox.savePendingAttachments();
-  },
   cancel: function() {
-    this.refs.imageDropbox.savePendingAttachments();
+    this.revert('input.reproduction-title-input', 'title');
+    this.revert('input.reproduction-copy-input', 'copy');
+    this.revert('input.reproduction-location-str-input', 'location_str');
+    this.revert('input.reproduction-maker-input', 'maker_str');
+    this.revert('input.reproduction-publisher-input', 'publisher');
+    this.revert('input.reproduction-medium-input', 'medium');
+    this.revert('input.reproduction-day-input', 'day');
+    this.revert('input.reproduction-month-input', 'month');
+    this.revert('input.reproduction-year-input', 'year');
+    this.revert('input.reproduction-latitude-input', 'latitude');
+    this.revert('input.reproduction-longitude-input', 'longitude');
+    this.revert('input.reproduction-source-input', 'source');
+    this.revert('input.reproduction-notes-input', 'notes');
+    this.revertSelectedCopyOf();
+    this.revertSelectedMotifs();
+    this.resetSelectedCopyOf(this.props.data.copy_of);
   },
   onSaveCopyOfGift: function(selectedGiftId) {
     this.setState({
@@ -91,6 +183,17 @@ var ReproductionForm = React.createClass({displayName: 'ReproductionForm',
     return false;
   },
   render: function() {
+    var attachmentView = '';
+
+    if(this.props.attachmentsEnabled) {
+      attachmentView = (
+      <ImageDropBox {... {
+          data: this.props.data,
+          service: reproductionService
+        }} />
+      );
+    }
+
     return (
       <div className="form-group">
         <h3 className={this.props.title ? '' : 'hidden'}>{this.props.title}</h3>
@@ -143,7 +246,7 @@ var ReproductionForm = React.createClass({displayName: 'ReproductionForm',
           {
             MotifSelector({
               itemClassName: 'motif-list-item',
-              selectedMotifs: this.props.data.motifs
+              selectedMotifs: this.unpack('motifs')
             })
           }
         </div>
@@ -164,10 +267,9 @@ var ReproductionForm = React.createClass({displayName: 'ReproductionForm',
           <label htmlFor="reproduction-notes-input" className="control-label reproduction-form-label">Notes:</label>
           <textarea type="text" name="reproduction-notes-input" className="form-control input-md input-md reproduction-notes-input" placeholder="Notes" defaultValue={this.unpack('notes')}></textarea>
         </div>
-        <ImageDropBox ref="imageDropbox" {... {
-          data: this.props.data,
-          service: reproductionService
-        }} />
+        {
+          attachmentView
+        }
       </div>
     );
   }
@@ -179,113 +281,19 @@ var EditableReproductionForm = React.createClass({displayName: 'EditableReproduc
       editable: true
     };
   },
-  getOriginalMotifSelection: function() {
-    var motifs = this.props.data.motifs;
-    return (motifs === null || typeof motifs === 'undefined') ? [] : motifs.split(',');
-  },
-  getSelectedMotifList: function() {
-    var $dom = $(this.getDOMNode());
-    var $items = $('#motif-selector .motif-list-item.active', $dom);
-    var selectedIds = [];
-    $items.each(function() {
-      selectedIds.push($(this).data('motifid'));
-    });
-    return selectedIds.join(',');
-  },
-  revertSelectedMotifs: function() {
-    var motifs = this.getOriginalMotifSelection();
-    var $dom = $(this.getDOMNode());
-    var $items = $('#motif-selector .motif-list-item', $dom);
-    $items.each(function() {
-      var $item = $(this);
-      var id = $item.data('motifid');
-      $item.removeClass('active');
-      if(motifs.indexOf(id) > -1) {
-        $item.addClass('active');
-      }
-    });
-  },
-  revertSelectedCopyOf: function() {
-    var $dom = this.getDOMNode();
-    var $elem = $('.reproduction-copy-of-container', $dom);
-    var $title = $('p.copy-of-title', $elem);
-    $elem.data('copyofid', this.props.data.copy_of);
-    $elem.attr('data-copyofid', this.props.data.copy_of);
-    $title.text(getGiftNameFromId(this.props.data.copy_of));
-  },
-  revert: function(fieldSelector, property) {
-    var $dom = this.getDOMNode();
-    var $field = $(fieldSelector, $dom);
-    $field.val(this.props.data[property]);
-  },
-  serializeCopy: function(toCopy) {
-    var $dom = this.getDOMNode();
-    var $title = $('input.reproduction-title-input', $dom);
-    var $copy = $('input.reproduction-copy-input', $dom);
-    var $copyof = $('.reproduction-copy-of-container', $dom);
-    var $location = $('input.reproduction-location-str-input', $dom);
-    var $maker = $('input.reproduction-maker-input', $dom);
-    var $publisher = $('input.reproduction-publisher-input', $dom);
-    var $medium = $('input.reproduction-medium-input', $dom);
-    var $day = $('select.reproduction-day-input', $dom);
-    var $month = $('select.reproduction-month-input', $dom);
-    var $year = $('input.reproduction-year-input', $dom);
-    var $latitude = $('input.reproduction-latitude-input', $dom);
-    var $longitude = $('input.reproduction-longitude-input', $dom);
-    var $source = $('textarea.reproduction-source-input', $dom);
-    var $notes = $('textarea.reproduction-notes-input', $dom);
-    var serialized = {};
-    var key;
-    for(key in toCopy) {
-      if(toCopy.hasOwnProperty(key) && key !== 'gifts') {
-        serialized[key] = toCopy[key];
-      }
-    }
-    serialized.title = $title.val();
-    serialized.copy = $copy.val();
-    serialized.copy_of = $copyof.attr('data-copyofid');
-    serialized.location_str = $location.val();
-    serialized.maker_author = $maker.val();
-    serialized.publisher = $publisher.val();
-    serialized.medium = $medium.val();
-    serialized.day = isNaN(Number($day.val())) ? null : Number($day.val());
-    serialized.month = monthList.indexOf($month.val());
-    serialized.year = $year.val().length === 0 ? null : $year.val();
-    serialized.latitude = Number($latitude.val());
-    serialized.longitude = Number($longitude.val());
-    serialized.source = $source.val();
-    serialized.notes = $notes.val();
-    serialized.motifs = this.getSelectedMotifList();
-    return serialized;
-  },
   handleReproductionSubmit: function(event) {
     event.preventDefault();
     if(this.props.onSubmit) {
-      this.props.onSubmit(this.serializeCopy(this.props.data));
+      this.props.onSubmit(this.refs.reproductionForm.serialize());
     }
     return false;
   },
   handleReproductionCancel: function(event) {
     event.preventDefault();
-    this.revert('input.reproduction-title-input', 'title');
-    this.revert('input.reproduction-copy-input', 'copy');
-    this.revert('input.reproduction-location-str-input', 'location_str');
-    this.revert('input.reproduction-maker-input', 'maker_str');
-    this.revert('input.reproduction-publisher-input', 'publisher');
-    this.revert('input.reproduction-medium-input', 'medium');
-    this.revert('input.reproduction-day-input', 'day');
-    this.revert('input.reproduction-month-input', 'month');
-    this.revert('input.reproduction-year-input', 'year');
-    this.revert('input.reproduction-latitude-input', 'latitude');
-    this.revert('input.reproduction-longitude-input', 'longitude');
-    this.revert('input.reproduction-source-input', 'source');
-    this.revert('input.reproduction-notes-input', 'notes');
-    this.revertSelectedCopyOf();
-    this.revertSelectedMotifs();
+    this.refs.reproductionForm.cancel();
     if(this.props.onCancel) {
       this.props.onCancel();
     }
-    this.refs.reproductionForm.resetSeletedCopyOf(this.props.data.copy_of);
     return false;
   },
   handleReproductionDelete: function(event) {
@@ -298,7 +306,8 @@ var EditableReproductionForm = React.createClass({displayName: 'EditableReproduc
   render: function() {
     var formProps = {
       title: 'Edit Reproduction',
-      data: this.props.data
+      data: this.props.data,
+      attachmentsEnabled: true
     };
     return (
       <div className="form-inline" role="form" action="#">

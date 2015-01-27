@@ -1,15 +1,8 @@
 'use strict';
 var defer = require('node-promise').defer;
+var objectAssign = require('object-assign');
 
 var DB_NAME = 'exchange';
-var glom = function(fromObject, toObject) {
-  var prop;
-  for(prop in fromObject) {
-    if(!toObject.hasOwnProperty(prop)) {
-      toObject[prop] = fromObject[prop];
-    }
-  }
-};
 
 module.exports = {
   connection: undefined,
@@ -52,7 +45,7 @@ module.exports = {
         dfd.reject(err.reason);
       }
       else {
-        glom(exchange, data);
+        objectAssign(data, exchange);
         dfd.resolve(data);
       }
     });

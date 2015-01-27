@@ -21,7 +21,7 @@ var ImageAttachment = function(source) {
 
 ImageAttachment.prototype = new EventEmitter();
 
-ImageAttachment.prototype.setState = function(value) {
+ImageAttachment.prototype.updateState = function(value) {
   if(this.state !== value) {
     this.state = value
     this.emit(EVENTS.CHANGE, this);
