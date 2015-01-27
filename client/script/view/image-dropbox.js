@@ -2,17 +2,36 @@
 'use strict';
 var React = require('react');
 var reproductionService = require('../service/reproduction');
+var imgAttachmentFactory = require('../model/image-attachment-item');
+
+var statesEnum = imgAttachmentFactory.states;
 
 var ImageAttachmentItem = React.createClass({displayName: 'ImageAttachmentItem',
+  componentDidMount: function() {
+    var attachment = this.props.data;
+    this._boundForceUpdate = this.forceUpdate.bind(this, null);
+    attachment.on('change', this._boundForceUpdate, this);
+  },
+  componentWillUnmount: function() {
+    var attachment = this.props.data;
+    attachment.removeListener('change', this._boundForceUpdate);
+  },
   onRemove: function() {
-    this.props.removeHandler(this.props.data.filename);
+    this.props.removeHandler(this.props.data);
   },
   render: function() {
+    var source = this.props.data.url || this.props.data.source;
+    var state = this.props.data.state;
     return (
       <li>
-          <img src={this.props.data.url} />
         <p>
+          <img src={source} />
+        </p>
+        <p className={state !== statesEnum.LOADED ? 'hidden' : ''}>
           <button type="btn" className="btn" onClick={this.onRemove}>remove</button>
+        </p>
+        <p className={state !== statesEnum.LOADING ? 'hidden progress-field' : 'progress-field'}>
+          <strong>Loading...</strong>
         </p>
       </li>
     );
@@ -20,10 +39,13 @@ var ImageAttachmentItem = React.createClass({displayName: 'ImageAttachmentItem',
 });
 
 module.exports = React.createClass({displayName: 'ImageDropBox',
+  getAttachmentCollection: function() {
+    return this.props.data._attachmentList;
+  },
   componentDidMount: function() {
     var reproduction = this.props.data;
     var attachments = reproduction._attachments;
-    var attachmentList = this.props.data._attachmentList;
+    var attachmentList = this.getAttachmentCollection();
 
     this._boundForceUpdate = this.forceUpdate.bind(this, null);
     attachmentList.on('change', this._boundForceUpdate, this);
@@ -32,32 +54,36 @@ module.exports = React.createClass({displayName: 'ImageDropBox',
       Object.keys(attachments).map(function(filename) {
         reproductionService.getImageAttachmentURL(reproduction, filename)
           .then(function(data) {
-            attachmentList.add(data);
+            var img = imgAttachmentFactory.create(data);
+            img.setState(statesEnum.LOADED);
+            attachmentList.add(img);
           });
         });
     }
   },
-  componentDidUnmount: function() {
-    this.props.data._attachmentList.off('change', this._boundForceUpdate)
+  componentWillUnmount: function() {
+    this.getAttachmentCollection().removeListener('change', this._boundForceUpdate)
   },
   previewDroppedFile: function(file) {
-    var $dom = $(this.getDOMNode());
-    var $list = $('.image-attachment-list', $dom);
+    var dfd = $.Deferred();
     var reader;
     var onFileLoad = function(file, $list) {
       return function(event) {
-        $list.append('<li><img src="' + event.target.result + '" /></li>');
+        dfd.resolve(event.target.result);
       };
     };
     if(!file.type.match('image.*')) {
-      return false;
+      return dfd.reject("Can only drop image files.");
     }
     else {
       reader = new FileReader();
-      reader.onload = onFileLoad(file, $list);
+      reader.onload = onFileLoad(file);
+      reader.onerror = function(err) {
+        dfd.reject(err);
+      };
       reader.readAsDataURL(file);
     }
-    return true;
+    return dfd;
   },
   noop: function(event) {
     event.stopPropagation();
@@ -72,36 +98,53 @@ module.exports = React.createClass({displayName: 'ImageDropBox',
   handleDrop: function(event) {
     event.stopPropagation();
     event.preventDefault();
+    var data;
     var d = this.props.data;
     var file = event.dataTransfer.files ? event.dataTransfer.files[0] : undefined;
-    var data;
+    var attachmentList = this.getAttachmentCollection();
     if(file !== undefined) {
       data = new FormData();
       data.append('file_1', file);
-      this.previewDroppedFile(file);
-      reproductionService.addAttachments(this.props.data, data)
-        .then(function(reproductionData) {
-          console.log(d._rev + ', ' + reproductionData._rev);
+      this.previewDroppedFile(file)
+        .then(function(source) {
+
+          var img = imgAttachmentFactory.create({
+            source: source,
+            filename: file.name
+          });
+
+          attachmentList.add(img);
+          
+          reproductionService.addAttachments(d, data)
+            .then(function(reproductionData) {
+              img.setState(statesEnum.LOADED);
+            }, function(error) {
+              // TODO: Remove from list.
+              // TODO:  Show error.
+              img.setState(statesEnum.ERROR);
+            });
+
         }, function(error) {
-          // TODO: Remove from list.
-          // TODO:  Show error.
+          // TODO: Show error.
         });
     }
     return false;
   },
-  handleRemoveAttachment: function(filename) {
+  handleRemoveAttachment: function(attachmentData) {
     var reproduction = this.props.data;
+    var filename = attachmentData.filename;
+    var attachmentList = this.getAttachmentCollection();
     reproductionService.removeAttachment(reproduction, filename)
       .then(function() {
-        // TODO: remove from collection.
+        attachmentList.remove(attachmentData);
       });
   },
   render: function() {
     var rows = [];
     var reproduction = this.props.data;
     var removeDelegate = this.handleRemoveAttachment;
-    var attachments = reproduction._attachmentList.get();
-    var attachmentListing = attachments.map(function(data) {
+    var attachments = this.getAttachmentCollection();
+    attachments.get().map(function(data) {
       rows.push(<ImageAttachmentItem {... {
         data: data,
         removeHandler: removeDelegate

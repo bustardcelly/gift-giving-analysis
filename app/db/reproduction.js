@@ -6,8 +6,12 @@ var DB_NAME = 'reproduction';
 
 module.exports = {
   connection: undefined,
-  init: function(connection) {
+  dbhost: undefined,
+  dbport: undefined,
+  init: function(connection, dbhost, dbport) {
     this.connection = connection;
+    this.dbhost = dbhost;
+    this.dbport = dbport;
   },
   getAllReproductions: function() {
     var dfd = defer();
@@ -38,6 +42,14 @@ module.exports = {
       }
     });
     return dfd.promise;
+  },
+  getAttachment: function(id, filename) {
+    var dfd = defer();
+    dfd.resolve({
+      filename: filename,
+      url: 'http://' + this.dbhost + ':' + this.dbport + '/reproduction/' + id + '/' + filename
+    });
+    return dfd;
   },
   saveAttachments: function(id, revision, filesObj) {
     var dfd = defer();

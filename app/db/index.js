@@ -23,7 +23,7 @@ module.exports = {
     this.exchange.init(connection);
     this.gift.init(connection);
     this.motif.init(connection);
-    this.reproduction.init(connection);
+    this.reproduction.init(connection, host, port);
     return this;
   }
 };

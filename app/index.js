@@ -63,14 +63,7 @@ server.put('/reproduction/:id', reproductionRouteController.updateReproduction);
 // PUT Image on Reproduction Document
 server.put('/reproduction/image/:id?rev=:rev', reproductionRouteController.saveAttachment);
 // GET Image Attachment on Reproduction
-server.get('/reproduction/:id/:filename', function(req, res, next) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.send({
-    filename: req.params.filename,
-    url: 'http://' + dbhost + ':' + dbport + '/reproduction/' + req.params.id + '/' + req.params.filename
-  });
-  return next();
-});
+server.get('/reproduction/:id/:filename', reproductionRouteController.getAttachment);
 // DELETE Image Attachment on Reproduction
 server.del('/reproduction/:id/:filename?rev=:rev', reproductionRouteController.removeAttachment);
 

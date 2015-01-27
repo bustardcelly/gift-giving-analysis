@@ -102,7 +102,7 @@ var ReproductionList = React.createClass({displayName: 'ReproductionList',
     this.props.list.on('change', this._boundForceUpdate, this);
   },
   componentWillUnmount: function() {
-    this.props.list.off('change', this._boundForceUpdate);
+    this.props.list.removeListener('change', this._boundForceUpdate);
   },
   render: function() {
     var deleteDelegate = this.onDeleteExchange;

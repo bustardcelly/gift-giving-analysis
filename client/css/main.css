@@ -46,7 +46,15 @@ body {
 }
 
 .image-attachment-list > li {
-  margin: 0.3em;
+  margin: .3em;
+  padding: 1em;
+  border: #aaa 1px solid;
+  background: #222;
+  text-align: center;
+}
+
+.image-attachment-list > li > .progress-field {
+  color: #ffffff;
 }
 
 footer {

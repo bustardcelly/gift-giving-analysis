@@ -60,7 +60,7 @@ var ExchangeListItem = React.createClass({displayName: 'ExchangeListItem',
     this.props.data.gifts.on('change', this._boundForceUpdate, this);
   },
   componentWillUnmount: function() {
-    this.props.data.gifts.off('change', this._boundForceUpdate);
+    this.props.data.gifts.removeListener('change', this._boundForceUpdate);
   },
   render: function() {
     var total = this.props.data.gifts.get().reduce(function(prev, curr, index, array) {
@@ -114,7 +114,7 @@ var ExchangeList = React.createClass({displayName: 'ExchangeList',
     this.props.list.on('change', this._boundForceUpdate, this);
   },
   componentWillUnmount: function() {
-    this.props.list.off('change', this._boundForceUpdate);
+    this.props.list.removeListener('change', this._boundForceUpdate);
   },
   render: function() {
     var deleteDelegate = this.onDeleteExchange;

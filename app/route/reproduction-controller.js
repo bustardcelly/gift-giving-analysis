@@ -29,6 +29,18 @@ module.exports = {
       });
     return next();
   },
+  getAttachment: function(req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    var id = req.params.id;
+    var filename = req.params.filename;
+    db.getAttachment(id, filename)
+      .then(function(data) {
+        res.send(200, data)
+      }, function(err) {
+
+      });
+    return next();
+  },
   saveAttachment: function(req, res, next) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     var params = req.params;
