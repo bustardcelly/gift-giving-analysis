@@ -100,7 +100,6 @@ module.exports = {
     })
     .done(function(data) {
       if(data.hasOwnProperty('error')) {
-        reproduction._attachmentList = detachedAttachments;
         dfd.reject(data.error);
       }
       else {
@@ -109,8 +108,10 @@ module.exports = {
       }
     })
     .fail(function(error) {
-      reproduction._attachmentList = detachedAttachments;
       dfd.reject(error);
+    })
+    .always(function() {
+      reproduction._attachmentList = detachedAttachments;
     });
     return dfd;
   },

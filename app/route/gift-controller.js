@@ -90,5 +90,49 @@ module.exports = {
         });
       });
     return next();
+  },
+  getAttachment: function(req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    var id = req.params.id;
+    var filename = req.params.filename;
+    db.getAttachment(id, filename)
+      .then(function(data) {
+        res.send(200, data);
+      }, function(err) {
+
+      });
+    return next();
+  },
+  saveAttachment: function(req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    var params = req.params;
+    var id = params.id;
+    var rev = params.rev;
+    var files = req.files;
+    db.saveAttachments(id, rev, files)
+      .then(function(data) {
+        res.send(200, data);
+      }, function(err) {
+        res.send(200, {
+          error: 'Could not save attachment(s): ' +  JSON.stringify(err, null, 2)
+        });
+      });
+    return next();
+  },
+  removeAttachment: function(req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    var params = req.params;
+    var id = params.id;
+    var rev = params.rev;
+    var filename = params.filename;
+    db.removeAttachment({id:id, rev:rev}, filename)
+      .then(function(data) {
+        res.send(200, data);
+      }, function(err) {
+        res.send(200, {
+          error: 'Could not remove attachment: ' + JSON.stringify(err, null, 2)
+        });
+      });
+    return next();
   }
 };

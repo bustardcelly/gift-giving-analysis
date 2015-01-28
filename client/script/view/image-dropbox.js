@@ -43,6 +43,9 @@ var ImageAttachmentItem = React.createClass({displayName: 'ImageAttachmentItem',
 });
 
 module.exports = React.createClass({displayName: 'ImageDropBox',
+  dispose: function() {
+    this.componentWillUnmount();
+  },
   _imageBoxUpdate: function() {
     if (this.isMounted()) {
       this.forceUpdate();
@@ -62,13 +65,15 @@ module.exports = React.createClass({displayName: 'ImageDropBox',
 
     if(attachments) {
       Object.keys(attachments).map(function(filename) {
-        attachmentService.getImageAttachmentURL(model, filename)
-          .then(function(data) {
-            var img = imgAttachmentFactory.create(data);
-            img.updateState(statesEnum.LOADED);
-            attachmentList.add(img);
-          });
-        });
+        if(!attachmentList.has({_id:filename})) {
+          attachmentService.getImageAttachmentURL(model, filename)
+            .then(function(data) {
+              var img = imgAttachmentFactory.create(data);
+              img.updateState(statesEnum.LOADED);
+              attachmentList.add(img);
+            });
+        }
+      });
     }
   },
   componentWillUnmount: function() {
@@ -163,7 +168,7 @@ module.exports = React.createClass({displayName: 'ImageDropBox',
     });
     return (
       <div className="form-group">
-        <label htmlFor="image-attachment-container" className="control-label form-label">Images:</label>
+        <label htmlFor="image-attachment-container" className="control-label image-form-label">Images:</label>
         <div name="image-attachment-container">
           <ul className="image-attachment-list">
             {rows}

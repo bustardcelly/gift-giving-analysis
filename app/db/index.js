@@ -20,9 +20,9 @@ module.exports = {
       raw: false,
       forceSave: true
     });
-    this.exchange.init(connection);
-    this.gift.init(connection);
-    this.motif.init(connection);
+    this.exchange.init(connection, host, port);
+    this.gift.init(connection, host, port);
+    this.motif.init(connection, host, port);
     this.reproduction.init(connection, host, port);
     return this;
   }

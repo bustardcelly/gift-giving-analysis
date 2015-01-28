@@ -2,9 +2,14 @@
 /*global window, $*/
 'use strict';
 var React = require('react');
+var ImageDropBox = require('./image-dropbox');
 var MotifSelector = require('./motif-selector');
+var giftService = require('../service/gift');
 
 var HostBody = React.createClass({
+  dispose: function() {
+    this.refs.imageDropBox.dispose();
+  },
   render: function() {
     return (
       <div id="gift-form" className="form-inline" role="form" action="#">
@@ -94,6 +99,10 @@ var HostBody = React.createClass({
             }
           </div>
         </div>
+        <ImageDropBox ref="imageDropBox" {... {
+          data: this.props.data,
+          service: giftService
+        }} />
       </div>
     );
   }
@@ -107,11 +116,13 @@ var Dialog = React.createClass({
   },
   componentDidMount: function() {
     var $dom = $(this.getDOMNode());
-    $dom.modal({
-      background:true, show:true
-    });
+    var dialogBody = this.refs.dialogBody;
+
+    this.show();
+
     $dom.on('hidden', function() {
       $dom.off('hidden');
+      dialogBody.dispose();
       $dom.remove();
     });
   },
@@ -146,14 +157,10 @@ var Dialog = React.createClass({
     return serialized;
   },
   show: function() {
-    this.setState({
-      className: 'modal fade show'
+    var $dom = $(this.getDOMNode());
+    $dom.modal({
+      background:true, show:true
     });
-    setTimeout(function() {
-      this.setState({
-        className: 'modal fade show in'
-      });
-    }.bind(this), 0);
   },
   hide: function(e) {
     if(e) {
@@ -198,13 +205,13 @@ var Dialog = React.createClass({
               <h4 className="modal-title">{this.props.title}</h4>
             </div>
             <div className="modal-body">
-              {
-                HostBody({
-                  data: this.props.data,
-                  isNew: this.props.isNew,
-                  onComplete: this.handleHostEditComplete
-                })
-              }
+              
+              <HostBody ref="dialogBody" {... {
+                data: this.props.data,
+                isNew: this.props.isNew,
+                onComplete: this.handleHostEditComplete
+              }} />
+
             </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-default" onClick={closeDelegate}>cancel</button>
@@ -219,6 +226,7 @@ var Dialog = React.createClass({
 });
 
 module.exports = {
+  Dialog: Dialog,
   render: function(giftData, saveResponder, deleteResponder, isNew) {
     var title = isNew ? 'Add Gift to ' + giftData.exchange_title : 'Edit Gift \'' + '(' + giftData.amount + ') ' + giftData.kind + ' : ' + giftData.description + '\'';
     var dialog = Dialog({
@@ -228,7 +236,7 @@ module.exports = {
       onSave: saveResponder,
       onDelete: deleteResponder
     });
-    React.renderComponent(
+    React.render(
       dialog,
       window.document.getElementById('gift-dialog')
     );

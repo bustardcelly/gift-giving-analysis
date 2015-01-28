@@ -1,5 +1,6 @@
 /*global window*/
 'use strict';
+Object.assign = require('object-assign');
 var collFactory = require('./model/collection');
 var exchangeList = require('./view/exchange-list');
 var exchangeService = require('./service/exchange');
@@ -22,6 +23,7 @@ var accessExchanges = function() {
         exchangeService.getGiftsForExchangeId(item._id)
           .then(function(gifts) {
             Array.prototype.forEach.call(gifts, function(gift) {
+              gift._attachmentList = collFactory.create();
               item.gifts.add(gift);
             });
           });

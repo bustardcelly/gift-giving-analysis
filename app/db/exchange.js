@@ -6,8 +6,12 @@ var DB_NAME = 'exchange';
 
 module.exports = {
   connection: undefined,
-  init: function(connection) {
+  dbhost: undefined,
+  dbport: undefined,
+  init: function(connection, dbhost, dbport) {
     this.connection = connection;
+    this.dbhost = dbhost;
+    this.dbport = dbport;
   },
   getAllExchanges: function() {
     var dfd = defer();

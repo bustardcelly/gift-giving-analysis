@@ -46,14 +46,17 @@ server.get('/gift/:id', giftRouteController.getGiftById);
 server.get('/gift/exchange/:id', giftRouteController.getGiftExchangesById);
 // POST Gift new (exchangeid)
 server.post('/gift/exchange/:id', giftRouteController.addGift);
-
 // PUT Gift update
 server.put('/gift/:id', giftRouteController.updateGift);
 // DELETE Gift previous
 server.del('/gift/:id', giftRouteController.deleteGift);
 
-// GET Motif (all)
-server.get('/motif', motifRouteController.getAllMotifs);
+// PUT Image on Gift Document
+server.put('/gift/image/:id?rev=:rev', giftRouteController.saveAttachment);
+// GET Image Attachment on Gift
+server.get('/gift/:id/:filename', giftRouteController.getAttachment);
+// DELETE Image Attachment on Gift
+server.del('/gift/:id/:filename?rev=:rev', giftRouteController.removeAttachment);
 
 // GET Reproduction (all)
 server.get('/reproduction', reproductionRouteController.getAllReproductions);
@@ -70,6 +73,9 @@ server.put('/reproduction/image/:id?rev=:rev', reproductionRouteController.saveA
 server.get('/reproduction/:id/:filename', reproductionRouteController.getAttachment);
 // DELETE Image Attachment on Reproduction
 server.del('/reproduction/:id/:filename?rev=:rev', reproductionRouteController.removeAttachment);
+
+// GET Motif (all)
+server.get('/motif', motifRouteController.getAllMotifs);
 
 // Initialize DB
 require('./db').init(dbhost, dbport);

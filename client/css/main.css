@@ -33,6 +33,12 @@ body {
   background-color: #BDBDBD;
 }
 
+.image-form-label {
+  width: 80px;
+  text-align: right;
+  margin-right: 1rem;
+}
+
 .image-dropbox {
   padding: 50px;
   text-align: center;

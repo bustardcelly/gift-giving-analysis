@@ -1,20 +1,18 @@
 'use strict';
+var fs = require('fs');
 var defer = require('node-promise').defer;
+var objectAssign = require('object-assign');
 
 var DB_NAME = 'gift';
-var glom = function(fromObject, toObject) {
-  var prop;
-  for(prop in fromObject) {
-    if(!toObject.hasOwnProperty(prop)) {
-      toObject[prop] = fromObject[prop];
-    }
-  }
-};
 
 module.exports = {
   connection: undefined,
-  init: function(connection) {
+  dbhost: undefined,
+  dbport: undefined,
+  init: function(connection, dbhost, dbport) {
     this.connection = connection;
+    this.dbhost = dbhost;
+    this.dbport = dbport;
   },
   getAllGifts: function() {
     var dfd = defer();
@@ -69,7 +67,7 @@ module.exports = {
         dfd.reject(err.reason);
       }
       else {
-        glom(gift, data);
+        objectAssign(data, gift);
         dfd.resolve(data);
       }
     });
@@ -78,7 +76,9 @@ module.exports = {
   updateGift: function(giftId, revision, data) {
     var dfd = defer();
     var db = this.connection.database(DB_NAME);
-    db.save(giftId, revision, data, function(err, data) {
+    // remove _attachments for put/post and do merge.
+    delete data._attachments;
+    db.merge(giftId, data, function(err, data) {
       if(err) {
         dfd.reject(err.reason);
       }
@@ -97,6 +97,64 @@ module.exports = {
       }
       else {
         dfd.resolve(true);
+      }
+    });
+    return dfd.promise;
+  },
+  getAttachment: function(id, filename) {
+    var dfd = defer();
+    dfd.resolve({
+      filename: filename,
+      url: 'http://' + this.dbhost + ':' + this.dbport + '/gift/' + id + '/' + filename
+    });
+    return dfd;
+  },
+  saveAttachments: function(id, revision, filesObj) {
+    var dfd = defer();
+    var db = this.connection.database(DB_NAME);
+    var attachments = [];
+    var file;
+    var fileKey;
+    for(fileKey in filesObj) {
+      file = filesObj[fileKey];
+      attachments.push({
+        name: file.name,
+        'Content-Type': file.type,
+        path: file.path
+      });
+    }
+    var uploadNext = function() {
+      var data = attachments.shift();
+      var readStream = fs.createReadStream(data.path);
+      var writeStream = db.saveAttachment({
+        id:id, rev:revision
+      }, data, function(error, response) {
+        if(error) {
+          dfd.reject(error);
+          return;
+        }
+        if(attachments.length > 0) {
+          uploadNext();
+        }
+        else {
+          dfd.resolve(response);
+        }
+      });
+      readStream.pipe(writeStream);
+    };
+    uploadNext();
+    return dfd.promise;
+  },
+  removeAttachment: function(id, filename) {
+    var dfd = defer();
+    var db = this.connection.database(DB_NAME);
+    db.removeAttachment(id, filename, function(err, data) {
+      if(err) {
+        console.dir(err);
+        dfd.reject(err.reason);
+      }
+      else {
+        dfd.resolve(data);
       }
     });
     return dfd.promise;
