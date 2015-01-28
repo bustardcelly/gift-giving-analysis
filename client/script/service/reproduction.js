@@ -154,6 +154,7 @@ module.exports = {
       if(data.hasOwnProperty('ok') && data.ok) {
         reproduction._id = data.id;
         reproduction._rev = data.rev;
+        delete reproduction._attachments[filename];
         dfd.resolve(reproduction);
       }
       else if(data.hasOwnProperty('error')) {

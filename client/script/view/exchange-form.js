@@ -4,6 +4,7 @@
 var React = require('react');
 var giftDialog = require('./gift-dialog');
 var giftService = require('../service/gift');
+var collFactory = require('../model/collection');
 
 var monthList = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
                 'August', 'September', 'October', 'November', 'December'];
@@ -53,6 +54,7 @@ var GiftList = React.createClass({displayName: 'GiftList',
     var exchange = this.props.data;
     giftService.addGift(exchange._id, newGift)
       .then(function(data) {
+        data._attachmentList = collFactory.create();
         exchange.gifts.add(data);
       }, function(error) {
         // TODO: Show error.
@@ -62,7 +64,7 @@ var GiftList = React.createClass({displayName: 'GiftList',
     event.preventDefault();
     giftDialog.render({
       exchange_id: this.props.data._id,
-      exchange_title: this.props.data.title,
+      exchange_title: this.props.data.title
     }, this.onSaveNewGift, null, true);
     return false;
   },

@@ -106,6 +106,8 @@ module.exports = {
   deleteExchange: function(exchange) {
     var dfd = $.Deferred();
     var theUrl = 'http://' + this.host + ':' + this.port + '/exchange/' + exchange._id;
+    var detachedGifts = exchange.gifts;
+    delete exchange.gifts;
     $.ajax({
       type: 'DELETE',
       url: theUrl,
@@ -114,13 +116,16 @@ module.exports = {
     })
     .done(function(data) {
       if(data.hasOwnProperty('error')) {
+        exchange.gifts = detachedGifts;
         dfd.reject(data.error);
       }
       else {
+        exchange.gifts = detachedGifts;
         dfd.resolve();
       }
     })
     .fail(function(error) {
+      exchange.gifts = detachedGifts;
       dfd.reject(error);
     });
     return dfd;

@@ -29,7 +29,6 @@ var ExchangeListItem = React.createClass({displayName: 'ExchangeListItem',
   onDelete: function(exchangeData) {
     var self = this;
     var giftCollection = this.props.data.gifts;
-    exchangeData.gifts = giftCollection.get();
     exchangeService.deleteExchange(exchangeData)
       .then(function() {
         if(self.props.onDelete) {

@@ -8,9 +8,17 @@ var giftService = require('../service/gift');
 
 var HostBody = React.createClass({
   dispose: function() {
-    this.refs.imageDropBox.dispose();
+    if(typeof this.refs.imageDropBox !== 'undefined') {
+      this.refs.imageDropBox.dispose();
+    }
   },
   render: function() {
+    var footer = this.props.isNew 
+                  ? <footer><em>Images can be added after creation.</em></footer>
+                  : <ImageDropBox ref="imageDropBox" {... {
+                      data: this.props.data,
+                      service: giftService
+                    }} />
     return (
       <div id="gift-form" className="form-inline" role="form" action="#">
         <div className="form-group">
@@ -43,7 +51,7 @@ var HostBody = React.createClass({
                   name="gift-amount-input" 
                   className="form-control input-md gift-amount-input" 
                   type="number" min="1" 
-                  defaultValue={this.props.isNew ? undefined : this.props.data.amount} />
+                  defaultValue={this.props.isNew ? 0 : this.props.data.amount} />
         </div>
         <div className="form-group">
           <label htmlFor="gift-giver-input" className="control-label exchange-form-label">Giver:</label>
@@ -99,10 +107,7 @@ var HostBody = React.createClass({
             }
           </div>
         </div>
-        <ImageDropBox ref="imageDropBox" {... {
-          data: this.props.data,
-          service: giftService
-        }} />
+        {footer}
       </div>
     );
   }

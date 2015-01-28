@@ -160,12 +160,14 @@ module.exports = React.createClass({displayName: 'ImageDropBox',
     var rows = [];
     var removeDelegate = this.handleRemoveAttachment;
     var attachments = this.getAttachmentCollection();
-    attachments.get().map(function(data) {
-      rows.push(<ImageAttachmentItem {... {
-        data: data,
-        removeHandler: removeDelegate
-      }} />);
-    });
+    if(attachments !== undefined) {
+      attachments.get().map(function(data) {
+        rows.push(<ImageAttachmentItem {... {
+          data: data,
+          removeHandler: removeDelegate
+        }} />);
+      });
+    }
     return (
       <div className="form-group">
         <label htmlFor="image-attachment-container" className="control-label image-form-label">Images:</label>
