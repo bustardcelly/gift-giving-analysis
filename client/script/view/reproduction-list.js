@@ -31,10 +31,10 @@ var ReproductionListItem = React.createClass({displayName: 'ReproductionListItem
     var self = this;
     reproductionService.deleteReproduction(reproductionData)
       .then(function() {
+        self.setState({
+          editing: false
+        });
         if(self.props.onDelete) {
-          self.setState({
-            editing: false
-          });
           self.props.onDelete(reproductionData);
         }
       }, function(error) {

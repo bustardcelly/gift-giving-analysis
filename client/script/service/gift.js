@@ -154,7 +154,12 @@ module.exports = {
       if(data.hasOwnProperty('ok') && data.ok) {
         gift._id = data.id;
         gift._rev = data.rev;
-        delete gift._attachments[filename];
+        try {
+          delete gift._attachments[filename];
+        }
+        catch(e) {
+          console.log('Could not remove image on _attachments model: ' + e.message);
+        }
         dfd.resolve(gift);
       }
       else if(data.hasOwnProperty('error')) {
