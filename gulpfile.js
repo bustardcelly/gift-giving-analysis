@@ -1,6 +1,8 @@
 var gulp = require('gulp');
 var gulpify = require('gulp-browserify');
 var replace = require('gulp-replace');
+var source = require('vinyl-source-stream');
+var buffer = require('vinyl-buffer');
 var uglify = require('gulp-uglify');
 var minifycss = require('gulp-minify-css');
 var del = require('del');
@@ -28,14 +30,14 @@ var convertify = function(target) {
               }));
               
   if(isProduction) {
-    // p.pipe(uglify());
+    pipe(buffer()).pipe(uglify());
   }
   p.pipe(gulp.dest('./static/script'));
-}
+};
 
 gulp.task('browserify', ['clean'], function() {
   convertify('client/script/exchange.js');
-  convertify('client/script/reproduction.js')
+  convertify('client/script/reproduction.js');
 });
   
 gulp.task('copy', ['clean'], function() {
