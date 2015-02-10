@@ -30,7 +30,19 @@ var ReproductionStore = assign({}, EventEmitter.prototype, {
     this.on(ReproductionEventEnum.CHANGE_EVENT, callback);
   },
   removeChangeListener: function(callback) {
-    this.removeEventListener(ReproductionEventEnum.CHANGE_EVENT, callback);
+    this.removeListener(ReproductionEventEnum.CHANGE_EVENT, callback);
+  },
+  addUpdateListener: function(callback) {
+    this.on(ReproductionEventEnum.UPDATE_COMPLETE, callback);
+  },
+  removeUpdateListener: function(callback) {
+    this.removeListener(ReproductionEventEnum.UPDATE_COMPLETE, callback);
+  },
+  addRemoveListener: function(callback) {
+    this.on(ReproductionEventEnum.REMOVE_COMPLETE, callback);
+  },
+  removeRemoveListener: function(callback) {
+    this.removeListener(ReproductionEventEnum.REMOVE_COMPLETE, callback);
   }
 
 });
@@ -57,6 +69,7 @@ Dispatcher.register(ReproductionStore, function(payload) {
         }
       }
       ReproductionStore.emit(ReproductionEventEnum.CHANGE_EVENT);
+      ReproductionStore.emit(ReproductionEventEnum.UPDATE_COMPLETE);
       break;
     case ReproductionActionEnum.REMOVE_REPRODUCTION:
       var i = reproductions.length;
@@ -68,6 +81,7 @@ Dispatcher.register(ReproductionStore, function(payload) {
         }
       }
       ReproductionStore.emit(ReproductionEventEnum.CHANGE_EVENT);
+      ReproductionStore.emit(ReproductionEventEnum.REMOVE_COMPLETE);
       break;
   }
 

@@ -10,43 +10,34 @@ var EditableReproductionForm = require('./reproduction-form').EditableReproducti
 var ReproductionStore = require('../stores/ReproductionStore');
 
 var ReproductionListItem = React.createClass({displayName: 'ReproductionListItem',
-  onCancel: function() {
+  _onCancel: function() {
     this.setState({
       editing: false
     });
   },
-  onSubmit: function(reproduction) {
-    // reproductionService.updateReproduction(reproductionData)
-    //   .then(function(update) {
-    //     self.props.data._id = update._id;
-    //     self.props.data._rev = update._rev;
-    //     self.setState({
-    //       editing: false
-    //     });
-    //   }, function(error) {
-    //     // TODO: show error.
-    //     console.log('Could not update Reproduction: ' + error);
-    //   });
-    this.props.onUpdate(reproduction);
+  _onUpdate: function() {
+    this.setState({
+      editing: false
+    });
   },
-  onDelete: function(reproduction) {
-    // reproductionService.deleteReproduction(reproductionData)
-    //   .then(function() {
-    //     self.setState({
-    //       editing: false
-    //     });
-    //     if(self.props.onDelete) {
-    //       self.props.onDelete(reproduction);
-    //     }
-    //   }, function(error) {
-    //     // TODO: show error.
-    //   });
-    this.props.onDelete(reproduction);
+  _onSubmit: function(reproduction) {
+    ReproductionStore.update(reproduction);
+  },
+  _onDelete: function(reproduction) {
+    ReproductionStore.remove(reproduction);
   },
   getInitialState: function() {
     return {
       editing: false
     };
+  },
+  componentDidMount: function() {
+    ReproductionStore.addUpdateListener(this._onUpdate);
+    ReproductionStore.addRemoveListener(this._onUpdate);
+  },
+  componentWillUnmount: function() {
+    ReproductionStore.removeUpdateListener(this._onUpdate);
+    ReproductionStore.removeRemoveListener(this._onUpdate);
   },
   handleSelect: function(event) {
     event.preventDefault();
@@ -69,9 +60,9 @@ var ReproductionListItem = React.createClass({displayName: 'ReproductionListItem
         <div className={(this.state.editing ? 'reproduction-form' : 'reproduction-form hidden')}>
           <EditableReproductionForm {... {
               data: this.props.data,
-              onCancel: this.onCancel,
-              onSubmit: this.onSubmit,
-              onDelete: this.onDelete
+              onCancel: this._onCancel,
+              onSubmit: this._onSubmit,
+              onDelete: this._onDelete
             }} />
         </div>
       </li>
@@ -96,12 +87,6 @@ var ReproductionList = React.createClass({displayName: 'ReproductionList',
   handleSubmitNewReproduction: function(reproduction) {
     ReproductionStore.add(reproduction);
   },
-  onDeleteReproduction: function(reproduction) {
-    ReproductionStore.remove(reproduction);
-  },
-  onUpdateReproduction: function(reproduction) {
-    ReproductionStore.update(reproduction);
-  },
   componentDidMount: function() {
     ReproductionStore.addChangeListener(this._onChange);
     ReproductionStore.init();
@@ -114,9 +99,7 @@ var ReproductionList = React.createClass({displayName: 'ReproductionList',
     var updateDelegate = this.onUpdateReproduction;
     var rows = this.state.reproductions.map(function(item) {
         return <ReproductionListItem {... {
-          data: item,
-          onDelete: deleteDelegate,
-          onUpdate: updateDelegate
+          data: item
         }} />
     });
     return (

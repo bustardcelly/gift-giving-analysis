@@ -119,9 +119,10 @@ var ReproductionListActions = {
     })
     .done(function(data) {
       if(data.hasOwnProperty('error')) {
-        reproduction._attachmentList = detachedAttachments;
+        // dfd.reject(data.error);
       }
       else {
+        reproduction._attachmentList = detachedAttachments;
         Dispatcher.handleAsyncAction({
           type: ReproductionActionEnum.REMOVE_REPRODUCTION,
           item: reproduction
@@ -130,6 +131,8 @@ var ReproductionListActions = {
     })
     .fail(function(error) {
       // dfd.reject(error);
+    })
+    .always(function() {
       reproduction._attachmentList = detachedAttachments;
     });
   }
