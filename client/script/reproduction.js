@@ -13,28 +13,25 @@ var exchangeStore = require('./store/exchange-store');
 var giftStore = require('./store/gift-store');
 var motifStore = require('./store/motif-store');
 
+var ReproductionListActions = require('./actions/ReproductionListActions');
+
 exchangeService.init(window.serviceHost, window.servicePort);
 giftService.init(window.serviceHost, window.servicePort);
 motifService.init(window.serviceHost, window.servicePort);
 reproductionService.init(window.serviceHost, window.servicePort);
 
 var accessReproductions = function() {
-  reproductionService
-    .init(window.serviceHost, window.servicePort)
-    .all()
-    .then(function(list) {
-      list.map(function(i) {
-        i._attachmentList = collFactory.create();
-      });
-      reproductionList.render(window.document.getElementById('reproduction-form-container'), collFactory.create(list));
-    });
+  reproductionService.init(window.serviceHost, window.servicePort);
+
+  ReproductionListActions.init(window.serviceHost, window.servicePort);
+  reproductionList.render(window.document.getElementById('reproduction-form-container'));
 };
 
 var getMotifs = function() {
   var dfd = $.Deferred();
   motifService.all()
     .then(motifStore.init.bind(motifStore))
-    .then(dfd.resolve)
+    .then(dfd.resolve);
   return dfd;
 };
 
@@ -42,7 +39,7 @@ var getExchanges = function() {
   var dfd = $.Deferred();
   exchangeService.all()
     .then(exchangeStore.init.bind(exchangeStore))
-    .then(dfd.resolve)
+    .then(dfd.resolve);
   return dfd;
 };
 
@@ -50,7 +47,7 @@ var getGifts = function() {
   var dfd = $.Deferred();
   giftService.all()
     .then(giftStore.init.bind(giftStore))
-    .then(dfd.resolve)
+    .then(dfd.resolve);
   return dfd;
 };
 

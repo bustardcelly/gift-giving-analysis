@@ -7,39 +7,41 @@ var reproductionService = require('../service/reproduction');
 var reproductionDialog = require('./new-reproduction-dialog');
 var EditableReproductionForm = require('./reproduction-form').EditableReproductionForm;
 
+var ReproductionStore = require('../stores/ReproductionStore');
+
 var ReproductionListItem = React.createClass({displayName: 'ReproductionListItem',
   onCancel: function() {
     this.setState({
       editing: false
     });
   },
-  onSubmit: function(reproductionData) {
-    var self = this;
-    reproductionService.updateReproduction(reproductionData)
-      .then(function(update) {
-        self.props.data._id = update._id;
-        self.props.data._rev = update._rev;
-        self.setState({
-          editing: false
-        });
-      }, function(error) {
-        // TODO: show error.
-        console.log('Could not update Reproduction: ' + error);
-      });
+  onSubmit: function(reproduction) {
+    // reproductionService.updateReproduction(reproductionData)
+    //   .then(function(update) {
+    //     self.props.data._id = update._id;
+    //     self.props.data._rev = update._rev;
+    //     self.setState({
+    //       editing: false
+    //     });
+    //   }, function(error) {
+    //     // TODO: show error.
+    //     console.log('Could not update Reproduction: ' + error);
+    //   });
+    this.props.onUpdate(reproduction);
   },
-  onDelete: function(reproductionData) {
-    var self = this;
-    reproductionService.deleteReproduction(reproductionData)
-      .then(function() {
-        self.setState({
-          editing: false
-        });
-        if(self.props.onDelete) {
-          self.props.onDelete(reproductionData);
-        }
-      }, function(error) {
-        // TODO: show error.
-      });
+  onDelete: function(reproduction) {
+    // reproductionService.deleteReproduction(reproductionData)
+    //   .then(function() {
+    //     self.setState({
+    //       editing: false
+    //     });
+    //     if(self.props.onDelete) {
+    //       self.props.onDelete(reproduction);
+    //     }
+    //   }, function(error) {
+    //     // TODO: show error.
+    //   });
+    this.props.onDelete(reproduction);
   },
   getInitialState: function() {
     return {
@@ -78,36 +80,43 @@ var ReproductionListItem = React.createClass({displayName: 'ReproductionListItem
 });
 
 var ReproductionList = React.createClass({displayName: 'ReproductionList',
+  _onChange: function() {
+    this.setState({
+      reproductions: ReproductionStore.all()
+    });
+  },
+  getInitialState: function() {
+    return {
+      reproductions: ReproductionStore.all()
+    }
+  },
   handleReproductionAdd: function() {
     reproductionDialog.render(this.handleSubmitNewReproduction);
   },
-  handleSubmitNewReproduction: function(reproductionData) {
-    console.log('Submit new reproduction: ' + JSON.stringify(reproductionData, null, 2));
-    var list = this.props.list;
-    reproductionService.addReproduction(reproductionData)
-      .then(function(data) {
-        data._attachmentList = collFactory.create();
-        list.add(data);
-      }, function(error) {
-        // TODO: Show error.
-      });
+  handleSubmitNewReproduction: function(reproduction) {
+    ReproductionStore.add(reproduction);
   },
   onDeleteReproduction: function(reproduction) {
-    this.props.list.remove(reproduction);
+    ReproductionStore.remove(reproduction);
+  },
+  onUpdateReproduction: function(reproduction) {
+    ReproductionStore.update(reproduction);
   },
   componentDidMount: function() {
-    this._boundForceUpdate = this.forceUpdate.bind(this, null);
-    this.props.list.on('change', this._boundForceUpdate, this);
+    ReproductionStore.addChangeListener(this._onChange);
+    ReproductionStore.init();
   },
   componentWillUnmount: function() {
-    this.props.list.removeListener('change', this._boundForceUpdate);
+    ReproductionStore.removeChangeListener(this._onChange);
   },
   render: function() {
     var deleteDelegate = this.onDeleteReproduction;
-    var rows = this.props.list.get().map(function(item) {
+    var updateDelegate = this.onUpdateReproduction;
+    var rows = this.state.reproductions.map(function(item) {
         return <ReproductionListItem {... {
           data: item,
-          onDelete: deleteDelegate
+          onDelete: deleteDelegate,
+          onUpdate: updateDelegate
         }} />
     });
     return (
@@ -127,11 +136,9 @@ var ReproductionList = React.createClass({displayName: 'ReproductionList',
 
 module.exports = {
   ReproductionList: ReproductionList,
-  render: function(element, list) {
+  render: function(element) {
     React.renderComponent(
-      ReproductionList({
-        list: list
-      }),
+      ReproductionList({}),
       element
     );
   }

@@ -12,7 +12,8 @@
   "scripts": {
     "build-client": "./node_modules/.bin/gulp",
     "build-client-prod": "NODE_ENV=production ./node_modules/.bin/gulp",
-    "server": "node app/index.js --port=8001 -socketport=8002 --dbhost=54.86.176.185",
+    "server": "node app/index.js --port=8001 -socketport=8002 --dbhost=127.0.0.1",
+    "server-prod": "node app/index.js --port=8001 -socketport=8002 --dbhost=54.86.176.185",
     "push-design": "node db/design_exchange.js --dbhost=54.86.176.185",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -42,6 +43,7 @@
     "serve-static": "^1.6.4",
     "lodash": "^2.4.1",
     "object-assign": "^2.0.0",
-    "reflux": "^0.2.4"
+    "reflux": "^0.2.4",
+    "flux-react-dispatcher": "^1.2.4"
   }
 }
