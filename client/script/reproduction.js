@@ -1,8 +1,6 @@
 /*global window, $*/
 'use strict';
 Object.assign = require('object-assign');
-var collFactory = require('./model/collection');
-var reproductionList = require('./view/reproduction-list');
 var reproductionService = require('./service/reproduction');
 
 var exchangeService = require('./service/exchange');
@@ -13,6 +11,7 @@ var exchangeStore = require('./store/exchange-store');
 var giftStore = require('./store/gift-store');
 var motifStore = require('./store/motif-store');
 
+var ReproductionList = require('./components/reproduction/ReproductionList');
 var ReproductionListActions = require('./actions/ReproductionListActions');
 
 exchangeService.init(window.serviceHost, window.servicePort);
@@ -24,7 +23,7 @@ var accessReproductions = function() {
   reproductionService.init(window.serviceHost, window.servicePort);
 
   ReproductionListActions.init(window.serviceHost, window.servicePort);
-  reproductionList.render(window.document.getElementById('reproduction-form-container'));
+  ReproductionList.render(window.document.getElementById('reproduction-form-container'));
 };
 
 var getMotifs = function() {
