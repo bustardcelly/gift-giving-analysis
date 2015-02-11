@@ -7,7 +7,8 @@ var giftStore = require('../store/gift-store');
 var exchangeStore = require('../store/exchange-store');
 var reproductionService = require('../service/reproduction');
 
-var copyOfGiftDialog = require('./copyof-selector-dialog');
+var InputFormItem = require('../components/form/InputFormItem');
+var CopyOfFormItem = require('../components/form/CopyOfFormItem');
 
 var monthList = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
                 'August', 'September', 'October', 'November', 'December'];
@@ -85,13 +86,13 @@ var ReproductionForm = React.createClass({displayName: 'ReproductionForm',
   serialize: function() {
     var toCopy = this.props.data;
     var $dom = this.getDOMNode();
-    var $title = $('input.reproduction-title-input', $dom);
-    var $copy = $('input.reproduction-copy-input', $dom);
-    var $copyof = $('.reproduction-copy-of-container', $dom);
-    var $location = $('input.reproduction-location-str-input', $dom);
-    var $maker = $('input.reproduction-maker-input', $dom);
-    var $publisher = $('input.reproduction-publisher-input', $dom);
-    var $medium = $('input.reproduction-medium-input', $dom);
+    var $title = this.refs.titleInput;
+    var $copy = this.refs.copyInput;
+    var $copyof = this.refs.copyOfInput;
+    var $location = this.refs.locationInput;
+    var $maker = this.refs.makerInput;
+    var $publisher = this.refs.publisherInput;
+    var $medium = this.refs.mediumInput;
     var $day = $('select.reproduction-day-input', $dom);
     var $month = $('select.reproduction-month-input', $dom);
     var $year = $('input.reproduction-year-input', $dom);
@@ -106,13 +107,13 @@ var ReproductionForm = React.createClass({displayName: 'ReproductionForm',
         serialized[key] = toCopy[key];
       }
     }
-    serialized.title = $title.val();
-    serialized.copy = $copy.val();
-    serialized.copy_of = $copyof.attr('data-copyofid');
-    serialized.location_str = $location.val();
-    serialized.maker_author = $maker.val();
-    serialized.publisher = $publisher.val();
-    serialized.medium = $medium.val();
+    serialized.title = $title.value();
+    serialized.copy = $copy.value();
+    serialized.copy_of = $copyof.value();
+    serialized.location_str = $location.value();
+    serialized.maker_author = $maker.value();
+    serialized.publisher = $publisher.value();
+    serialized.medium = $medium.value();
     serialized.day = isNaN(Number($day.val())) ? null : Number($day.val());
     serialized.month = monthList.indexOf($month.val());
     serialized.year = $year.val().length === 0 ? null : $year.val();
@@ -155,12 +156,12 @@ var ReproductionForm = React.createClass({displayName: 'ReproductionForm',
     });
   },
   cancel: function() {
-    this.revert('input.reproduction-title-input', 'title');
-    this.revert('input.reproduction-copy-input', 'copy');
-    this.revert('input.reproduction-location-str-input', 'location_str');
-    this.revert('input.reproduction-maker-input', 'maker_str');
-    this.revert('input.reproduction-publisher-input', 'publisher');
-    this.revert('input.reproduction-medium-input', 'medium');
+    $(this.refs.titleInput).val(this.props.data['title']);
+    $(this.refs.copyInput).val(this.props.data['copy']);
+    $(this.refs.locationInput).val(this.props.data['location_str']);
+    $(this.refs.makerInput).val(this.props.data['maker_author']);
+    $(this.refs.publisherInput).val(this.props.data['publisher']);
+    $(this.refs.mediumInput).val(this.props.data['medium']);
     this.revert('input.reproduction-day-input', 'day');
     this.revert('input.reproduction-month-input', 'month');
     this.revert('input.reproduction-year-input', 'year');
@@ -172,18 +173,8 @@ var ReproductionForm = React.createClass({displayName: 'ReproductionForm',
     this.revertSelectedMotifs();
     this.resetSelectedCopyOf(this.props.data.copy_of);
   },
-  onSaveCopyOfGift: function(selectedGiftId) {
-    this.setState({
-      selectedGiftId: selectedGiftId
-    });
-  },
-  handleChangeCopyOf: function(event) {
-    event.preventDefault();
-    copyOfGiftDialog.render(this.state.selectedGiftId, this.onSaveCopyOfGift);
-    return false;
-  },
   render: function() {
-    var attachmentView = '';
+    var attachmentView;
 
     if(this.props.attachmentsEnabled) {
       attachmentView = (
@@ -197,37 +188,57 @@ var ReproductionForm = React.createClass({displayName: 'ReproductionForm',
     return (
       <div className="form-group">
         <h3 className={this.props.title ? '' : 'hidden'}>{this.props.title}</h3>
-        <div className="form-group">
-          <label htmlFor="reproduction-title-input" className="control-label reproduction-form-label">Title:</label>
-          <input type="text" name="reproduction-title-input" className="form-control input-md reproduction-title-input" placeholder="Title" defaultValue={this.unpack('title')}></input>
-        </div>
-        <div className="form-group">
-          <label htmlFor="reproduction-copy-input" className="control-label reproduction-form-label">Copy:</label>
-          <input type="text" name="reproduction-copy-input" className="form-control input-md reproduction-copy-input" placeholder="Copy" defaultValue={this.unpack('copy')}></input>
-        </div>
-        <div className="form-group">
-          <label htmlFor="reproduction-copy-of-input" className="control-label reproduction-form-label">Copy Of:</label>
-          <div name="reproduction-copy-of-input" className="form-control reproduction-copy-of-container" data-copyofid={this.state.selectedGiftId}>
-            <p className="copy-of-title">{getGiftNameFromId(this.state.selectedGiftId)}</p>
-            <button type="button" className="btn" onClick={this.handleChangeCopyOf}>Change</button>
-          </div>
-        </div>
-        <div className="form-group">
-          <label htmlFor="reproduction-location-str-input" className="control-label reproduction-form-label">Location:</label>
-          <input type="text" name="reproduction-location-str-input" className="form-control input-md reproduction-location-str-input" placeholder="Location" defaultValue={this.unpack('location_str')}></input>
-        </div>
-        <div className="form-group">
-          <label htmlFor="reproduction-maker-input" className="control-label reproduction-form-label">Maker/Author:</label>
-          <input type="text" name="reproduction-maker-input" className="form-control input-md reproduction-maker-input" placeholder="Maker/Author" defaultValue={this.unpack('maker_author')}></input>
-        </div>
-        <div className="form-group">
-          <label htmlFor="reproduction-publisher-input" className="control-label reproduction-form-label">Publisher:</label>
-          <input type="text" name="reproduction-publisher-input" className="form-control input-md reproduction-publisher-input" placeholder="Publisher" defaultValue={this.unpack('publisher')}></input>
-        </div>
-        <div className="form-group">
-          <label htmlFor="reproduction-medium-input" className="control-label reproduction-form-label">Medium:</label>
-          <input type="text" name="reproduction-medium-input" className="form-control input-md reproduction-medium-input" placeholder="Medium" defaultValue={this.unpack('medium')}></input>
-        </div>
+        <InputFormItem ref="titleInput" {... {
+          name: 'reproduction-title-input',
+          label: 'Title',
+          placeholder: 'Title',
+          value: this.unpack('title'),
+          inputClasses: ['reproduction-title-input'],
+          labelClasses: ['reproduction-form-label']
+        }} />
+        <InputFormItem ref="copyInput" {... {
+          name: 'reproduction-copy-input',
+          label: 'Copy',
+          placeholder: 'Copy',
+          value: this.unpack('copy'),
+          inputClasses: ['reproduction-copy-input'],
+          labelClasses: ['reproduction-form-label']
+        }} />
+        <CopyOfFormItem ref="copyOfInput" {... {
+          giftId: this.unpack('copy_of')
+        }} />
+        <InputFormItem ref="locationInput" {... {
+          name: 'reproduction-location-str-input',
+          label: 'Location',
+          placeholder: 'Location',
+          value: this.unpack('location_str'),
+          inputClasses: ['reproduction-location-str-input'],
+          labelClasses: ['reproduction-form-label']
+        }} />
+        <InputFormItem ref="makerInput" {... {
+          name: 'reproduction-maker-input',
+          label: 'Maker/Author',
+          placeholder: 'Maker/Author',
+          value: this.unpack('maker_author'),
+          inputClasses: ['reproduction-maker-input'],
+          labelClasses: ['reproduction-form-label']
+        }} />
+        <InputFormItem ref="publisherInput" {... {
+          name: 'reproduction-publisher-input',
+          label: 'Publisher',
+          placeholder: 'Publisher',
+          value: this.unpack('publisher'),
+          inputClasses: ['reproduction-publisher-input'],
+          labelClasses: ['reproduction-form-label']
+        }} />
+        <InputFormItem ref="mediumInput" {... {
+          name: 'reproduction-medium-input',
+          label: 'Medium',
+          placeholder: 'Medium',
+          value: this.unpack('medium'),
+          inputClasses: ['reproduction-medium-input'],
+          labelClasses: ['reproduction-form-label']
+        }} />
         <div className="form-group">
           <label htmlFor="reproduction-day-input" className="control-label reproduction-form-label">Day:</label>
           <select id="reproduction-day-input" name="reproduction-day-input" className="form-control input-md reproduction-day-input" defaultValue={this.unpack('day')}>{this.generateDays()}</select>
