@@ -8,7 +8,10 @@ var exchangeStore = require('../store/exchange-store');
 var reproductionService = require('../service/reproduction');
 
 var InputFormItem = require('../components/form/InputFormItem');
+var TextAreaFormItem = require('../components/form/TextAreaFormItem');
 var CopyOfFormItem = require('../components/form/CopyOfFormItem');
+var SelectFormItem = require('../components/form/SelectFormItem');
+var MotifFormItem = require('../components/form/MotifFormItem');
 
 var monthList = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
                 'August', 'September', 'October', 'November', 'December'];
@@ -41,6 +44,10 @@ var ReproductionForm = React.createClass({displayName: 'ReproductionForm',
               : undefined
             : undefined;
   },
+  unpackDay: function(property) {
+    var value = parseInt(this.unpack(property));
+    return value <= 0 || isNaN(value) ? 'Unknown' : value;
+  },
   unpackOnMonthListIndex: function(property, list) {
     var index = this.props.data ? 
                   this.props.data.hasOwnProperty(property) ? 
@@ -70,22 +77,8 @@ var ReproductionForm = React.createClass({displayName: 'ReproductionForm',
     }
     return months;
   },
-  getOriginalMotifSelection: function() {
-    var motifs = this.props.data.motifs;
-    return (motifs === null || typeof motifs === 'undefined') ? [] : motifs.split(',');
-  },
-  getSelectedMotifList: function() {
-    var $dom = $(this.getDOMNode());
-    var $items = $('#motif-selector .motif-list-item.active', $dom);
-    var selectedIds = [];
-    $items.each(function() {
-      selectedIds.push($(this).data('motifid'));
-    });
-    return selectedIds.join(',');
-  },
   serialize: function() {
     var toCopy = this.props.data;
-    var $dom = this.getDOMNode();
     var $title = this.refs.titleInput;
     var $copy = this.refs.copyInput;
     var $copyof = this.refs.copyOfInput;
@@ -93,13 +86,14 @@ var ReproductionForm = React.createClass({displayName: 'ReproductionForm',
     var $maker = this.refs.makerInput;
     var $publisher = this.refs.publisherInput;
     var $medium = this.refs.mediumInput;
-    var $day = $('select.reproduction-day-input', $dom);
-    var $month = $('select.reproduction-month-input', $dom);
-    var $year = $('input.reproduction-year-input', $dom);
-    var $latitude = $('input.reproduction-latitude-input', $dom);
-    var $longitude = $('input.reproduction-longitude-input', $dom);
-    var $source = $('textarea.reproduction-source-input', $dom);
-    var $notes = $('textarea.reproduction-notes-input', $dom);
+    var $day = this.refs.dayInput;
+    var $month = this.refs.monthInput;
+    var $year = this.refs.yearInput;
+    var $latitude = this.refs.latitudeInput;
+    var $longitude = this.refs.longitudeInput;
+    var $source = this.refs.sourceInput;
+    var $notes = this.refs.notesInput;
+    var $motifs = this.refs.motifInput;
     var serialized = {};
     var key;
     for(key in toCopy) {
@@ -114,67 +108,36 @@ var ReproductionForm = React.createClass({displayName: 'ReproductionForm',
     serialized.maker_author = $maker.value();
     serialized.publisher = $publisher.value();
     serialized.medium = $medium.value();
-    serialized.day = isNaN(Number($day.val())) ? null : Number($day.val());
-    serialized.month = monthList.indexOf($month.val());
-    serialized.year = $year.val().length === 0 ? null : $year.val();
-    serialized.latitude = Number($latitude.val());
-    serialized.longitude = Number($longitude.val());
-    serialized.source = $source.val();
-    serialized.notes = $notes.val();
-    serialized.motifs = this.getSelectedMotifList();
+    serialized.day = isNaN(Number($day.value())) ? null : Number($day.value());
+    serialized.month = monthList.indexOf($month.value());
+    serialized.year = $year.value().length === 0 ? null : $year.value();
+    serialized.latitude = Number($latitude.value());
+    serialized.longitude = Number($longitude.value());
+    serialized.source = $source.value();
+    serialized.notes = $notes.value();
+    serialized.motifs = $motifs.value();
     return serialized;
   },
-  revert: function(fieldSelector, property) {
-    var $dom = this.getDOMNode();
-    var $field = $(fieldSelector, $dom);
-    $field.val(this.props.data[property]);
-  },
-  revertSelectedMotifs: function() {
-    var motifs = this.getOriginalMotifSelection();
-    var $dom = $(this.getDOMNode());
-    var $items = $('#motif-selector .motif-list-item', $dom);
-    $items.each(function() {
-      var $item = $(this);
-      var id = $item.data('motifid');
-      $item.removeClass('active');
-      if(motifs.indexOf(id) > -1) {
-        $item.addClass('active');
-      }
-    });
-  },
-  revertSelectedCopyOf: function() {
-    var $dom = this.getDOMNode();
-    var $elem = $('.reproduction-copy-of-container', $dom);
-    var $title = $('p.copy-of-title', $elem);
-    $elem.data('copyofid', this.props.data.copy_of);
-    $elem.attr('data-copyofid', this.props.data.copy_of);
-    $title.text(getGiftNameFromId(this.props.data.copy_of));
-  },
-  resetSelectedCopyOf: function(value) {
-    this.setState({
-      selectedGiftId: value
-    });
-  },
   cancel: function() {
-    $(this.refs.titleInput).val(this.props.data['title']);
-    $(this.refs.copyInput).val(this.props.data['copy']);
-    $(this.refs.locationInput).val(this.props.data['location_str']);
-    $(this.refs.makerInput).val(this.props.data['maker_author']);
-    $(this.refs.publisherInput).val(this.props.data['publisher']);
-    $(this.refs.mediumInput).val(this.props.data['medium']);
-    this.revert('input.reproduction-day-input', 'day');
-    this.revert('input.reproduction-month-input', 'month');
-    this.revert('input.reproduction-year-input', 'year');
-    this.revert('input.reproduction-latitude-input', 'latitude');
-    this.revert('input.reproduction-longitude-input', 'longitude');
-    this.revert('input.reproduction-source-input', 'source');
-    this.revert('input.reproduction-notes-input', 'notes');
-    this.revertSelectedCopyOf();
-    this.revertSelectedMotifs();
-    this.resetSelectedCopyOf(this.props.data.copy_of);
+    this.refs.titleInput.revert();
+    this.refs.copyInput.revert();
+    this.refs.locationInput.revert();
+    this.refs.makerInput.revert();
+    this.refs.publisherInput.revert();
+    this.refs.mediumInput.revert();
+    this.refs.dayInput.revert();
+    this.refs.monthInput.revert();
+    this.refs.yearInput.revert();
+    this.refs.latitudeInput.revert();
+    this.refs.longitudeInput.revert();
+    this.refs.sourceInput.revert();
+    this.refs.notesInput.revert();
+    this.refs.copyOfInput.revert(this.unpack('copy_of'));
+    this.refs.motifInput.revert(this.unpack('motifs'));
   },
   render: function() {
     var attachmentView;
+    var titleClass = this.props.title ? '' : 'hidden';
 
     if(this.props.attachmentsEnabled) {
       attachmentView = (
@@ -187,7 +150,7 @@ var ReproductionForm = React.createClass({displayName: 'ReproductionForm',
 
     return (
       <div className="form-group">
-        <h3 className={this.props.title ? '' : 'hidden'}>{this.props.title}</h3>
+        <h3 className={titleClass}>{this.props.title}</h3>
         <InputFormItem ref="titleInput" {... {
           name: 'reproduction-title-input',
           label: 'Title',
@@ -239,45 +202,68 @@ var ReproductionForm = React.createClass({displayName: 'ReproductionForm',
           inputClasses: ['reproduction-medium-input'],
           labelClasses: ['reproduction-form-label']
         }} />
-        <div className="form-group">
-          <label htmlFor="reproduction-day-input" className="control-label reproduction-form-label">Day:</label>
-          <select id="reproduction-day-input" name="reproduction-day-input" className="form-control input-md reproduction-day-input" defaultValue={this.unpack('day')}>{this.generateDays()}</select>
-        </div>
-        <div className="form-group">
-          <label htmlFor="reproduction-month-input" className="control-label reproduction-form-label">Month:</label>
-          <select id="reproduction-month-input" name="reproduction-month-input" className="form-control input-md reproduction-month-input" defaultValue={this.unpackOnMonthListIndex('month', monthList)}>{this.generateMonths()}</select>
-        </div>
-        <div className="form-group">
-          <label htmlFor="reproduction-year-input" className="control-label reproduction-form-label">Year:</label>
-          <input type="text" name="reproduction-year-input" className="form-control input-md input-md reproduction-year-input" placeholder="Year" defaultValue={this.unpack('year')}></input>
-        </div>
-        <div className="form-group">
-        <label htmlFor="motif-checklist" className="control-label reproduction-form-label">Motif(s):</label>
-        <div id="motif-selector" name="motif-checklist">
-          {
-            MotifSelector({
-              itemClassName: 'motif-list-item',
-              selectedMotifs: this.unpack('motifs')
-            })
-          }
-        </div>
-      </div>
-        <div className="form-group">
-          <label htmlFor="reproduction-latitude-input" className="control-label reproduction-form-label">Latitude:</label>
-          <input type="text" name="reproduction-latitude-input" className="form-control input-md input-md reproduction-latitude-input" placeholder="Latitude" defaultValue={this.unpack('latitude')}></input>
-        </div>
-        <div className="form-group">
-          <label htmlFor="reproduction-longitude-input" className="control-label reproduction-form-label">Longitude:</label>
-          <input type="text" name="reproduction-longitude-input" className="form-control input-md input-md reproduction-longitude-input" placeholder="Longitude" defaultValue={this.unpack('longitude')}></input>
-        </div>
-        <div className="form-group">
-          <label htmlFor="reproduction-source-input" className="control-label reproduction-form-label">Source:</label>
-          <textarea type="text" name="reproduction-source-input" className="form-control input-md input-md reproduction-source-input" placeholder="Source" defaultValue={this.unpack('source')}></textarea>
-        </div>
-        <div className="form-group">
-          <label htmlFor="reproduction-notes-input" className="control-label reproduction-form-label">Notes:</label>
-          <textarea type="text" name="reproduction-notes-input" className="form-control input-md input-md reproduction-notes-input" placeholder="Notes" defaultValue={this.unpack('notes')}></textarea>
-        </div>
+        <SelectFormItem ref="dayInput" {... {
+          name: 'reproduction-day-input',
+          label: 'Day',
+          value: this.unpackDay('day'),
+          options: this.generateDays(),
+          inputClasses: ['reproduction-day-input'],
+          labelClasses: ['reproduction-form-label']
+        }} />
+        <SelectFormItem ref="monthInput" {... {
+          name: 'reproduction-month-input',
+          label: 'Month',
+          value: this.unpackOnMonthListIndex('month', monthList),
+          options: this.generateMonths(),
+          inputClasses: ['reproduction-month-input'],
+          labelClasses: ['reproduction-form-label']
+        }} />
+        <InputFormItem ref="yearInput" {... {
+          name: 'reproduction-year-input',
+          label: 'Year',
+          placeholder: 'Year',
+          value: this.unpack('year'),
+          inputClasses: ['reproduction-year-input'],
+          labelClasses: ['reproduction-form-label']
+        }} />
+        <MotifFormItem ref="motifInput" {... {
+          name: 'motif-checklist',
+          label: 'Motif(s)',
+          value: this.unpack('motifs'),
+          labelClasses: ['reproduction-form-label']
+        }} />
+        <InputFormItem ref="latitudeInput" {... {
+          name: 'reproduction-latitude-input',
+          label: 'Latitude',
+          placeholder: 'Latitude',
+          value: this.unpack('latitude'),
+          inputClasses: ['reproduction-latitude-input'],
+          labelClasses: ['reproduction-form-label']
+        }} />
+        <InputFormItem ref="longitudeInput" {... {
+          name: 'reproduction-longitude-input',
+          label: 'Longitude',
+          placeholder: 'Longitude',
+          value: this.unpack('longitude'),
+          inputClasses: ['reproduction-longitude-input'],
+          labelClasses: ['reproduction-form-label']
+        }} />
+        <TextAreaFormItem ref="sourceInput" {... {
+          name: 'reproduction-source-input',
+          label: 'Source',
+          placeholder: 'Source',
+          value: this.unpack('source'),
+          inputClasses: ['reproduction-source-input'],
+          labelClasses: ['reproduction-form-label']
+        }} />
+        <TextAreaFormItem ref="notesInput" {... {
+          name: 'reproduction-notes-input',
+          label: 'Notes',
+          placeholder: 'Notes',
+          value: this.unpack('notes'),
+          inputClasses: ['reproduction-notes-input'],
+          labelClasses: ['reproduction-form-label']
+        }} />
         {
           attachmentView
         }
@@ -322,7 +308,7 @@ var EditableReproductionForm = React.createClass({displayName: 'EditableReproduc
     };
     return (
       <div className="form-inline" role="form" action="#">
-        <ReproductionForm {... formProps} ref="reproductionForm" />
+        <ReproductionForm ref="reproductionForm" {... formProps} />
         <div className='form-group reproduction-form-buttonbar'>
           <button id="reproduction-cancel-button" type="submit" className="btn btn-md" onClick={this.handleReproductionCancel}>cancel</button>
           <button id="reproduction-submit-button" type="submit" className="btn btn-info btn-md" onClick={this.handleReproductionSubmit}>save</button>

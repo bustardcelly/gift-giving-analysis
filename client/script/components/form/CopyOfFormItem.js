@@ -36,6 +36,11 @@ module.exports = React.createClass({ displayName: 'CopyOfFormItem',
     copyOfGiftDialog.render(this.state.giftId, this.onSaveCopyOfGift);
     return false;
   },
+  revert: function(originalValue) {
+    this.setState({
+      giftId: originalValue
+    });
+  },
   value: function() {
     return this.state.giftId;
   },

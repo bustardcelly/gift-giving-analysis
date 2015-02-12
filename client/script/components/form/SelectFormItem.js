@@ -2,17 +2,15 @@
 /** global $*/
 'use strict';
 
-var React = require('react');
-
-module.exports = React.createClass({displayName: 'InputFormItem',
+module.exports = React.createClass({displayName: 'SelectFormItem',
   revert: function() {
     var $dom = this.getDOMNode();
-    var $input = $('input', $dom);
+    var $input = $('select', $dom);
     $input.val(this.props.value);
   },
   value: function() {
     var $dom = this.getDOMNode();
-    var $input = $('input', $dom);
+    var $input = $('select', $dom);
     return $input.val();
   },
   render: function() {
@@ -24,8 +22,8 @@ module.exports = React.createClass({displayName: 'InputFormItem',
     return (
       <div className="form-group">
         <label htmlFor={name} className={lClasses}>{this.props.label}:</label>
-        <input type="text" name={name} className={iClasses} placeholder={this.props.placeholder} defaultValue={this.props.value}></input>
+        <select name={name} className={iClasses} defaultValue={this.props.value}>{this.props.options}</select>
       </div>
     );
-  }
+  }  
 });
