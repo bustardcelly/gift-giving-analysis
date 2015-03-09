@@ -1,5 +1,4 @@
 /*global window*/
-'use strict';
 Object.assign = require('object-assign');
 var collFactory = require('./model/collection');
 var exchangeList = require('./view/exchange-list');

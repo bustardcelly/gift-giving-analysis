@@ -13,16 +13,16 @@ var motifStore = require('./store/motif-store');
 
 var ReproductionList = require('./components/reproduction/ReproductionList');
 var ReproductionListActions = require('./actions/ReproductionListActions');
+var ReproductionAttachmentActions = require('./actions/ReproductionAttachmentActions');
 
 exchangeService.init(window.serviceHost, window.servicePort);
 giftService.init(window.serviceHost, window.servicePort);
 motifService.init(window.serviceHost, window.servicePort);
-reproductionService.init(window.serviceHost, window.servicePort);
 
 var accessReproductions = function() {
   reproductionService.init(window.serviceHost, window.servicePort);
-
   ReproductionListActions.init(window.serviceHost, window.servicePort);
+  ReproductionAttachmentActions.init(window.serviceHost, window.servicePort);
   ReproductionList.render(window.document.getElementById('reproduction-form-container'));
 };
 

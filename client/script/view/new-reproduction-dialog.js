@@ -2,7 +2,7 @@
 /*global $, window*/
 'use strict';
 var React = require('react');
-var ReproductionForm = require('./reproduction-form').ReproductionForm;
+var ReproductionForm = require('../components/reproduction/ReproductionForm').ReproductionForm;
 
 var Dialog = React.createClass({
   getInitialState: function() {
@@ -65,7 +65,7 @@ var Dialog = React.createClass({
             <div className="modal-body">
               <div className="form-inline" role="form" action="#">
                 <ReproductionForm ref="reproductionForm" {... {
-                    title: null, 
+                    title: null,
                     data: null
                   }} />
               </div>

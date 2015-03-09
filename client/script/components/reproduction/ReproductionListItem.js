@@ -3,7 +3,7 @@
 var React = require('react');
 
 var ReproductionStore = require('../../stores/ReproductionStore');
-var EditableReproductionForm = require('../../view/reproduction-form').EditableReproductionForm;
+var EditableReproductionForm = require('./ReproductionForm').EditableReproductionForm;
 
 var ReproductionListItem = React.createClass({ displayName: 'ReproductionListItem',
   _onCancel: function() {

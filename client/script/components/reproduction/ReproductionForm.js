@@ -1,17 +1,19 @@
 /** @jsx React.DOM */
 'use strict';
 var React = require('react');
-var MotifSelector = require('./motif-selector');
-var ImageDropBox = require('./image-dropbox');
-var giftStore = require('../store/gift-store');
-var exchangeStore = require('../store/exchange-store');
-var reproductionService = require('../service/reproduction');
+var MotifSelector = require('../../view/motif-selector');
+var giftStore = require('../../store/gift-store');
+var exchangeStore = require('../../store/exchange-store');
 
-var InputFormItem = require('../components/form/InputFormItem');
-var TextAreaFormItem = require('../components/form/TextAreaFormItem');
-var CopyOfFormItem = require('../components/form/CopyOfFormItem');
-var SelectFormItem = require('../components/form/SelectFormItem');
-var MotifFormItem = require('../components/form/MotifFormItem');
+var ReproductionListActions = require('../../actions/ReproductionListActions');
+var ReproductionAttachmentStore = require('../../stores/ReproductionAttachmentStore');
+
+var InputFormItem = require('../form/InputFormItem');
+var TextAreaFormItem = require('../form/TextAreaFormItem');
+var CopyOfFormItem = require('../form/CopyOfFormItem');
+var SelectFormItem = require('../form/SelectFormItem');
+var MotifFormItem = require('../form/MotifFormItem');
+var ImageDropBox = require('../form/ImageDropbox');
 
 var monthList = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
                 'August', 'September', 'October', 'November', 'December'];
@@ -38,9 +40,9 @@ var ReproductionForm = React.createClass({displayName: 'ReproductionForm',
     });
   },
   unpack: function(property) {
-    return this.props.data ? 
-              this.props.data.hasOwnProperty(property) ? 
-                this.props.data[property] 
+    return this.props.data ?
+              this.props.data.hasOwnProperty(property) ?
+                this.props.data[property]
               : undefined
             : undefined;
   },
@@ -49,8 +51,8 @@ var ReproductionForm = React.createClass({displayName: 'ReproductionForm',
     return value <= 0 || isNaN(value) ? 'Unknown' : value;
   },
   unpackOnMonthListIndex: function(property, list) {
-    var index = this.props.data ? 
-                  this.props.data.hasOwnProperty(property) ? 
+    var index = this.props.data ?
+                  this.props.data.hasOwnProperty(property) ?
                     parseInt(this.props.data[property], 10)
                   : undefined
                 : undefined;
@@ -142,8 +144,8 @@ var ReproductionForm = React.createClass({displayName: 'ReproductionForm',
     if(this.props.attachmentsEnabled) {
       attachmentView = (
       <ImageDropBox {... {
-          data: this.props.data,
-          service: reproductionService
+        data: this.props.data,
+        store: ReproductionAttachmentStore
         }} />
       );
     }

@@ -23,6 +23,9 @@ var ReproductionStore = assign({}, EventEmitter.prototype, {
   update: function(item) {
     ReproductionListActions.update(item);
   },
+  addAttachment: function(reproductionItem, formData) {
+    ReproductionListActions.addAttachment(reproductionItem, formData);
+  },
   remove: function(item) {
     ReproductionListActions.remove(item);
   },
@@ -82,6 +85,16 @@ Dispatcher.register(ReproductionStore, function(payload) {
       }
       ReproductionStore.emit(ReproductionEventEnum.CHANGE_EVENT);
       ReproductionStore.emit(ReproductionEventEnum.REMOVE_COMPLETE);
+      break;
+    case ReproductionActionEnum.ADD_ATTACHMENT:
+      var item = action.item;
+      if(item.success) {
+        ReproductionStore.emit(ReproductionEventEnum.ADD_ATTACHMENT_COMPLETE);
+      }
+      else {
+        console.error('Could not add attachment: ' + item.error);
+        ReproductionStore.emit(ReproductionEventEnum.ADD_ATTACHMENT_FAIL);
+      }
       break;
   }
 

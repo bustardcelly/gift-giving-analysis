@@ -1,0 +1,20 @@
+{
+    "env": {
+        "browser": true,
+        "node": true
+    },
+    "ecmaFeatures": {
+        "blockBindings": true,
+        "jsx": true
+    },
+    "rules": {
+        "semi": 2,
+        "curly": true,
+        "quotes": "single"
+        "eqeqeq": true,
+        "wrap-iife": true,
+        "no-unused-expressions": true,
+        "no-unused-vars": true,
+        "boss": true
+    }
+}

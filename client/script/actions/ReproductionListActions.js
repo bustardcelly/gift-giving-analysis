@@ -1,6 +1,5 @@
-/* global $*/
-'use strict';
-
+/* global $, require*/
+"use strict";
 var Dispatcher = require('../dispatcher');
 var ReproductionActionEnum = require('../enums/ReproductionAction');
 var collFactory = require('../model/collection');

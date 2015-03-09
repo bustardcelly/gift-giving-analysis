@@ -1,5 +1,4 @@
 /** @jsx React.DOM */
-'use strict';
 var React = require('react');
 var giftStore = require('../../store/gift-store');
 var exchangeStore = require('../../store/exchange-store');
@@ -29,7 +28,7 @@ module.exports = React.createClass({ displayName: 'CopyOfFormItem',
   onSaveCopyOfGift: function(selectedGiftId) {
     this.setState({
       giftId: selectedGiftId
-    })
+    });
   },
   handleChangeCopyOf: function(event) {
     event.preventDefault();

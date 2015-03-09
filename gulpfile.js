@@ -28,7 +28,7 @@ var convertify = function(target) {
                 },
                 transform: ['reactify']
               }));
-              
+
   if(isProduction) {
     pipe(buffer()).pipe(uglify());
   }
@@ -39,7 +39,7 @@ gulp.task('browserify', ['clean'], function() {
   convertify('client/script/exchange.js');
   convertify('client/script/reproduction.js');
 });
-  
+
 gulp.task('copy', ['clean'], function() {
   gulp.src([
       'client/lib/jquery-1.11.1.min.js',
