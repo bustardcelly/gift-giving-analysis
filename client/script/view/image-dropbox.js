@@ -14,6 +14,7 @@ var ImageAttachmentItem = React.createClass({displayName: 'ImageAttachmentItem',
   componentDidMount: function() {
     var attachment = this.props.data;
     this._boundForceUpdate = this._imageBoxItemUpdate.bind(this, null);
+    attachment.setMaxListeners(1000);
     attachment.on('change', this._boundForceUpdate, this);
   },
   componentWillUnmount: function() {
@@ -52,6 +53,7 @@ module.exports = React.createClass({displayName: 'ImageDropBox',
     }
   },
   getAttachmentCollection: function() {
+    this.props.data._attachmentList.setMaxListeners(1000);
     return this.props.data._attachmentList;
   },
   componentDidMount: function() {
