@@ -4,9 +4,15 @@ var React = require('react');
 
 module.exports = React.createClass({displayName: 'ImageDropBox',
 
+  getInitialState: function() {
+    return {
+      attachments: undefined
+    };
+  },
+
   _onAll: function() {
     this.setState({
-      attachments: this.store.all(this.props.data._id)
+      attachments: this.props.store.all(this.props.data._id)
     });
   },
 
@@ -36,9 +42,27 @@ module.exports = React.createClass({displayName: 'ImageDropBox',
   },
 
   render: function() {
+    var rows = [];
+    var attachments = this.state.attachments;
+    if(attachments !== undefined) {
+      attachments.forEach(function(data) {
+        rows.push(<img src={data.url} />);
+      });
+    }
     return (
-      <h1>hello</h1>
+      <div className="form-group">
+        <label htmlFor="image-attachment-container" className="control-label image-form-label">Images:</label>
+        <div name="image-attachment-container">
+          <ul className="image-attachment-list">
+            {rows}
+          </ul>
+          <div className="image-dropbox">
+            <span>Drop image file here</span>
+          </div>
+        </div>
+      </div>
     );
   }
+
 
 });

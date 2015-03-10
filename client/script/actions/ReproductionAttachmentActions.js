@@ -4,11 +4,9 @@ var Q = require('q');
 var Dispatcher = require('../dispatcher');
 var ReproductionAttachmentActionEnum = require('../enums/ReproductionAttachmentAction');
 
-var createGetRequest = function(filename) {
-  return function() {
-    var theUrl = 'http://' + this.host + ':' + this.port + '/reproduction/' + reproduction._id + '/' + filename;
-    return $.ajax({type: 'GET', url: theUrl, contentType: 'json'});
-  };
+var createGetRequest = function(host, port, reproductionId, filename) {
+  var theUrl = 'http://' + host + ':' + port + '/reproduction/' + reproductionId + '/' + filename;
+  return $.ajax({type: 'GET', url: theUrl, contentType: 'json'});
 };
 
 var ReproductionAttachmentActions = {
@@ -23,9 +21,10 @@ var ReproductionAttachmentActions = {
   },
 
   get: function(reproductionId, filenames) {
+    var self = this;
     var list = [];
     var requests = filenames.map(function(filename) {
-      return createGetRequest(filename);
+      return createGetRequest(self.host, self.port, reproductionId, filename);
     });
     Q.allSettled(requests)
       .then(function(results) {

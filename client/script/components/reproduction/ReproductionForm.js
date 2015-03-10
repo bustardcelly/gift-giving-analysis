@@ -189,24 +189,24 @@ var ReproductionForm = React.createClass({displayName: 'ReproductionForm',
         }} />
         <InputFormItem ref="locationInput" {... {
           name: 'reproduction-location-str-input',
-          label: 'Location',
-          placeholder: 'Location',
+          label: 'Location Now',
+          placeholder: 'Location Now',
           value: this.unpack('location_str'),
           inputClasses: ['reproduction-location-str-input'],
           labelClasses: ['reproduction-form-label']
         }} />
         <InputFormItem ref="latitudeInput" {... {
           name: 'reproduction-latitude-input',
-          label: 'Latitude',
-          placeholder: 'Latitude',
+          label: 'Latitude Now',
+          placeholder: 'Latitude Now',
           value: this.unpack('latitude'),
           inputClasses: ['reproduction-latitude-input'],
           labelClasses: ['reproduction-form-label']
         }} />
         <InputFormItem ref="longitudeInput" {... {
           name: 'reproduction-longitude-input',
-          label: 'Longitude',
-          placeholder: 'Longitude',
+          label: 'Longitude Now',
+          placeholder: 'Longitude Now',
           value: this.unpack('longitude'),
           inputClasses: ['reproduction-longitude-input'],
           labelClasses: ['reproduction-form-label']

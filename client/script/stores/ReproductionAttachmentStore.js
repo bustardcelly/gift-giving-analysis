@@ -27,7 +27,7 @@ var ReproductionAttachmentStore = assign({}, EventEmitter.prototype, {
   },
 
   addGetListener: function(callback) {
-    this.on(ReproductionAttachmentEventEnum.GET_ATTACMENTS_EVENT, callback);
+    this.on(ReproductionAttachmentEventEnum.GET_ATTACHMENTS_EVENT, callback);
   },
 
   removeGetListener: function(callback) {
@@ -55,8 +55,8 @@ Dispatcher.register(ReproductionAttachmentStore, function(payload) {
   var action = payload.action;
   switch(action.type) {
     case ReproductionAttachmentActionEnum.GET_ATTACHMENTS:
-      attachmentsMap[action.id] = action.list;
-      ReproductionAttachmentStore.emit(ReproductionAttachmentEventEnum.GET_ATTACHMENTS);
+      attachmentMap[action.id] = action.list;
+      ReproductionAttachmentStore.emit(ReproductionAttachmentEventEnum.GET_ATTACHMENTS_EVENT);
       break;
     case ReproductionAttachmentActionEnum.ADD_ATTACHMENT:
       break;
