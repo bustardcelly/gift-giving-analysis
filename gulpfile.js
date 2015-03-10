@@ -30,7 +30,7 @@ var convertify = function(target) {
               }));
 
   if(isProduction) {
-    pipe(buffer()).pipe(uglify());
+    p.pipe(buffer()).pipe(uglify());
   }
   p.pipe(gulp.dest('./static/script'));
 };

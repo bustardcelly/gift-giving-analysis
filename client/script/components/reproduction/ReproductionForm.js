@@ -79,20 +79,29 @@ var ReproductionForm = React.createClass({displayName: 'ReproductionForm',
     }
     return months;
   },
+  numberFromFieldValue: function($field) {
+    return $field.value() < 1 || isNaN(Number($field.value())) ? null : Number($field.value());
+  },
   serialize: function() {
     var toCopy = this.props.data;
     var $title = this.refs.titleInput;
     var $copy = this.refs.copyInput;
     var $copyof = this.refs.copyOfInput;
     var $location = this.refs.locationInput;
+    var $latitude = this.refs.latitudeInput;
+    var $longitude = this.refs.longitudeInput;
+    var $locationOriginal = this.refs.locationOriginalInput;
+    var $latitudeOriginal = this.refs.latitudeOriginalInput;
+    var $longitudeOriginal = this.refs.longitudeOriginalInput;
+    var $locationMade = this.refs.locationMadeInput;
+    var $latitudeMade = this.refs.latitudeMadeInput;
+    var $longitudeMade = this.refs.longitudeMadeInput;
     var $maker = this.refs.makerInput;
     var $publisher = this.refs.publisherInput;
     var $medium = this.refs.mediumInput;
     var $day = this.refs.dayInput;
     var $month = this.refs.monthInput;
     var $year = this.refs.yearInput;
-    var $latitude = this.refs.latitudeInput;
-    var $longitude = this.refs.longitudeInput;
     var $source = this.refs.sourceInput;
     var $notes = this.refs.notesInput;
     var $motifs = this.refs.motifInput;
@@ -107,14 +116,20 @@ var ReproductionForm = React.createClass({displayName: 'ReproductionForm',
     serialized.copy = $copy.value();
     serialized.copy_of = $copyof.value();
     serialized.location_str = $location.value();
+    serialized.latitude = this.numberFromFieldValue($latitude);
+    serialized.longitude = this.numberFromFieldValue($longitude);
+    serialized.location_original_str = $locationOriginal.value();
+    serialized.latitude_original = this.numberFromFieldValue($latitudeOriginal);
+    serialized.longitude_original = this.numberFromFieldValue($longitudeOriginal);
+    serialized.location_made_str = $locationMade.value();
+    serialized.latitude_made = this.numberFromFieldValue($latitudeMade);
+    serialized.longitude_made = this.numberFromFieldValue($longitudeMade);
     serialized.maker_author = $maker.value();
     serialized.publisher = $publisher.value();
     serialized.medium = $medium.value();
-    serialized.day = isNaN(Number($day.value())) ? null : Number($day.value());
+    serialized.day = this.numberFromFieldValue($day);
     serialized.month = monthList.indexOf($month.value());
     serialized.year = $year.value().length === 0 ? null : $year.value();
-    serialized.latitude = Number($latitude.value());
-    serialized.longitude = Number($longitude.value());
     serialized.source = $source.value();
     serialized.notes = $notes.value();
     serialized.motifs = $motifs.value();
@@ -180,6 +195,70 @@ var ReproductionForm = React.createClass({displayName: 'ReproductionForm',
           inputClasses: ['reproduction-location-str-input'],
           labelClasses: ['reproduction-form-label']
         }} />
+        <InputFormItem ref="latitudeInput" {... {
+          name: 'reproduction-latitude-input',
+          label: 'Latitude',
+          placeholder: 'Latitude',
+          value: this.unpack('latitude'),
+          inputClasses: ['reproduction-latitude-input'],
+          labelClasses: ['reproduction-form-label']
+        }} />
+        <InputFormItem ref="longitudeInput" {... {
+          name: 'reproduction-longitude-input',
+          label: 'Longitude',
+          placeholder: 'Longitude',
+          value: this.unpack('longitude'),
+          inputClasses: ['reproduction-longitude-input'],
+          labelClasses: ['reproduction-form-label']
+        }} />
+        <InputFormItem ref="locationOriginalInput" {... {
+          name: 'reproduction-location-original-str-input',
+          label: 'Location Original',
+          placeholder: 'Location Original',
+          value: this.unpack('location_original_str'),
+          inputClasses: ['reproduction-location-original-str-input'],
+          labelClasses: ['reproduction-form-label']
+        }} />
+        <InputFormItem ref="latitudeOriginalInput" {... {
+          name: 'reproduction-latitude-original-input',
+          label: 'Latitude Original',
+          placeholder: 'Latitude Original',
+          value: this.unpack('latitude_original'),
+          inputClasses: ['reproduction-latitude-original-input'],
+          labelClasses: ['reproduction-form-label']
+        }} />
+        <InputFormItem ref="longitudeOriginalInput" {... {
+          name: 'reproduction-longitude-original-input',
+          label: 'Longitude Original',
+          placeholder: 'Longitude Original',
+          value: this.unpack('longitude_original'),
+          inputClasses: ['reproduction-longitude-original-input'],
+          labelClasses: ['reproduction-form-label']
+        }} />
+        <InputFormItem ref="locationMadeInput" {... {
+          name: 'reproduction-location-made-str-input',
+          label: 'Location Made',
+          placeholder: 'Location Made',
+          value: this.unpack('location_made_str'),
+          inputClasses: ['reproduction-location-made-str-input'],
+          labelClasses: ['reproduction-form-label']
+        }} />
+        <InputFormItem ref="latitudeMadeInput" {... {
+          name: 'reproduction-latitude-made-input',
+          label: 'Latitude Made',
+          placeholder: 'Latitude Made',
+          value: this.unpack('latitude_made'),
+          inputClasses: ['reproduction-latitude-made-input'],
+          labelClasses: ['reproduction-form-label']
+        }} />
+        <InputFormItem ref="longitudeMadeInput" {... {
+          name: 'reproduction-longitude-made-input',
+          label: 'Longitude Made',
+          placeholder: 'Longitude Made',
+          value: this.unpack('longitude_made'),
+          inputClasses: ['reproduction-longitude-made-input'],
+          labelClasses: ['reproduction-form-label']
+        }} />
         <InputFormItem ref="makerInput" {... {
           name: 'reproduction-maker-input',
           label: 'Maker/Author',
@@ -232,22 +311,6 @@ var ReproductionForm = React.createClass({displayName: 'ReproductionForm',
           name: 'motif-checklist',
           label: 'Motif(s)',
           value: this.unpack('motifs'),
-          labelClasses: ['reproduction-form-label']
-        }} />
-        <InputFormItem ref="latitudeInput" {... {
-          name: 'reproduction-latitude-input',
-          label: 'Latitude',
-          placeholder: 'Latitude',
-          value: this.unpack('latitude'),
-          inputClasses: ['reproduction-latitude-input'],
-          labelClasses: ['reproduction-form-label']
-        }} />
-        <InputFormItem ref="longitudeInput" {... {
-          name: 'reproduction-longitude-input',
-          label: 'Longitude',
-          placeholder: 'Longitude',
-          value: this.unpack('longitude'),
-          inputClasses: ['reproduction-longitude-input'],
           labelClasses: ['reproduction-form-label']
         }} />
         <TextAreaFormItem ref="sourceInput" {... {
