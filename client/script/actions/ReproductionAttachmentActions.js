@@ -41,8 +41,9 @@ var ReproductionAttachmentActions = {
       });
   },
 
-  add: function(reproduction, fomrData) {
-   var theUrl = 'http://' + this.host + ':' + this.port + '/reproduction/image/' + reproduction._id + '?rev=' + reproduction._rev;
+  add: function(reproduction, fileName, dataSource, formData) {
+    var theUrl = 'http://' + this.host + ':' + this.port + '/reproduction/image/' + reproduction._id + '?rev=' + reproduction._rev;
+    var fileUrl = 'http://' + this.host + ':' + this.port + '/reproduction/' + reproduction._id + '/' + fileName;
    $.ajax({
      type: 'PUT',
      url: theUrl,
@@ -55,26 +56,34 @@ var ReproductionAttachmentActions = {
        reproduction._id = data.id;
        reproduction._rev = data.rev;
        Dispatcher.handleAsyncAction({
-          type: ReproductionAttachmentActionEnum.ADD_ATTACHMENT
+         type: ReproductionAttachmentActionEnum.ADD_ATTACHMENT,
+         id: reproduction._id,
+         attachment: {
+           url: dataSource,
+           filename: fileName
+         }
        });
      }
      else if(data.hasOwnProperty('error')) {
        Dispatcher.handleAsyncAction({
           type: ReproductionAttachmentActionEnum.ADD_ATTACHMENT,
-          error: error
+          error: error,
+          id: reproduction._id
         });
      }
      else {
        Dispatcher.handleAsyncAction({
           type: ReproductionAttachmentActionEnum.ADD_ATTACHMENT,
-          error: JSON.stringify(data, null, 2)
+          error: JSON.stringify(data, null, 2),
+          id: reproduction._id
         });
      }
    })
    .fail(function(error) {
      Dispatcher.handleAsyncAction({
           type: ReproductionAttachmentActionEnum.ADD_ATTACHMENT,
-          error: error
+          error: error,
+          id: reproduction._id
         });
    });
 

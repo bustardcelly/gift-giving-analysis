@@ -15,6 +15,13 @@ var ReproductionAttachmentStore = assign({}, EventEmitter.prototype, {
     ReproductionAttachmentActions.get(reproductionId, filenames);
   },
 
+  createIfNotExist: function(reproductionId) {
+    if(!attachmentMap.hasOwnProperty(reproductionId)) {
+      attachmentMap[reproductionId] = [];
+    }
+    return attachmentMap[reproductionId];
+  },
+
   all: function(reproductionId) {
     if(attachmentMap.hasOwnProperty(reproductionId)) {
       return attachmentMap[reproductionId];
@@ -22,8 +29,8 @@ var ReproductionAttachmentStore = assign({}, EventEmitter.prototype, {
     return undefined;
   },
 
-  add: function(reproductionItem, formData) {
-    ReproductionAttachmentActions.add(reproductionItem, formData);
+  add: function(reproductionItem, fileName, dataSource, formData) {
+    ReproductionAttachmentActions.add(reproductionItem, fileName, dataSource, formData);
   },
 
   addGetListener: function(callback) {
@@ -59,6 +66,13 @@ Dispatcher.register(ReproductionAttachmentStore, function(payload) {
       ReproductionAttachmentStore.emit(ReproductionAttachmentEventEnum.GET_ATTACHMENTS_EVENT);
       break;
     case ReproductionAttachmentActionEnum.ADD_ATTACHMENT:
+      if(action.error) {
+        // TODO: Handle error.
+      }
+      else {
+        ReproductionAttachmentStore.createIfNotExist(action.id).push(action.attachment);
+        ReproductionAttachmentStore.emit(ReproductionAttachmentEventEnum.ADD_ATTACHMENT_EVENT);
+      }
       break;
   }
 
