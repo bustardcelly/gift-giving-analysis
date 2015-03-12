@@ -25,6 +25,9 @@ module.exports = React.createClass({displayName: 'ImageDropBox',
   },
 
   _onRemove: function() {
+    this.setState({
+      attachments: this.props.store.all(this.props.data._id)
+    });
   },
 
   componentDidMount: function() {
@@ -34,7 +37,7 @@ module.exports = React.createClass({displayName: 'ImageDropBox',
 
     store.addGetListener(this._onAll);
     store.addAddListener(this._onAdd);
-    // action.addRemoveListener(this._onRemove);
+    store.addRemoveListener(this._onRemove);
     if(model.hasOwnProperty('_attachments')) {
       store.get(model._id, Object.keys(attachments));
     }
@@ -43,7 +46,7 @@ module.exports = React.createClass({displayName: 'ImageDropBox',
   componentWillUnmount: function() {
     this.props.store.removeAllListener(this._onAll);
     this.props.store.removeAddListener(this._onAdd);
-    // this.props.action.removeRemoveListener(this._onRemove);
+    this.props.store.removeRemoveListener(this._onRemove);
   },
 
   previewDroppedFile: function(file) {
@@ -104,12 +107,16 @@ module.exports = React.createClass({displayName: 'ImageDropBox',
 
   render: function() {
     var rows = [];
+    var store = this.props.store;
+    var reproduction = this.props.data;
     var attachments = this.state.attachments;
     if(attachments !== undefined) {
       attachments.forEach(function(data) {
         rows.push(<li>
           <ImageAttachmentItem {... {
-            data: data
+            data: data,
+            store: store,
+            reproduction: reproduction
           }} />
         </li>);
       });

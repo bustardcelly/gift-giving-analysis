@@ -5,6 +5,7 @@ var React = require('react');
 var ImageAttachmentItem = React.createClass({displayName: 'ImageAttachmentItem',
 
   removeImage: function() {
+    this.props.store.remove(this.props.reproduction, this.props.data.filename);
   },
 
   render: function() {

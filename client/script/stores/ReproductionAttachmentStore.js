@@ -41,6 +41,10 @@ var ReproductionAttachmentStore = assign({}, EventEmitter.prototype, {
     ReproductionAttachmentActions.add(reproductionItem, fileName, dataSource, formData);
   },
 
+  remove: function(reproductionItem, fileName) {
+    ReproductionAttachmentActions.remove(reproductionItem, fileName);
+  },
+
   addGetListener: function(callback) {
     this.on(ReproductionAttachmentEventEnum.GET_ATTACHMENTS_EVENT, callback);
   },
@@ -58,15 +62,19 @@ var ReproductionAttachmentStore = assign({}, EventEmitter.prototype, {
   },
 
   addRemoveListener: function(callback) {
+    this.on(ReproductionAttachmentEventEnum.REMOVE_ATTACHMENT_EVENT, callback);
   },
 
   removeRemoveListener: function(callback) {
+    this.removeListener(ReproductionAttachmentEventEnum.REMOVE_ATTACHMENT_EVENT, callback);
   }
 
 });
 
 Dispatcher.register(ReproductionAttachmentStore, function(payload) {
 
+  var i;
+  var list;
   var action = payload.action;
   switch(action.type) {
     case ReproductionAttachmentActionEnum.GET_ATTACHMENTS:
@@ -74,8 +82,6 @@ Dispatcher.register(ReproductionAttachmentStore, function(payload) {
       ReproductionAttachmentStore.emit(ReproductionAttachmentEventEnum.GET_ATTACHMENTS_EVENT);
       break;
     case ReproductionAttachmentActionEnum.ADD_ATTACHMENT:
-      var i;
-      var list;
       if(action.error) {
         // TODO: Handle error.
       }
@@ -86,12 +92,29 @@ Dispatcher.register(ReproductionAttachmentStore, function(payload) {
           if(list[i].hasOwnProperty('loading')) {
             if(list[i].loading === action.attachment.filename) {
               list.splice(i, 1);
+              break;
             }
           }
         }
         list.push(action.attachment);
         ReproductionAttachmentStore.emit(ReproductionAttachmentEventEnum.ADD_ATTACHMENT_EVENT);
       }
+      break;
+    case ReproductionAttachmentActionEnum.REMOVE_ATTACHMENT:
+        if(action.error) {
+          // TODO: Handle error.
+        }
+        else {
+          list = ReproductionAttachmentStore.createIfNotExist(action.id);
+          i = list.length;
+          while(--i > -1) {
+            if(list[i].filename === action.attachment.filename) {
+              list.splice(i, 1);
+              break;
+            }
+          }
+          ReproductionAttachmentStore.emit(ReproductionAttachmentEventEnum.REMOVE_ATTACHMENT_EVENT);
+        }
       break;
   }
 

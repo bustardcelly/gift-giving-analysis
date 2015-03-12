@@ -87,6 +87,49 @@ var ReproductionAttachmentActions = {
         });
    });
 
+  },
+
+  remove: function(reproduction, fileName) {
+    var theUrl = 'http://' + this.host + ':' + this.port + '/reproduction/' + reproduction._id + '/' + fileName + '?rev=' + reproduction._rev;
+    $.ajax({
+      type: 'DELETE',
+      url: theUrl
+    })
+    .done(function(data) {
+      if(data.hasOwnProperty('ok') && data.ok) {
+        reproduction._id = data.id;
+        reproduction._rev = data.rev;
+        Dispatcher.handleAsyncAction({
+          type: ReproductionAttachmentActionEnum.REMOVE_ATTACHMENT,
+          id: reproduction._id,
+          attachment: {
+            filename: fileName
+          }
+        });
+      }
+      else if(data.hasOwnProperty('error')) {
+        Dispatcher.handleAsyncAction({
+          type: ReproductionAttachmentActionEnum.REMOVE_ATTACHMENT,
+          id: reproduction._id,
+          error: data.error
+        });
+      }
+      else {
+        Dispatcher.handleAsyncAction({
+          type: ReproductionAttachmentActionEnum.REMOVE_ATTACHMENT,
+          id: reproduction._id,
+          error: JSON.stringify(data, null, 2)
+        });
+      }
+    })
+    .fail(function(error) {
+      Dispatcher.handleAsyncAction({
+          type: ReproductionAttachmentActionEnum.REMOVE_ATTACHMENT,
+          id: reproduction._id,
+          error: error
+      });
+    });
+
   }
 
 };
