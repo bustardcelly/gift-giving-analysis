@@ -1,9 +1,6 @@
 /** @jsx React.DOM */
 'use strict';
 var React = require('react');
-var MotifSelector = require('../../view/motif-selector');
-var giftStore = require('../../store/gift-store');
-var exchangeStore = require('../../store/exchange-store');
 
 var ReproductionListActions = require('../../actions/ReproductionListActions');
 var ReproductionAttachmentStore = require('../../stores/ReproductionAttachmentStore');
@@ -17,16 +14,6 @@ var ImageDropBox = require('../form/ImageDropbox');
 
 var monthList = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
                 'August', 'September', 'October', 'November', 'December'];
-
-var getGiftNameFromId = function(id) {
-  var gift = giftStore.withId(id);
-  var exchange;
-  if(gift !== undefined) {
-    exchange = exchangeStore.withId(gift.exchange_id);
-    return [exchange.title, gift.description].join(': ');
-  }
-  return 'Unknown';
-};
 
 var ReproductionForm = React.createClass({displayName: 'ReproductionForm',
   getInitialState: function() {
