@@ -15,10 +15,14 @@ var ImageAttachmentItem = React.createClass({displayName: 'ImageAttachmentItem',
     var removalClass = !isLoading ? '' : 'hidden';
     return (
       <div>
-        <img src={source} />
         <p>
-          <span className={loadingClass}>Loading...</span>
-          <button className={removalClass} onClick={this.removeImage}>Remove</button>
+          <img src={source} />
+        </p>
+        <p className={isLoading ? 'hidden' : ''}>
+          <button type="btn" className="btn" onClick={this.removeImage}>remove</button>
+        </p>
+        <p className={!isLoading ? 'hidden progress-field' : 'progress-field'}>
+          <strong>loading...</strong>
         </p>
       </div>
     );
