@@ -2,6 +2,7 @@
 'use strict';
 var Q = require('q');
 var React = require('react');
+var ImageAttachmentItem = require('./ImageAttachmentItem');
 
 module.exports = React.createClass({displayName: 'ImageDropBox',
 
@@ -83,6 +84,7 @@ module.exports = React.createClass({displayName: 'ImageDropBox',
     event.stopPropagation();
     event.preventDefault();
     var data;
+    var self = this;
     var store = this.props.store;
     var reproduction = this.props.data;
     var file = event.dataTransfer.files ? event.dataTransfer.files[0] : undefined;
@@ -91,6 +93,7 @@ module.exports = React.createClass({displayName: 'ImageDropBox',
       data.append('file_1', file);
       this.previewDroppedFile(file)
           .then(function(source) {
+            store.pend(reproduction, file.name, source);
             store.add(reproduction, file.name, source, data);
           }, function(error) {
             // TODO: Show error.
@@ -104,14 +107,18 @@ module.exports = React.createClass({displayName: 'ImageDropBox',
     var attachments = this.state.attachments;
     if(attachments !== undefined) {
       attachments.forEach(function(data) {
-        rows.push(<img src={data.url} />);
+        rows.push(<li>
+          <ImageAttachmentItem {... {
+            data: data
+          }} />
+        </li>);
       });
     }
     return (
       <div className="form-group">
         <label htmlFor="image-attachment-container" className="control-label image-form-label">Images:</label>
         <div name="image-attachment-container">
-          <ul className="image-attachment-list">
+          <ul ref="ImageAttachmentList" className="image-attachment-list">
             {rows}
           </ul>
           <div className="image-dropbox"

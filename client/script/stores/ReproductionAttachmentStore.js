@@ -29,6 +29,14 @@ var ReproductionAttachmentStore = assign({}, EventEmitter.prototype, {
     return undefined;
   },
 
+  pend: function(reproductionItem, fileName, dataSource) {
+    this.createIfNotExist(reproductionItem._id).push({
+      loading: fileName,
+      src: dataSource
+    });
+    this.emit(ReproductionAttachmentEventEnum.ADD_ATTACHMENT_EVENT);
+  },
+
   add: function(reproductionItem, fileName, dataSource, formData) {
     ReproductionAttachmentActions.add(reproductionItem, fileName, dataSource, formData);
   },
@@ -66,11 +74,22 @@ Dispatcher.register(ReproductionAttachmentStore, function(payload) {
       ReproductionAttachmentStore.emit(ReproductionAttachmentEventEnum.GET_ATTACHMENTS_EVENT);
       break;
     case ReproductionAttachmentActionEnum.ADD_ATTACHMENT:
+      var i;
+      var list;
       if(action.error) {
         // TODO: Handle error.
       }
       else {
-        ReproductionAttachmentStore.createIfNotExist(action.id).push(action.attachment);
+        list = ReproductionAttachmentStore.createIfNotExist(action.id);
+        i = list.length;
+        while(--i > -1) {
+          if(list[i].hasOwnProperty('loading')) {
+            if(list[i].loading === action.attachment.filename) {
+              list.splice(i, 1);
+            }
+          }
+        }
+        list.push(action.attachment);
         ReproductionAttachmentStore.emit(ReproductionAttachmentEventEnum.ADD_ATTACHMENT_EVENT);
       }
       break;
