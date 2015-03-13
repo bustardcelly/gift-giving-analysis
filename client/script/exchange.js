@@ -4,8 +4,9 @@ var collFactory = require('./model/collection');
 var exchangeList = require('./view/exchange-list');
 var exchangeService = require('./service/exchange');
 var giftService = require('./service/gift');
-var motifService = require('./service/motif');
 var motifStore = require('./store/motif-store');
+
+var MotifStore = require('./stores/MotifStore');
 
 giftService.init(window.serviceHost, window.servicePort);
 motifService.init(window.serviceHost, window.servicePort);
@@ -31,7 +32,7 @@ var accessExchanges = function() {
     });
 };
 
-motifService.all()
+MotifStore.all()
   .then(function(list) {
     motifStore.init(list);
     accessExchanges();
