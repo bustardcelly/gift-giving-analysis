@@ -8,15 +8,8 @@ var ExchangeStore = require('../../stores/ExchangeStore');
 var GiftList = React.createClass({
 
   _onGiftList: function(list) {
-    var exchangeId = this.props.exchangeId;
     this.setState({
       giftList: list
-        .filter(function(item) {
-          return item.exchange_id === exchangeId;
-        })
-        .map(function(item) {
-          return {name: '(' + item.amount + ') ' + item.description, id: item._id};
-        })
     });
   },
 
@@ -32,6 +25,19 @@ var GiftList = React.createClass({
     this.setState({
       selectedGiftId: this.props.selectedGiftId
     });
+  },
+
+  filterGiftsByExchangeId: function(exchangeId) {
+    if(this.state.giftList !== undefined) {
+      return this.state.giftList
+              .filter(function(item) {
+                return item.exchange_id === exchangeId;
+              })
+              .map(function(item) {
+                return {name: '(' + item.amount + ') ' + item.description, id: item._id};
+              });
+    }
+    return [];
   },
 
   handleItemClick: function(event) {
@@ -59,7 +65,7 @@ var GiftList = React.createClass({
     var clickHandler = this.handleItemClick;
     var gifts = this.state.giftList === undefined
       ? undefined
-      : this.state.giftList.map(function(item) {
+      : this.filterGiftsByExchangeId(exchangeId).map(function(item) {
         var classList = (item.id === selectedGiftId) ? ['selected'] : [];
         classList.push('list-group-item');
         return <li href="#" className={classList.join(' ')} data-id={item.id}>{item.name}</li>;
