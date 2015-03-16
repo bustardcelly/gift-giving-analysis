@@ -1,47 +1,39 @@
 /** @jsx React.DOM */
-/*global window, $*/
+/** global $ */
 'use strict';
 var React = require('react');
-
-var exchangeStore = require('../store/exchange-store');
-var giftStore = require('../store/gift-store');
-
-var exchangeList;
-var inflatExchangeList = function() {
-  if(exchangeList === undefined) {
-    exchangeList = exchangeStore.all().map(function(item) {
-      return {id: item._id, name: item.title};
-    });
-  }
-};
-var giftsByExchangeId = function(id) {
-  return giftStore.all().filter(function(item) {
-            return item.exchange_id === id;
-          }).map(function(item) {
-            return {name: '(' + item.amount + ') ' + item.description, id: item._id};
-          });
-};
-var indexOfExchangeTitle = function(title) {
-  var i = exchangeList.length;
-  while(--i > -1) {
-    if(exchangeList[i].name === title) {
-      return i;
-    }
-  }
-  return i;
-};
+var GiftStore = require('../../stores/GiftStore');
+var ExchangeStore = require('../../stores/ExchangeStore');
 
 var GiftList = React.createClass({
+
+  _onGiftList: function(list) {
+    var exchangeId = this.props.exchangeId;
+    this.setState({
+      giftList: list
+        .filter(function(item) {
+          return item.exchange_id === exchangeId;
+        })
+        .map(function(item) {
+          return {name: '(' + item.amount + ') ' + item.description, id: item._id};
+        })
+    });
+  },
+
   getInitialState: function() {
     return {
-      selectedGiftId: undefined
+      selectedGiftId: undefined,
+      giftList: undefined
     };
   },
+
   componentDidMount: function() {
+    GiftStore.init().then(this._onGiftList.bind(this));
     this.setState({
       selectedGiftId: this.props.selectedGiftId
     });
   },
+
   handleItemClick: function(event) {
     event.preventDefault();
     var $dom = $(this.getDOMNode());
@@ -58,66 +50,94 @@ var GiftList = React.createClass({
         selectedGiftId: $elem.data('id')
       })
     }
-    else {
-      this.setState({
-        selectedGiftId: undefined
-      })
-    }
-
     return false;
   },
+
   render: function() {
     var selectedGiftId = this.state.selectedGiftId;
     var exchangeId = this.props.exchangeId;
     var clickHandler = this.handleItemClick;
+    var gifts = this.state.giftList === undefined
+      ? undefined
+      : this.state.giftList.map(function(item) {
+        var classList = (item.id === selectedGiftId) ? ['selected'] : [];
+        classList.push('list-group-item');
+        return <li href="#" className={classList.join(' ')} data-id={item.id}>{item.name}</li>;
+      });
     return (
-      <ul id='exchange-selector-list' className='list-group'>
+      <ul id='exchange-selector-list' className='list-group' onClick={clickHandler}>
         {
-          giftsByExchangeId(exchangeId)
-            .map(function(item) {
-              var classList = (item.id === selectedGiftId) ? ['selected'] : [];
-              classList.push('list-group-item');
-              return <li href='#' className={classList.join(' ')} data-id={item.id} onClick={clickHandler}>{item.name}</li>
-            })
+          gifts
         }
       </ul>
     );
   }
+
+
 });
 
 var HostBody = React.createClass({
-  getInitialState: function() {
-    return {
-      selectedIndex: 0
-    };
-  },
-  handleOnExchangeSelectionChange: function() {
-    var $dom = $(this.getDOMNode());
-    var $selector = $('#exchange-selector', $dom);
+
+  _onExchangeList: function(list) {
     this.setState({
-      selectedIndex: indexOfExchangeTitle($selector.val())
+      exchangeList: list
     });
   },
+
+  getInitialState: function() {
+    return {
+      selectedIndex: -1,
+      exchangeList: undefined
+    }
+  },
+
+  componentDidMount: function() {
+    ExchangeStore.init().then(this._onExchangeList.bind(this));
+    this.setState({
+      selectedIndex: this.props.selectedIndex
+    });
+  },
+
+  handleOnExchangeSelectionChange: function() {
+    var $dom = this.getDOMNode();
+    var $selector = $('#exchangeSelector', $dom);
+    this.setState({
+      selectedIndex: ExchangeStore.indexOfTitle($selector.val())
+    });
+  },
+
   render: function() {
+    var selectedGiftId = this.props.selectedGiftId;
+    var exchangeList = this.state.exchangeList;
+    var index = this.state.selectedIndex;
+    var selectedExchange = exchangeList === undefined  || this.state.selectedIndex <= -1
+      ? undefined
+      : exchangeList[this.state.selectedIndex];
+    var options = exchangeList === undefined
+      ? undefined
+      : exchangeList.map(function(item) {
+        return <option data-id={item._id}>{item.title}</option>;
+      });
+    var giftList = selectedExchange === undefined
+      ? undefined
+      : <GiftList {... {
+          exchangeId: selectedExchange._id,
+          selectedGiftId: selectedGiftId
+        }} />;
     return (
       <div>
         <strong>Select Exchange:</strong>
         <p>
-          <select id="exchange-selector" defaultValue={exchangeList[this.state.selectedIndex].name} onChange={this.handleOnExchangeSelectionChange}>
+          <select id="exchangeSelector" defaultValue={selectedExchange !== undefined ? selectedExchange.name: 'N/A'} onChange={this.handleOnExchangeSelectionChange}>
             {
-              exchangeList.map(function(item) {
-                return <option data-id={item.id}>{item.name}</option>
-              })
+              options
             }
           </select>
         </p>
         <div>
           <strong>Select Gift:</strong>
           {
-            GiftList({
-              exchangeId: exchangeList[this.state.selectedIndex].id,
-              selectedGiftId: this.props.selectedGiftId
-            })
+            giftList
           }
         </div>
       </div>
@@ -126,11 +146,14 @@ var HostBody = React.createClass({
 });
 
 var Dialog = React.createClass({
+
   getInitialState: function() {
     return {
+      exchangeList: undefined,
       className: 'modal fade'
     };
   },
+
   componentDidMount: function() {
     var $dom = $(this.getDOMNode());
     $dom.modal({
@@ -141,6 +164,11 @@ var Dialog = React.createClass({
       $dom.remove();
     });
   },
+  componentWillUnmount: function() {
+    var $dom = $(this.getDOMNode());
+    $dom.off('hidden');
+  },
+
   getSelectedGiftId: function() {
     var $dom = $(this.getDOMNode());
     var $selectedGiftItem = $('#exchange-selector-list > li.selected', $dom);
@@ -149,6 +177,7 @@ var Dialog = React.createClass({
     }
     return undefined;
   },
+
   show: function() {
     this.setState({
       className: 'modal fade show'
@@ -159,6 +188,7 @@ var Dialog = React.createClass({
       });
     }.bind(this), 0);
   },
+
   hide: function(e) {
     if(e) {
       e.stopPropagation();
@@ -168,6 +198,7 @@ var Dialog = React.createClass({
     });
     $(this.getDOMNode()).modal('hide');
   },
+
   save: function(e) {
     if(e) {
       e.stopPropagation();
@@ -177,6 +208,7 @@ var Dialog = React.createClass({
     }
     this.hide();
   },
+
   delete: function(e) {
      if(e) {
       e.stopPropagation();
@@ -186,10 +218,10 @@ var Dialog = React.createClass({
     }
     this.hide();
   },
+
   render: function() {
     var closeDelegate = this.hide;
     var saveDelegate = this.save;
-    inflatExchangeList();
     return (
       <div className={this.state.className}>
         <div className="modal-dialog">

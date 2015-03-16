@@ -1,47 +1,25 @@
-/*global window, $*/
+/*global window*/
 'use strict';
 Object.assign = require('object-assign');
-var exchangeService = require('./service/exchange');
-var giftService = require('./service/gift');
 
-var exchangeStore = require('./store/exchange-store');
-var giftStore = require('./store/gift-store');
+var host = window.serviceHost;
+var port = window.servicePort;
 
 var MotifStore = require('./stores/MotifStore');
+var GiftActions = require('./actions/GiftActions');
+var ExchangeActions = require('./actions/ExchangeActions');
 
 var ReproductionList = require('./components/reproduction/ReproductionList');
 var ReproductionListActions = require('./actions/ReproductionListActions');
 var ReproductionAttachmentActions = require('./actions/ReproductionAttachmentActions');
 
-exchangeService.init(window.serviceHost, window.servicePort);
-giftService.init(window.serviceHost, window.servicePort);
+MotifStore.init(host, port).all();
 
-var accessReproductions = function() {
-  ReproductionListActions.init(window.serviceHost, window.servicePort);
-  ReproductionAttachmentActions.init(window.serviceHost, window.servicePort);
-  ReproductionList.render(window.document.getElementById('reproduction-form-container'));
-};
+GiftActions.init(host, port);
+ExchangeActions.init(host, port);
+ReproductionListActions.init(host, port);
+ReproductionAttachmentActions.init(serviceHost, port);
 
-var getExchanges = function() {
-  var dfd = $.Deferred();
-  exchangeService.all()
-    .then(exchangeStore.init.bind(exchangeStore))
-    .then(dfd.resolve);
-  return dfd;
-};
-
-var getGifts = function() {
-  var dfd = $.Deferred();
-  giftService.all()
-    .then(giftStore.init.bind(giftStore))
-    .then(dfd.resolve);
-  return dfd;
-};
-
-MotifStore.init(window.serviceHost, window.servicePort).all();
-
- getExchanges()
-  .then(getGifts)
-  .then(accessReproductions);
+ReproductionList.render(window.document.getElementById('reproduction-form-container'));
 
 module.exports = {};

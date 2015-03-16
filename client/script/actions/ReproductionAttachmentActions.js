@@ -39,6 +39,7 @@ var ReproductionAttachmentActions = {
           id: reproductionId
         });
       });
+    return this;
   },
 
   add: function(reproduction, fileName, dataSource, formData) {
@@ -86,7 +87,7 @@ var ReproductionAttachmentActions = {
           id: reproduction._id
         });
    });
-
+  return this;
   },
 
   remove: function(reproduction, fileName) {
@@ -129,7 +130,7 @@ var ReproductionAttachmentActions = {
           error: error
       });
     });
-
+    return this;
   }
 
 };
