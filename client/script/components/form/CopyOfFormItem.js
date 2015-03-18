@@ -49,7 +49,7 @@ module.exports = React.createClass({ displayName: 'CopyOfFormItem',
   },
 
   getExchangeGiftTitle: function(giftId) {
-    var gift = this.state.gift;
+    var gift = GiftStore.withId(giftId);
     var exchange = gift !== undefined ? ExchangeStore.withId(gift.exchange_id) : undefined;
     if(gift !== undefined && exchange !== undefined) {
       return [exchange.title, gift.description].join(': ');
