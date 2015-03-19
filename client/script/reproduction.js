@@ -18,7 +18,7 @@ MotifStore.init(host, port).all();
 GiftActions.init(host, port);
 ExchangeActions.init(host, port);
 ReproductionListActions.init(host, port);
-ReproductionAttachmentActions.init(serviceHost, port);
+ReproductionAttachmentActions.init(host, port);
 
 ReproductionList.render(window.document.getElementById('reproduction-form-container'));
 

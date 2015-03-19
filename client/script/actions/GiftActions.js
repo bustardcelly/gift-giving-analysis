@@ -46,4 +46,3 @@ var GiftActions = {
 };
 
 module.exports = GiftActions;
-

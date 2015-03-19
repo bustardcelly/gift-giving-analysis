@@ -48,7 +48,7 @@ module.exports = React.createClass({displayName: 'MotifSelector',
   },
 
   render: function() {
-    var items = undefined;
+    var items;
     var motifs = this.state.selectedMotifs;
     var clickDelegate = this.updateSelectedMotifs;
     var selections = (motifs === null || typeof motifs === 'undefined') ? [] : motifs.split(',');

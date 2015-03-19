@@ -13,7 +13,7 @@ var Dialog = React.createClass({
   componentDidMount: function() {
     var $dom = $(this.getDOMNode());
     $dom.modal({
-      background:true, show:true
+      background: true, show: true
     });
     $dom.on('hidden', function() {
       $dom.off('hidden');

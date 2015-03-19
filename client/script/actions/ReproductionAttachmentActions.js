@@ -68,7 +68,7 @@ var ReproductionAttachmentActions = {
      else if(data.hasOwnProperty('error')) {
        Dispatcher.handleAsyncAction({
           type: ReproductionAttachmentActionEnum.ADD_ATTACHMENT,
-          error: error,
+          error: data.error,
           id: reproduction._id
         });
      }

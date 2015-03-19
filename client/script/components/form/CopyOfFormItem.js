@@ -1,4 +1,5 @@
 /** @jsx React.DOM */
+'use strict';
 var React = require('react');
 var GiftStore = require('../../stores/GiftStore');
 var ExchangeStore = require('../../stores/ExchangeStore');

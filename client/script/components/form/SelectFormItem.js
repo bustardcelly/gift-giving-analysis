@@ -1,6 +1,7 @@
 /** @jsx React.DOM */
 /** global $*/
 'use strict';
+var React = require('react');
 
 module.exports = React.createClass({displayName: 'SelectFormItem',
   revert: function() {
@@ -25,5 +26,5 @@ module.exports = React.createClass({displayName: 'SelectFormItem',
         <select name={name} className={iClasses} defaultValue={this.props.value}>{this.props.options}</select>
       </div>
     );
-  }  
+  }
 });

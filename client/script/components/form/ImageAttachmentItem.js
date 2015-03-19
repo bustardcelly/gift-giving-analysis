@@ -31,4 +31,3 @@ var ImageAttachmentItem = React.createClass({displayName: 'ImageAttachmentItem',
 });
 
 module.exports = ImageAttachmentItem;
-

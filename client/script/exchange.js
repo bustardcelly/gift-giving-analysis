@@ -1,4 +1,5 @@
 /*global window*/
+'use strict';
 Object.assign = require('object-assign');
 var collFactory = require('./model/collection');
 var exchangeList = require('./view/exchange-list');
@@ -38,4 +39,4 @@ MotifStore.init(window.serviceHost, window.servicePort)
     accessExchanges();
   });
 
-module.exports = {};
+  module.exports = {};

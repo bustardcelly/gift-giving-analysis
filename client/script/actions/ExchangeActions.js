@@ -46,4 +46,3 @@ var ExchangeActions = {
 };
 
 module.exports = ExchangeActions;
-

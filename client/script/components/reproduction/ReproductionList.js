@@ -36,7 +36,7 @@ var ReproductionList = React.createClass({displayName: 'ReproductionList',
     var rows = this.state.reproductions.map(function(item) {
         return <ReproductionListItem {... {
           data: item
-        }} />
+        }} />;
     });
     return (
       <div>

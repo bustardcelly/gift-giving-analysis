@@ -5,4 +5,3 @@ module.exports = {
   ADD_ATTACHMENT_EVENT: 'addReproductionAttachmentEvent',
   REMOVE_ATTACHMENT_EVENT: 'removeReproductionAttachmentEvent'
 };
-

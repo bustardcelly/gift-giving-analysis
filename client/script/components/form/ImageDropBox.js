@@ -52,7 +52,7 @@ module.exports = React.createClass({displayName: 'ImageDropBox',
   previewDroppedFile: function(file) {
     var reader;
     var dfd = Q.defer();
-    var onFileLoad = function(file) {
+    var onFileLoad = function(theFile) {
       return function(event) {
         dfd.resolve(event.target.result);
       };

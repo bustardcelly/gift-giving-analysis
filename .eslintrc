@@ -3,6 +3,10 @@
         "browser": true,
         "node": true
     },
+    "globals": {
+      "$": true,
+      "jQuery": true
+     },
     "ecmaFeatures": {
         "blockBindings": true,
         "jsx": true
@@ -10,11 +14,14 @@
     "rules": {
         "semi": 2,
         "curly": true,
-        "quotes": "single"
+        "quotes": "single",
         "eqeqeq": true,
         "wrap-iife": true,
         "no-unused-expressions": true,
         "no-unused-vars": true,
+        "no-underscore-dangle": false,
+        "new-cap": true,
+        "camelcase": false,
         "boss": true
     }
 }

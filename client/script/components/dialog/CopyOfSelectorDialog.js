@@ -54,7 +54,7 @@ var GiftList = React.createClass({
       $elem.addClass('selected');
       this.setState({
         selectedGiftId: $elem.data('id')
-      })
+      });
     }
     return false;
   },
@@ -94,7 +94,7 @@ var HostBody = React.createClass({
     return {
       selectedIndex: -1,
       exchangeList: undefined
-    }
+    };
   },
 
   componentDidMount: function() {
@@ -116,7 +116,7 @@ var HostBody = React.createClass({
     var selectedGiftId = this.props.selectedGiftId;
     var exchangeList = this.state.exchangeList;
     var index = this.state.selectedIndex;
-    var selectedExchange = exchangeList === undefined  || this.state.selectedIndex <= -1
+    var selectedExchange = exchangeList === undefined || this.state.selectedIndex <= -1
       ? undefined
       : exchangeList[this.state.selectedIndex];
     var options = exchangeList === undefined
@@ -134,7 +134,7 @@ var HostBody = React.createClass({
       <div>
         <strong>Select Exchange:</strong>
         <p>
-          <select id="exchangeSelector" defaultValue={selectedExchange !== undefined ? selectedExchange.name: 'N/A'} onChange={this.handleOnExchangeSelectionChange}>
+          <select id="exchangeSelector" defaultValue={selectedExchange !== undefined ? selectedExchange.name : 'N/A'} onChange={this.handleOnExchangeSelectionChange}>
             {
               options
             }
@@ -163,7 +163,7 @@ var Dialog = React.createClass({
   componentDidMount: function() {
     var $dom = $(this.getDOMNode());
     $dom.modal({
-      background:true, show:true
+      background: true, show: true
     });
     $dom.on('hidden', function() {
       $dom.off('hidden');
