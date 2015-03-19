@@ -2,7 +2,7 @@
 /*global $, window*/
 'use strict';
 var React = require('react');
-var ReproductionForm = require('../components/reproduction/ReproductionForm').ReproductionForm;
+var ReproductionForm = require('../reproduction/ReproductionForm').ReproductionForm;
 
 var Dialog = React.createClass({
   getInitialState: function() {

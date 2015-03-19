@@ -2,7 +2,7 @@
 'use strict';
 var React = require('react');
 
-var reproductionDialog = require('../../view/new-reproduction-dialog');
+var ReproductionDialog = require('../dialog/NewReproductionDialog');
 var ReproductionStore = require('../../stores/ReproductionStore');
 var ReproductionListItem = require('./ReproductionListItem');
 
@@ -18,7 +18,7 @@ var ReproductionList = React.createClass({displayName: 'ReproductionList',
     };
   },
   handleReproductionAdd: function() {
-    reproductionDialog.render(this.handleSubmitNewReproduction);
+    ReproductionDialog.render(this.handleSubmitNewReproduction);
   },
   handleSubmitNewReproduction: function(reproduction) {
     ReproductionStore.add(reproduction);
