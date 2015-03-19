@@ -9,7 +9,6 @@ var motifStore = require('./store/motif-store');
 var MotifStore = require('./stores/MotifStore');
 
 giftService.init(window.serviceHost, window.servicePort);
-motifService.init(window.serviceHost, window.servicePort);
 
 var accessExchanges = function() {
   exchangeService
@@ -32,7 +31,8 @@ var accessExchanges = function() {
     });
 };
 
-MotifStore.all()
+MotifStore.init(window.serviceHost, window.servicePort)
+  .all()
   .then(function(list) {
     motifStore.init(list);
     accessExchanges();
