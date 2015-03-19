@@ -68,4 +68,3 @@ Dispatcher.register(ExchangeStore, function(payload) {
 });
 
 module.exports = ExchangeStore;
-

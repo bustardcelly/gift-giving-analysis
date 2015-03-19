@@ -20,4 +20,3 @@ var MotifStore = assign({}, EventEmitter.prototype, {
 });
 
 module.exports = MotifStore;
-

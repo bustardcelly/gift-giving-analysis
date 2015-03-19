@@ -52,6 +52,8 @@ var ReproductionStore = assign({}, EventEmitter.prototype, {
 
 Dispatcher.register(ReproductionStore, function(payload) {
 
+  var i;
+  var item;
   var action = payload.action;
   switch(action.type) {
     case ReproductionActionEnum.GET_REPRODUCTIONS:
@@ -63,8 +65,8 @@ Dispatcher.register(ReproductionStore, function(payload) {
       ReproductionStore.emit(ReproductionEventEnum.CHANGE_EVENT);
       break;
     case ReproductionActionEnum.UPDATE_REPRODUCTION:
-      var i = reproductions.length;
-      var item = action.item;
+      i = reproductions.length;
+      item = action.item;
       while(--i > -1) {
         if(reproductions[i]._id === item._id) {
           reproductions[i] = item;
@@ -75,8 +77,8 @@ Dispatcher.register(ReproductionStore, function(payload) {
       ReproductionStore.emit(ReproductionEventEnum.UPDATE_COMPLETE);
       break;
     case ReproductionActionEnum.REMOVE_REPRODUCTION:
-      var i = reproductions.length;
-      var item = action.item;
+      i = reproductions.length;
+      item = action.item;
       while(--i > -1) {
         if(reproductions[i]._id === item._id) {
           reproductions.splice(i, 1);
@@ -87,7 +89,7 @@ Dispatcher.register(ReproductionStore, function(payload) {
       ReproductionStore.emit(ReproductionEventEnum.REMOVE_COMPLETE);
       break;
     case ReproductionActionEnum.ADD_ATTACHMENT:
-      var item = action.item;
+      item = action.item;
       if(item.success) {
         ReproductionStore.emit(ReproductionEventEnum.ADD_ATTACHMENT_COMPLETE);
       }
