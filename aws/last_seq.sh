@@ -34,4 +34,4 @@ else
   echo "Already up to date."
 fi
 
-echo "Nightly Backup Successful: $DATE" >> LOG
+echo "Nightly Backup Successful: $DATE" >> $LOG
