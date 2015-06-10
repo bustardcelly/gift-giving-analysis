@@ -1,6 +1,8 @@
 #!/bin/bash
 
 FILE=/home/ubuntu/gift-giving-analysis/.version
+LOG=/home/ubuntu/gift-giving-analysis/aws/gift-giving-analysis-backup.log
+DATE=`date`
 
 while [[ $# > 1 ]]
 do
@@ -26,9 +28,10 @@ payload=`curl -s -X GET -H "Content-Type: application/json" http://127.0.0.1:598
         awk -F "}" '{print $1}'`
 
 if [ "$version" != "$payload" ]; then
+  echo `node aws/upload-remote.js`
   echo $payload > $FILE
-  echo `./run.sh`
 else
   echo "Already up to date."
 fi
 
+echo "Nightly Backup Successful: $DATE" >> LOG
