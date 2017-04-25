@@ -13,12 +13,13 @@ module.exports = {
   gift: gift,
   motif: motif,
   reproduction: reproduction,
-  init: function(host, port) {
+  init: function(host, port, credentials) {
     console.log('Connecting to ' + host + ':' + port);
     connection = new(cradle.Connection)(host, port, {
       cache: true,
       raw: false,
-      forceSave: true
+      forceSave: true,
+      auth: credentials
     });
     this.exchange.init(connection, host, port);
     this.gift.init(connection, host, port);

@@ -3,3 +3,6 @@
 node_modules
 ops
 static
+
+aws/credentials
+credentials.json

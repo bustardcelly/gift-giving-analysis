@@ -1,12 +1,58 @@
 /*global $*/
 'use strict';
 
+var RequestQueueItem = function(url, dfd, callbackFn) {
+  this.url = url;
+  this.dfd = dfd;
+  this.callback = callbackFn;
+}
+
+RequestQueueItem.prototype = new Object();
+RequestQueueItem.prototype.constructor = RequestQueueItem;
+
+RequestQueueItem.prototype.execute = function() {
+  var p = this.dfd;
+  var fn = this.callback;
+  $.ajax({
+    type: 'GET',
+    url: this.url,
+    contentType: 'json'
+  })
+  .done(function(data) {
+    if(data.hasOwnProperty('error')) {
+      p.reject(data.error);
+    }
+    else {
+      p.resolve(data);
+    }
+    fn();
+  })
+  .fail(function(error) {
+    p.reject(error);
+    fn();
+  });
+}
+
 module.exports = {
   host: undefined,
   port: undefined,
+  queue: undefined,
+  inQueue: false,
+  boundNext: undefined,
+  next: function () {
+    if (this.queue.length > 0) {
+      this.inQueue = true;
+      this.queue.shift().execute();
+    }
+    else {
+      this.inQueue = false;
+    }
+  },
   init: function(host, port) {
     this.host = host;
     this.port = port;
+    this.queue = [];
+    this.boundNext = this.next.bind(this);
     return this;
   },
   all: function() {
@@ -33,22 +79,10 @@ module.exports = {
   getGiftsForExchangeId: function(exchangeId) {
     var dfd = $.Deferred();
     var theUrl = 'http://' + this.host + ':' + this.port + '/gift/exchange/' + exchangeId;
-    $.ajax({
-      type: 'GET',
-      url: theUrl,
-      contentType: 'json'
-    })
-    .done(function(data) {
-      if(data.hasOwnProperty('error')) {
-        dfd.reject(data.error);
-      }
-      else {
-        dfd.resolve(data);
-      }
-    })
-    .fail(function(error) {
-      dfd.reject(error);
-    });
+    this.queue.push(new RequestQueueItem(theUrl, dfd, this.boundNext));
+    if (!this.inQueue) {
+      this.next();
+    }
     return dfd;
   },
   addExchange: function(exchange) {
