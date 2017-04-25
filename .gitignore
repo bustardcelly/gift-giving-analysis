@@ -5,3 +5,4 @@ ops
 static
 
 aws/credentials
+credentials.json

@@ -11,6 +11,7 @@ var socketport = argsv.socketport || 8002;
 var dbhost = argsv.dbhost || '127.0.0.1';
 var dbport = argsv.dbport || 5984;
 var version = require(path.join(process.cwd(), 'package.json')).version;
+var credentials = require(path.join(process.cwd(), 'credentials.json'));
 
 var client = require('./client');
 var reproductionRouteController = require('./route/reproduction-controller');
@@ -78,7 +79,7 @@ server.del('/reproduction/:id/:filename?rev=:rev', reproductionRouteController.r
 server.get('/motif', motifRouteController.getAllMotifs);
 
 // Initialize DB
-require('./db').init(dbhost, dbport);
+require('./db').init(dbhost, dbport, credentials);
 
 server.listen(port, function() {
   console.log('gift-giving-analysis %s server started at %s.', version, server.url);
