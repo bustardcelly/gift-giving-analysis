@@ -29,6 +29,9 @@ server.use(restify.bodyParser({
   mapFiles: true
 }));
 
+restify.CORS.ALLOW_HEADERS.push('Access-Control-Allow-Origin');
+server.use(restify.CORS());
+
 // GET Exchange (all|id)
 server.get('/exchange', exchangeRouteController.getAllExchanges);
 server.get('/exchange/:id', exchangeRouteController.getExchangeById);
