@@ -4,6 +4,7 @@ var exchangeFactory = require('../model/exchange');
 
 module.exports = {
   getAllExchanges: function(req, res, next) {
+    console.log('get all exchanges.');
     res.setHeader('Access-Control-Allow-Origin', '*');
     db.getAllExchanges()
       .then(function(docs) {
