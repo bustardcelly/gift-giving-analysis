@@ -69,13 +69,14 @@ if [ "$version" != "$payload" ]; then
   fi
   DUMP_DIR="${CWD}/aws/dump"
   DUMP_BASH="${CWD}/aws/couchdb-dump/couchdb-backup.sh"
+  rm -rf "${DUMP_DIR}"
   mkdir -p "$DUMP_DIR"
   bash "$DUMP_BASH" -b -H 127.0.0.1 -d exchange -f "${DUMP_DIR}/exchange.json" -u "${username}" -p "${password}"
   bash "$DUMP_BASH" -b -H 127.0.0.1 -d gift -f "${DUMP_DIR}/gift.json" -u "${username}" -p "${password}"
   bash "$DUMP_BASH" -b -H 127.0.0.1 -d motif -f "${DUMP_DIR}/motif.json" -u  "${username}" -p "${password}"
   bash "$DUMP_BASH" -b -H 127.0.0.1 -d reproduction -f "${DUMP_DIR}/reproduction.json" -u  "${username}" -p "${password}"
   for i in $(ls "$DUMP_DIR"); do
-    S3_ACCESS_KEY="${S3_KEY}" S3_SECRET_KEY="${S3_SECRET}" S3_BUCKET_NAME="${S3_BUCKET}" python s3_deploy.py "$i" backups
+    S3_ACCESS_KEY="${S3_KEY}" S3_SECRET_KEY="${S3_SECRET}" S3_BUCKET_NAME="${S3_BUCKET}" python "${CWD}/aws/s3_deploy.py" "$i" backups
   done
   node "${CWD}/aws/upload-remote.js"
   echo "$payload" > "$FILE"
