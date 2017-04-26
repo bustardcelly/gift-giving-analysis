@@ -6,5 +6,6 @@ static
 
 .version
 .creds
+.s3
 aws/credentials
 credentials.json
